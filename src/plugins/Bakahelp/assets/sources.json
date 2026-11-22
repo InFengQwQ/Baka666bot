@@ -1,0 +1,16 @@
+[
+  {
+    "file": "display-cn.ttf",
+    "family": "Noto Serif SC:wght@500",
+    "url": "https://fonts.gstatic.com/l/font?kit=H4cyBXePl9DZ0Xe7gG9cyOj7uK2-n-D2rd4FY7SwqyWv67arGllgwcQuONsvbWpg2x-MLcOs3eL3TUXvy5CWwk7aDYY2iztuTVuER1GC-923MIINEthCvQZy-7GKuiM&skey=37fe335b8fd815cc&v=v36",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/OFL.txt",
+    "subset": "少翻记录，多打一首。同一个Bot，不止一种触发方式。"
+  },
+  {
+    "file": "display-latin.ttf",
+    "family": "EB Garamond:ital,wght@1,500",
+    "url": "https://fonts.gstatic.com/l/font?kit=SlGFmQSNjdsmc35JDF1K5GRwUjcdlttVFm-rI7eOQI96QaW-rggrO5KgrQ&skey=b76c0cb3db3b0fac&v=v33",
+    "license": "https://raw.githubusercontent.com/google/fonts/main/ofl/ebgaramond/OFL.txt",
+    "subset": "b.maosu!"
+  }
+]

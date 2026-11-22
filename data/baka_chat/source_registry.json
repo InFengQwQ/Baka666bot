@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-07-17",
+  "policy": "Registry entries locate authoritative sources. Commercial full text is not mirrored by this project.",
+  "official_catalogs": [
+    {
+      "name": "Touhou Yomoyama News title catalog",
+      "url": "https://touhou-project.news/titles/",
+      "authority": "official_site",
+      "notes": "Official cross-title catalog; its publication lag means newer works also need their announcement pages."
+    },
+    {
+      "name": "Shanghai Alice official site",
+      "url": "https://www16.big.or.jp/~zun/",
+      "authority": "official_site",
+      "notes": "Primary creator circle site and release information."
+    },
+    {
+      "name": "Touhou Project derivative-work guideline",
+      "url": "https://touhou-project.news/guideline/",
+      "authority": "official_site",
+      "notes": "Use to check redistribution and derivative-work boundaries."
+    },
+    {
+      "name": "Touhou Kinjoukyou announcement",
+      "url": "https://touhou-project.news/news/13976/",
+      "authority": "official_site",
+      "notes": "Official 2025 announcement for Touhou Project 20."
+    },
+    {
+      "name": "Touhou Kinjoukyou Steam release",
+      "url": "https://store.steampowered.com/app/3671710/__Fossilized_Wonders/",
+      "authority": "official_storefront",
+      "notes": "Official PC distribution page for Touhou Project 20."
+    },
+    {
+      "name": "Strange Creators of Outer World 2026 revised edition",
+      "url": "https://www.kadokawa.co.jp/product/322508000622/",
+      "authority": "official_publisher",
+      "notes": "Official publisher catalog entry; useful as a current publication index, not a substitute for owned book text."
+    }
+  ],
+  "local_coverage": {
+    "cirno_identity_and_behavior": "curated_seed",
+    "cirno_major_game_arcs": "curated_seed",
+    "cirno_relationship_boundaries": "curated_seed",
+    "qq_network_bridge": "local_fanon",
+    "complete_game_scripts": "not_bundled",
+    "commercial_books": "not_bundled",
+    "official_music_cd_stories": "not_bundled",
+    "zun_interviews": "not_bundled"
+  }
+}

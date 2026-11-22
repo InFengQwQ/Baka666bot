@@ -1,0 +1,37 @@
+{
+  "plugins": {
+    "Bakahelp": {"name": "Bakahelp", "category": "通用", "description": "打开这份帮助目录。"},
+    "Malody_toolkit": {"name": "Malody 工具箱", "category": "Malody", "description": "谱面搜索、转换、下载与回放处理。"},
+    "MalodyVClientPlugin": {"name": "Malody 成绩与账户", "category": "Malody", "description": "Malody 账户、成绩和 MM 查询。"},
+    "MalodyBakaRating": {"name": "Baka Rating", "category": "Malody", "description": "提交谱面进行 Baka Rating 相关处理。"},
+    "Malody_guess_song": {"name": "Malody 猜歌", "category": "Malody", "description": "听片段猜歌，支持提示和答案查询。"},
+    "Malody_new_chart": {"name": "Malody 新谱速递", "category": "Malody"},
+    "nonebot_plugin_osubot": {"name": "osu! bot", "category": "osu!", "description": "osu! 玩家、成绩与谱面工具。"},
+    "nonebot_plugin_osugreek": {"name": "osu! Greek", "category": "osu!"},
+    "nonebot_plugin_osumania_toolkit": {"name": "osu!mania 工具箱", "category": "osu!", "description": "osu!mania 谱面与游玩工具。"},
+    "multiplatform": {"name": "跨平台功能", "category": "通用", "description": "Discord / Telegram 平台的功能适配。"},
+    "baka_chat": {"name": "Baka 对话", "category": "通用"},
+    "image_generation": {"name": "图片生成", "category": "创作与娱乐"},
+    "nonebot_plugin_memes": {"name": "表情包制作", "category": "创作与娱乐"},
+    "nonebot_plugin_capoo": {"name": "猫猫虫", "category": "创作与娱乐"},
+    "nonebot_plugin_arcaea_sticker": {"name": "Arcaea 贴纸", "category": "创作与娱乐"},
+    "group_file_cleaner": {"name": "群文件清理", "category": "管理", "defaults": {"audience": "管理员"}},
+    "nonebot_plugin_blacklist": {"name": "黑名单管理", "category": "管理", "defaults": {"audience": "管理员"}}
+  },
+  "triggers": [
+    {"plugin": "Bakahelp", "match": ["/bakahelp", "bakahelp"], "title": "打开帮助目录", "description": "仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。", "examples": ["bakahelp", "help", "/bakahelp", "/help", "TD"]},
+    {"plugin": "Malody_toolkit", "match": ["/sm"], "title": "搜索 Malody 谱面", "description": "按歌曲关键词搜索谱面。", "usage": "/sm <歌曲关键词>", "examples": ["/sm conflict"]},
+    {"plugin": "Malody_toolkit", "match": ["/ma2om"], "title": "Malody 转 osu!mania", "description": "将 Malody 谱面转换为 osu!mania 谱面。文件提交方式以 Bot 提示为准。"},
+    {"plugin": "Malody_toolkit", "match": ["/om2ma"], "title": "osu!mania 转 Malody", "description": "将 osu!mania 谱面转换为 Malody 谱面。文件提交方式以 Bot 提示为准。"},
+    {"plugin": "Malody_toolkit", "match": ["/level"], "title": "预测谱面难度", "description": "回复一条包含 .mc 文件的消息，发送 /level 预测难度。", "examples": ["/level"]},
+    {"plugin": "Malody_toolkit", "match": ["/download"], "title": "下载 Malody 谱面", "description": "Malody 谱面下载工具，参数用法待补充。"},
+    {"plugin": "Malody_toolkit", "match": ["/rank"], "title": "查看谱面排行榜", "description": "查询指定谱面的排行榜。", "usage": "/rank <cid> [mode]"},
+    {"plugin": "Malody_toolkit", "match": ["/exptop", "/mmtop"], "title": "查看 TOP100", "description": "查询经验或 MM 排行榜。"},
+    {"plugin": "Malody_toolkit", "match": ["/mrv2mr"], "title": "转换回放格式", "description": "将 .mrv 回放转换为 .mr 格式。"},
+    {"plugin": "Malody_toolkit", "match": ["/replayrd"], "title": "渲染回放", "description": "回放渲染工具，参数和文件提交步骤待补充。"},
+    {"plugin": "Malody_toolkit", "match": ["/toinverse"], "title": "补全反键尾判定", "description": "为 .mc / .mcz 谱面补全反键尾判定。"},
+    {"plugin": "image_generation", "match": ["/生图帮助"], "title": "图片生成用法", "description": "查看图片生成插件自带的详细帮助。", "examples": ["/生图帮助"]},
+    {"plugin": "MalodyBakaRating", "match": ["/提交谱面"], "title": "提交谱面", "description": "提交谱面进行处理，具体步骤以 Bot 的后续提示为准。"}
+  ],
+  "entries": {}
+}

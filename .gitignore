@@ -1,0 +1,54 @@
+# Local credentials and private client settings
+.env
+config.txt
+config/*.env
+!config/*.env.example
+**/.env
+!**/.env.example
+config/malody_token.txt
+NapCat.Shell/config/*.json
+NapCat.Shell/*.db-*
+NapCat.Shell/*.log*
+NapCat.Shell/temp/
+NapCat.Shell/loadNapCat.js
+
+# Per-user state and downloaded caches
+data/MalodyVClientPlugin/
+data/Malody_guess_song/
+data/MalodyBakaRating/
+data/account_profile/
+data/config/
+data/image_generation/
+data/localstore/
+data/plugins/
+data/blacklist/blacklist.json
+data/baka_chat/config.json
+data/baka_chat/*.db
+data/baka_chat/*.db-*
+data/baka_chat/media/
+data/baka_chat/tool_outputs/
+data/baka_chat/secrets/
+data/charts/
+data/malody/
+data/osu/
+
+# Local databases, logs, and Python environments
+**/*.db
+**/*.sqlite3*
+NapCat.Shell/*.db
+**/debug.log
+logs/
+cache/
+venv/
+.venv/
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/debug.log
+
+# Local plugin checkouts
+src/plugins/nonebot_plugin_osubot/
+src/plugins/nonebot_plugin_osugreek/
+src/plugins/nonebot_plugin_osumania_toolkit/
+src/plugins/nonebot-plugin-for-osumania4k/

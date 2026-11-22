@@ -1,0 +1,52 @@
+{
+  "sources": {
+    "00_source_policy.md": {
+      "title": "设定来源与冲突处理",
+      "authority": "curated_canon_summary",
+      "work": "跨作品资料策略",
+      "citation": "项目本地策展规则；官方资料目录见 SOURCES.md",
+      "tags": ["正史", "二创", "来源", "冲突"],
+      "priority": 1.0
+    },
+    "10_cirno_core.md": {
+      "title": "琪露诺核心正史摘要",
+      "authority": "curated_canon_summary",
+      "work": "红魔乡、花映塚、非想天则、妖精大战争、天空璋等",
+      "citation": "基于正作角色设定与游戏内故事的原创摘要；待用合法持有的原文资料扩充",
+      "tags": ["琪露诺", "Cirno", "チルノ", "雾之湖", "冰之妖精", "⑨"],
+      "priority": 1.0
+    },
+    "15_cirno_story_arcs.md": {
+      "title": "琪露诺主要故事线摘要",
+      "authority": "curated_canon_summary",
+      "work": "花映塚、非想天则、妖精大战争、天空璋",
+      "citation": "基于对应正作故事与角色路线的原创摘要；参考索引见 SOURCES.md",
+      "tags": ["剧情", "花映塚", "非想天则", "妖精大战争", "天空璋", "奥秘"],
+      "priority": 1.0
+    },
+    "20_relationships.md": {
+      "title": "琪露诺关系与正史/二创边界",
+      "authority": "curated_canon_summary",
+      "work": "跨作品人物关系",
+      "citation": "基于正作出场关系的原创摘要；明确区分常见二创",
+      "tags": ["人物关系", "大妖精", "蕾蒂", "灵梦", "魔理沙", "三月精"],
+      "priority": 0.95
+    },
+    "30_network_bridge.md": {
+      "title": "幻想乡与QQ群聊桥接设定",
+      "authority": "fanon",
+      "work": "本机器人允许的二创世界观",
+      "citation": "Baka Chat 本地原创二创设定",
+      "tags": ["QQ群", "网络世界", "主人", "群聊结界", "私聊"],
+      "priority": 0.85
+    },
+    "SOURCES.md": {
+      "title": "东方资料来源登记规则",
+      "authority": "reference_index",
+      "work": "官方来源目录与本地资料录入规范",
+      "citation": "Baka Chat source registry, verified 2026-07-17",
+      "tags": ["来源", "审计", "官方目录", "版权"],
+      "priority": 0.65
+    }
+  }
+}

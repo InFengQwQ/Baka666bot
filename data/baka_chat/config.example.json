@@ -1,0 +1,156 @@
+{
+  "enabled": true,
+  "owner_ids": ["你的QQ号"],
+  "owner_contact_text": "私聊主人补充🧊力代币",
+  "initial_tokens_per_conversation": 20000,
+  "default_provider": "relay",
+  "providers": [
+    {
+      "name": "relay",
+      "base_url": "${BAKA_RELAY_BASE_URL:-https://your-relay.example/v1}",
+      "api_key_file": "data/baka_chat/secrets/relay.key",
+      "model": "${BAKA_CHAT_MODEL:-your-chat-model}",
+      "vision_model": "${BAKA_VISION_MODEL:-your-vision-model}",
+      "summary_model": "${BAKA_SUMMARY_MODEL:-your-cheap-model}",
+      "chat_path": "/chat/completions",
+      "supports_vision": true,
+      "image_transport": "url",
+      "json_mode": true,
+      "temperature": 0.8,
+      "max_output_tokens": 700,
+      "context_window_tokens": 65536,
+      "headers": {},
+      "extra_body": {}
+    },
+    {
+      "name": "local",
+      "base_url": "${BAKA_LOCAL_BASE_URL:-http://127.0.0.1:11434/v1}",
+      "api_key": "ollama",
+      "model": "${BAKA_LOCAL_MODEL:-qwen3:8b}",
+      "vision_model": "${BAKA_LOCAL_VISION_MODEL:-}",
+      "summary_model": "${BAKA_LOCAL_SUMMARY_MODEL:-}",
+      "supports_vision": false,
+      "image_transport": "base64",
+      "json_mode": false,
+      "max_output_tokens": 600,
+      "context_window_tokens": 32768
+    }
+  ],
+  "behavior": {
+    "trigger_names": ["baka", "琪露诺", "cirno", "crino", "チルノ", "⑨"],
+    "ambient_reply_probability": 0.02,
+    "followup_reply_probability": 0.35,
+    "session_reply_probability": 0.12,
+    "group_cooldown_seconds": 25,
+    "followup_window_seconds": 120,
+    "max_history_messages": 45,
+    "summary_trigger_messages": 90,
+    "summary_batch_messages": 60,
+    "max_reply_chars": 500,
+    "decision_max_output_tokens": 768,
+    "prompt_budget_tokens": 16384,
+    "include_sender_avatar": true,
+    "max_vision_images": 4,
+    "media_download_enabled": true,
+    "media_max_bytes": 8388608,
+    "member_sync_interval_seconds": 21600,
+    "memory_retrieval_count": 8,
+    "lore_retrieval_count": 6
+  },
+  "security": {
+    "allow_cross_scope_memory": true,
+    "allow_social_actions": true,
+    "allow_privileged_actions": false,
+    "allow_owner_cross_scope_forward": false,
+    "max_actions_per_turn": 3,
+    "protected_user_ids": []
+  },
+  "protocol_actions": {
+    "enabled": true,
+    "allow_read_actions": true,
+    "allow_social_actions": true,
+    "allow_file_actions": true,
+    "allow_request_actions": false,
+    "allow_moderation_actions": false,
+    "allow_autonomous_moderation": false,
+    "allow_autonomous_role_changes": false,
+    "allow_unknown_owner_actions": false,
+    "denied_apis": [
+      "get_cookies",
+      "get_csrf_token",
+      "get_credentials",
+      "get_rkey",
+      "set_restart",
+      "clean_cache",
+      "send_packet",
+      "set_group_leave",
+      "delete_friend"
+    ]
+  },
+  "cross_group": {
+    "enabled": true,
+    "default_group_sharing": true,
+    "default_private_sharing": false,
+    "default_group_forwarding": true,
+    "max_forward_targets": 2,
+    "max_forwards_per_hour": 2,
+    "min_interest_score": 0.82,
+    "privacy_keywords": [
+      "身份证",
+      "住址",
+      "手机号",
+      "密码",
+      "验证码",
+      "银行卡",
+      "病历",
+      "真实姓名",
+      "不要外传",
+      "仅本群"
+    ]
+  },
+  "memory": {
+    "permanent_archive_enabled": true,
+    "archive_search_enabled": true,
+    "allow_model_permanent_memory": true,
+    "permanent_min_importance": 0.85,
+    "max_archive_results": 12
+  },
+  "affection": {
+    "enabled": true,
+    "neutral_baseline": 50,
+    "bot_owner_bonus": 25,
+    "group_owner_bonus": 18,
+    "group_admin_bonus": 10,
+    "special_title_bonus": 4,
+    "max_level_bonus": 8,
+    "max_activity_bonus": 10,
+    "max_deviation": 40,
+    "max_model_delta": 5,
+    "inertia_scale": 15
+  },
+  "local_tools": {
+    "enabled": true,
+    "owner_only": true,
+    "trusted_user_ids": [],
+    "allowed_tools": [
+      "mapview_rework",
+      "ma2om",
+      "mp32ogg",
+      "ncm2mp3",
+      "ncm2ogg",
+      "mcz_speed"
+    ],
+    "public_tools": ["mapview_rework"],
+    "public_tool_cooldown_seconds": 30,
+    "max_input_bytes": 104857600,
+    "timeout_seconds": 300,
+    "output_retention_days": 7
+  },
+  "storage": {
+    "database_path": "data/baka_chat/baka_chat.db",
+    "media_dir": "data/baka_chat/media",
+    "tool_output_dir": "data/baka_chat/tool_outputs",
+    "sticker_dir": "data/baka_chat/stickers",
+    "knowledge_dirs": ["data/baka_chat/knowledge"]
+  }
+}

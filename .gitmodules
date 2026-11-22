@@ -1,0 +1,16 @@
+[submodule "src/plugins/nonebot-plugin-for-osumania4k"]
+	path = src/plugins/nonebot-plugin-for-osumania4k
+	url = https://github.com/MCPsDE/nonebot-plugin-for-osumania4k.git
+	branch = main
+[submodule "src/plugins/nonebot_plugin_osubot"]
+	path = src/plugins/nonebot_plugin_osubot
+	url = https://github.com/MCPsDE/nonebot-plugin-osubot.git
+	branch = baka666bot
+[submodule "src/plugins/nonebot_plugin_osugreek"]
+	path = src/plugins/nonebot_plugin_osugreek
+	url = https://github.com/MCPsDE/nonebot-plugin-osugreek.git
+	branch = baka666bot
+[submodule "src/plugins/nonebot_plugin_osumania_toolkit"]
+	path = src/plugins/nonebot_plugin_osumania_toolkit
+	url = https://github.com/MCPsDE/nonebot-plugin-osumania-toolkit.git
+	branch = baka666bot
