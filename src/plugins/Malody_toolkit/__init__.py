@@ -3,7 +3,8 @@ Malody_toolkit - Malody 相关工具插件集
 
 子模块说明：
 - acc: 单曲 ACC 计算工具 (/calacc)
-- ma2om: Malody 谱面转 osu!mania (/ma2om)
+- ma2om: Malody 谱面转 osu!mania (/ma2om、/ma2osu、/mc2osu、/mc2om)
+- om2ma: osu!mania 谱面转 Malody (/om2ma、/osu2ma、/om2mc、/osu2mc)
 - toinverse: 给 .mc/.mcz 谱面补全反键尾判定 (/toinverse)
 - toNk: osu!/Malody 谱面转换到任意 K，支持 lambda、局部间隔缩放、全局长条 mapper 和忽略长条冻结 (/to8k、/to8k 0.5、/to8k 0.5 0.5 -g -i)
 - malody_download: Malody 谱面下载 (/download)

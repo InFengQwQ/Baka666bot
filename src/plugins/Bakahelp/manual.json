@@ -21,8 +21,8 @@
   "triggers": [
     {"plugin": "Bakahelp", "match": ["/bakahelp", "bakahelp"], "title": "打开帮助目录", "description": "仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。", "examples": ["bakahelp", "help", "/bakahelp", "/help", "TD"]},
     {"plugin": "Malody_toolkit", "match": ["/sm"], "title": "搜索 Malody 谱面", "description": "按歌曲关键词搜索谱面。", "usage": "/sm <歌曲关键词>", "examples": ["/sm conflict"]},
-    {"plugin": "Malody_toolkit", "match": ["/ma2om"], "title": "Malody 转 osu!mania", "description": "将 Malody 谱面转换为 osu!mania 谱面。文件提交方式以 Bot 提示为准。"},
-    {"plugin": "Malody_toolkit", "match": ["/om2ma"], "title": "osu!mania 转 Malody", "description": "将 osu!mania 谱面转换为 Malody 谱面。文件提交方式以 Bot 提示为准。"},
+    {"plugin": "Malody_toolkit", "match": ["/ma2om", "/ma2osu", "/mc2osu", "/mc2om"], "title": "Malody 转 osu!mania", "description": "将 .mc 转为 .osu；将 .mcz、.osz 或 .zip 内的 .mc 谱面转为 osu!mania 并打包为 .osz。"},
+    {"plugin": "Malody_toolkit", "match": ["/om2ma", "/osu2ma", "/om2mc", "/osu2mc"], "title": "osu!mania 转 Malody", "description": "将 .osu 转为 .mc；将 .osz 或 .zip 内的 .osu 转为 .mc 并打包为 .mcz，包内 MP3 音频会转为 OGG 并同步更新谱面引用。"},
     {"plugin": "Malody_toolkit", "match": ["/level"], "title": "预测谱面难度", "description": "回复一条包含 .mc 文件的消息，发送 /level 预测难度。", "examples": ["/level"]},
     {"plugin": "Malody_toolkit", "match": ["/download"], "title": "下载 Malody 谱面", "description": "Malody 谱面下载工具，参数用法待补充。"},
     {"plugin": "Malody_toolkit", "match": ["/rank"], "title": "查看谱面排行榜", "description": "查询指定谱面的排行榜。", "usage": "/rank <cid> [mode]"},

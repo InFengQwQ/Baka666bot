@@ -20,6 +20,11 @@
 - QQ 群管理、帮助、群文件整理与贴纸功能
 - Discord、Telegram 的跨平台适配代码，当前启动配置仅注册 OneBot V11
 
+谱面格式转换指令支持以下别名：
+
+- `/ma2om`、`/ma2osu`、`/mc2osu`、`/mc2om` 将 `.mc` 转为 `.osu`，也会把 `.mcz`、`.osz` 或 `.zip` 包内的 `.mc` 谱面转换后输出 `.osz`。
+- `/om2ma`、`/osu2ma`、`/om2mc`、`/osu2mc` 将 `.osu` 转为 `.mc`，也会把 `.osz` 或 `.zip` 包内的 `.osu` 谱面转换后输出 `.mcz`。压缩包内被谱面引用的 MP3 会转为 OGG，并同步更新 `.mc` 音频引用。
+
 ## 运行
 
 需要 Windows、Git、Git LFS、Python 3.10+、已安装的 QQ 客户端和 NapCat。克隆时要初始化插件子模块并下载运行资源：
@@ -58,6 +63,18 @@ if (-not (Test-Path config\malody.env)) { Copy-Item config\malody.env.example co
 ```powershell
 .\venv\Scripts\python.exe bot.py
 ```
+
+## 更新模式
+
+默认不设置额外变量时，启动过程会检查公开仓库 `MCPsDE/Baka666bot` 的 `main`。发现新版本后会同步主仓库、插件子模块和 Git LFS 资源，再重启机器人。更新会用远端版本替换受 Git 管理的本地文件，并清理未忽略的多余文件；`.env`、`config/*.env`、`data/` 等被忽略的本地配置和运行数据会保留。
+
+本地开发或测试期间，在 `.env` 中设置以下值可关闭自动拉取：
+
+```dotenv
+BAKA666BOT_UPDATE_MODE=dev
+```
+
+发布并希望本地实例恢复自动更新时，删除这一行即可。该变量不在 `.env.example` 中提供。
 
 Playwright 所需 Chromium headless shell、Malody Toolkit 使用的 Java 与 FFmpeg 均保存在项目目录中。机器人数据、账户数据库和缓存写入 `data/`。
 

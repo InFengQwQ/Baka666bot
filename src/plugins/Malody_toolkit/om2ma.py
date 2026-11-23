@@ -1,16 +1,11 @@
-"""
-/om2ma 或 /osu2mc - 将 .osu (mania) 文件转换为 .mc 文件
-完整转换：按键音符、自定义音效、Sample 事件均映射为 MC note
-用法：回复一个 .osu 文件并发送命令
-"""
+"""Convert osu!mania beatmaps and archives to Malody charts and packages."""
 
-import asyncio
 import json
 import math
-import os
 import shutil
 import tempfile
 from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Optional
 
 import httpx
@@ -18,13 +13,25 @@ from nonebot import on_command
 from nonebot.adapters.onebot.v11 import (
     Bot,
     Event,
-    GroupMessageEvent,
-    PrivateMessageEvent,
 )
 from nonebot.log import logger
+from nonebot.exception import FinishedException
+
+from .ma2om import (
+    _extract_archive_safely,
+    _repack_archive,
+    _run_native_tool,
+    _send_result_file,
+)
+from src.plugin_runtime import tool_path
 
 # ---------- 命令注册 ----------
-om2ma = on_command("om2ma", aliases={"osu2mc"}, priority=5)
+om2ma = on_command(
+    "om2ma",
+    aliases={"osu2mc", "osu2ma", "om2mc"},
+    priority=5,
+    block=True,
+)
 
 def get_reply_file(event: Event) -> Optional[dict]:
     if not event.reply:
@@ -331,44 +338,249 @@ def osu_to_mc(osu_content: str) -> str:
     mc_obj = build_mc_json(data)
     return json.dumps(mc_obj, indent=2, ensure_ascii=False)
 
-# ---------- 命令处理 ----------
+def _osu_audio_filename(text: str) -> str:
+    in_general = False
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if line.startswith("[") and line.endswith("]"):
+            in_general = line[1:-1].strip().lower() == "general"
+            continue
+        if in_general and line.lower().startswith("audiofilename:"):
+            return line.split(":", 1)[1].strip().strip('"')
+    return ""
+
+
+def _resolve_archive_audio(
+    archive_root: Path,
+    chart_path: Path,
+    reference: str,
+) -> Path:
+    normalized = reference.replace("\\", "/")
+    relative = PurePosixPath(normalized)
+    if (
+        not normalized
+        or relative.is_absolute()
+        or (relative.parts and ":" in relative.parts[0])
+    ):
+        raise ValueError(f"osu 文件包含非法音频路径：{reference}")
+
+    target = chart_path.parent.joinpath(*relative.parts).resolve()
+    if not target.is_relative_to(archive_root.resolve()):
+        raise ValueError(f"osu 文件音频路径超出压缩包目录：{reference}")
+    return target
+
+
+def _unique_audio_output(source: Path) -> Path:
+    candidate = source.with_suffix(".ogg")
+    if not candidate.exists():
+        return candidate
+    index = 1
+    while True:
+        candidate = source.with_name(f"{source.stem}__from_mp3_{index}.ogg")
+        if not candidate.exists():
+            return candidate
+        index += 1
+
+
+async def _convert_archive_mp3(
+    source: Path,
+    converted_audio: dict[Path, Path],
+    original_mp3s: set[Path],
+) -> Path:
+    source = source.resolve()
+    if source in converted_audio:
+        return converted_audio[source]
+    if not source.is_file():
+        raise ValueError(f"压缩包中找不到 osu 文件引用的音频：{source.name}")
+
+    original_mp3s.add(source)
+    with tempfile.TemporaryDirectory(prefix="osu2mc_audio_") as temporary:
+        stage = Path(temporary) / source.name
+        stage.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, stage)
+        converted = await _run_native_tool(
+            tool_path("mp32ogg.exe"), stage, output_suffix=".ogg"
+        )
+        output = _unique_audio_output(source)
+        shutil.move(str(converted), output)
+
+    converted_audio[source] = output
+    return output
+
+
+async def _convert_mc_audio_references(
+    mc_path: Path,
+    archive_root: Path,
+    chart_path: Path,
+    osu_audio: str,
+    converted_audio: dict[Path, Path],
+    original_mp3s: set[Path],
+) -> None:
+    data = json.loads(mc_path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        return False
+    references = []
+    meta = data.get("meta", {})
+    song = meta.get("song", {}) if isinstance(meta, dict) else {}
+    if isinstance(song, dict) and song.get("file"):
+        references.append((song, "file", str(song["file"])))
+    for note in data.get("note", []):
+        if isinstance(note, dict) and note.get("sound"):
+            references.append((note, "sound", str(note["sound"])))
+
+    if osu_audio and not any(value == osu_audio for _, _, value in references):
+        if isinstance(song, dict):
+            references.append((song, "file", osu_audio))
+
+    changed = False
+    for owner, key, reference in references:
+        if Path(reference.replace("\\", "/")).suffix.lower() != ".mp3":
+            continue
+        source = _resolve_archive_audio(archive_root, chart_path, reference)
+        output = await _convert_archive_mp3(source, converted_audio, original_mp3s)
+        owner[key] = PurePosixPath(
+            reference.replace("\\", "/")
+        ).with_name(output.name).as_posix()
+        changed = True
+
+    if changed:
+        mc_path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+
+def _malody_chart_references_audio(mc_path: Path, audio_path: Path) -> bool:
+    try:
+        data = json.loads(mc_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    if not isinstance(data, dict):
+        return False
+
+    references = []
+    meta = data.get("meta", {})
+    song = meta.get("song", {}) if isinstance(meta, dict) else {}
+    if isinstance(song, dict) and song.get("file"):
+        references.append(str(song["file"]))
+    notes = data.get("note", [])
+    if isinstance(notes, list):
+        references.extend(
+            str(note["sound"])
+            for note in notes
+            if isinstance(note, dict) and note.get("sound")
+        )
+    for reference in references:
+        relative = PurePosixPath(reference.replace("\\", "/"))
+        if relative.is_absolute() or (relative.parts and ":" in relative.parts[0]):
+            continue
+        if mc_path.parent.joinpath(*relative.parts).resolve() == audio_path.resolve():
+            return True
+    return False
+
+
+async def convert_osu_to_malody(input_path: Path) -> Path:
+    """Convert an osu!mania beatmap or .osz/.zip package to Malody .mc/.mcz."""
+    suffix = input_path.suffix.lower()
+    if suffix == ".osu":
+        mc_path = input_path.with_suffix(".mc")
+        if mc_path.exists():
+            index = 1
+            while True:
+                mc_path = input_path.with_name(f"{input_path.stem}__from_osu_{index}.mc")
+                if not mc_path.exists():
+                    break
+                index += 1
+        mc_path.write_text(
+            osu_to_mc(input_path.read_text(encoding="utf-8", errors="ignore")),
+            encoding="utf-8",
+        )
+        return mc_path
+    if suffix not in {".osz", ".zip"}:
+        raise ValueError("只支持 .osu、.osz 和 .zip 文件")
+
+    work_dir = input_path.parent / f"{input_path.stem}_mc_work"
+    _extract_archive_safely(input_path, work_dir)
+    osu_files = sorted(
+        path for path in work_dir.rglob("*")
+        if path.is_file() and path.suffix.lower() == ".osu"
+    )
+    if not osu_files:
+        raise ValueError("压缩包中没有找到 .osu 谱面")
+
+    converted_audio: dict[Path, Path] = {}
+    original_mp3s: set[Path] = set()
+    for osu_path in osu_files:
+        osu_text = osu_path.read_text(encoding="utf-8", errors="ignore")
+        osu_audio = _osu_audio_filename(osu_text)
+        mc_text = osu_to_mc(osu_text)
+
+        mc_path = osu_path.with_suffix(".mc")
+        if mc_path.exists():
+            index = 1
+            while True:
+                mc_path = osu_path.with_name(f"{osu_path.stem}__from_osu_{index}.mc")
+                if not mc_path.exists():
+                    break
+                index += 1
+        mc_path.write_text(mc_text, encoding="utf-8")
+        await _convert_mc_audio_references(
+            mc_path,
+            work_dir,
+            osu_path,
+            osu_audio,
+            converted_audio,
+            original_mp3s,
+        )
+        osu_path.unlink(missing_ok=True)
+
+    for mp3_path in original_mp3s:
+        if not any(
+            _malody_chart_references_audio(chart_path, mp3_path)
+            for chart_path in work_dir.rglob("*.mc")
+            if chart_path.is_file()
+        ):
+            mp3_path.unlink(missing_ok=True)
+
+    output_path = input_path.with_suffix(".mcz")
+    if output_path == input_path:
+        output_path = input_path.with_name(f"{input_path.stem}_converted.mcz")
+    if output_path.exists():
+        index = 1
+        while True:
+            candidate = output_path.with_name(
+                f"{output_path.stem}_{index}{output_path.suffix}"
+            )
+            if not candidate.exists():
+                output_path = candidate
+                break
+            index += 1
+    _repack_archive(work_dir, output_path)
+    return output_path
+
+
 @om2ma.handle()
 async def handle_om2ma(bot: Bot, event: Event):
     file_info = get_reply_file(event)
     if not file_info:
-        return
-    fname: str = file_info["name"]
-    if not fname.lower().endswith(".osu"):
-        return
+        await om2ma.finish("请发送或回复 .osu、.osz 或 .zip 文件。")
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmp = Path(tmpdir)
-        osu_path = tmp / fname
-        if not await download_file(bot, file_info, osu_path):
-            return
-        osu_text = osu_path.read_text(encoding="utf-8", errors="ignore")
-        try:
-            mc_json = osu_to_mc(osu_text)
-        except Exception as e:
-            logger.error(f"转换失败: {e}")
-            return
+    file_name = Path(str(file_info["name"])).name
+    if Path(file_name).suffix.lower() not in {".osu", ".osz", ".zip"}:
+        await om2ma.finish("om2ma 只支持 .osu、.osz 和 .zip 文件。")
 
-        mc_name = os.path.splitext(fname)[0] + ".mc"
-        mc_path = tmp / mc_name
-        mc_path.write_text(mc_json, encoding="utf-8")
-
-        try:
-            if isinstance(event, GroupMessageEvent):
-                await bot.upload_group_file(
-                    group_id=event.group_id,
-                    file=str(mc_path),
-                    name=mc_name
-                )
-            elif isinstance(event, PrivateMessageEvent):
-                await bot.upload_private_file(
-                    user_id=event.user_id,
-                    file=str(mc_path),
-                    name=mc_name
-                )
-        except Exception as e:
-            logger.error(f"上传文件失败: {e}")
+    try:
+        with tempfile.TemporaryDirectory(prefix="osu2mc_") as temporary:
+            source = Path(temporary) / file_name
+            if not await download_file(bot, file_info, source):
+                await om2ma.finish("下载谱面文件失败，请重试。")
+            output = await convert_osu_to_malody(source)
+            await _send_result_file(bot, event, output)
+    except FinishedException:
+        raise
+    except (ValueError, FileNotFoundError, RuntimeError, zipfile.BadZipFile) as exc:
+        logger.exception(f"[{file_name}] osu!mania 转 Malody 失败")
+        await om2ma.finish("转换失败：请检查谱面和音频文件后重试。")
+    except Exception as exc:
+        logger.exception(f"[{file_name}] osu!mania 转 Malody 出错")
+        await om2ma.finish("转换出错，请检查后台日志。")

@@ -45,7 +45,7 @@ def _conversion_config():
         return {
             "ma2om": {
                 "exe": str(tool_path("ma2om.exe")),
-                "exts": (".mcz", ".zip"),
+                "exts": (".mc", ".mcz", ".osz", ".zip"),
             },
             "mp32ogg": {
                 "exe": str(tool_path("mp32ogg.exe")),
@@ -73,6 +73,18 @@ async def _run_conversion(bot: Bot, event: Event, tool_key: str):
         input_path = work / Path(media.name).name
         if not await download_media(bot, media, input_path):
             await bot.send(event, "文件下载失败。")
+            return
+        if tool_key == "ma2om":
+            from src.plugin_runtime import import_plugin_module
+
+            converter = import_plugin_module("Malody_toolkit", "ma2om")
+            try:
+                output = await converter.convert_malody_to_osu(input_path)
+            except Exception as exc:
+                logger.exception("Malody to osu!mania conversion failed")
+                await bot.send(event, "转换失败：请检查谱面文件后重试。")
+                return
+            await send_path(bot, event, output)
             return
         executable = Path(config["exe"])
         if not executable.exists():
@@ -110,7 +122,7 @@ def _conversion_matcher(name: str, aliases: set[str] | None = None):
     )
 
 
-ma2om = _conversion_matcher("ma2om")
+ma2om = _conversion_matcher("ma2om", {"ma2osu", "mc2osu", "mc2om"})
 mp32ogg = _conversion_matcher("mp32ogg")
 ncm2mp3 = _conversion_matcher("ncm2mp3")
 ncm2ogg = _conversion_matcher("ncm2ogg")
@@ -273,32 +285,28 @@ async def handle_pitch_speed(
     )
 
 
-om2ma = _conversion_matcher("om2ma", {"osu2mc"})
+om2ma = _conversion_matcher("om2ma", {"osu2mc", "osu2ma", "om2mc"})
 
 
 @om2ma.handle()
 async def handle_om2ma(bot: Bot, event: Event):
     from src.plugin_runtime import import_plugin_module
     _native_peer = import_plugin_module('Malody_toolkit', 'om2ma')
-    osu_to_mc = _native_peer.osu_to_mc
 
     with tempfile.TemporaryDirectory() as temporary:
         root = Path(temporary)
-        media = select_media(event, suffixes=(".osu",))
+        media = select_media(event, suffixes=(".osu", ".osz", ".zip"))
         if not media:
-            await om2ma.finish("请发送或回复 .osu 文件。")
+            await om2ma.finish("请发送或回复 .osu、.osz 或 .zip 文件。")
         source = root / Path(media.name).name
         if not await download_media(bot, media, source):
             await om2ma.finish("下载 .osu 文件失败。")
         try:
-            output = root / f"{source.stem}.mc"
-            output.write_text(
-                osu_to_mc(source.read_text(encoding="utf-8", errors="ignore")),
-                encoding="utf-8",
-            )
+            output = await _native_peer.convert_osu_to_malody(source)
             await send_path(bot, event, output)
         except Exception as exc:
-            await om2ma.finish(f"转换失败：请反馈bot主人")
+            logger.exception("osu!mania to Malody conversion failed")
+            await om2ma.finish("转换失败：请检查谱面和音频文件后重试。")
 
 
 mrv2mr = _conversion_matcher("mrv2mr")

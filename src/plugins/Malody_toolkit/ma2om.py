@@ -25,7 +25,11 @@ MAX_EXTRACT_SIZE = 100 * 1024 * 1024   # 最大解压后总大小 100MB
 MAX_EXTRACT_FILES = 500                # 最多文件数量
 
 # 注册所有的命令
-ma2om = on_command("ma2om", block=True)
+ma2om = on_command(
+    "ma2om",
+    aliases={"ma2osu", "mc2osu", "mc2om"},
+    block=True,
+)
 mp32ogg = on_command("mp32ogg", block=True)
 ncm2mp3 = on_command("ncm2mp3", block=True)
 ncm2ogg = on_command("ncm2ogg", block=True)
@@ -44,7 +48,7 @@ from src.plugin_runtime import tool_path
 CONFIGS = {
     "ma2om": {
         "exe": str(tool_path("ma2om.exe")),
-        "exts": (".mcz", ".zip")
+        "exts": (".mc", ".mcz", ".osz", ".zip")
     },
     "mp32ogg": {
         "exe": str(tool_path("mp32ogg.exe")),
@@ -69,6 +73,7 @@ PRONTOM_EXE = tool_path("prontom.exe")
 CHART_FILE_EXTS = (".osu", ".mc")
 CHART_ARCHIVE_EXTS = (".osz", ".mcz")
 CHART_INPUT_EXTS = CHART_FILE_EXTS + CHART_ARCHIVE_EXTS
+MALODY_INPUT_EXTS = (".mc", ".mcz", ".osz", ".zip")
 
 
 def _file_info_from_message(message) -> dict | None:
@@ -241,6 +246,7 @@ async def _run_native_tool(
     executable_path: Path,
     input_path: Path,
     extra_args: tuple[str, ...] = (),
+    output_suffix: str = ".mc",
 ) -> Path:
     if not executable_path.is_file():
         raise FileNotFoundError(f"找不到工具程序：{executable_path}")
@@ -265,7 +271,9 @@ async def _run_native_tool(
     generated = sorted(
         path
         for path in input_path.parent.iterdir()
-        if path.is_file() and path not in before and path.suffix.lower() == ".mc"
+        if path.is_file()
+        and path not in before
+        and path.suffix.lower() == output_suffix.lower()
     )
     if process.returncode != 0 or not generated:
         detail = _decode_process_output(stderr) or _decode_process_output(stdout)
@@ -291,6 +299,109 @@ async def _run_chart_tool_process(
     if tool_path.suffix.lower() == ".exe":
         return await _run_native_tool(tool_path, input_path, extra_args)
     return await _run_python_tool(tool_path, input_path, extra_args)
+
+
+async def convert_malody_to_osu(input_path: Path) -> Path:
+    """Convert a Malody .mc chart or chart archive into osu!mania format."""
+    suffix = input_path.suffix.lower()
+    if suffix == ".mc":
+        expected_output = input_path.with_suffix(".osu")
+        if not expected_output.exists():
+            return await _run_native_tool(
+                tool_path("ma2om.exe"), input_path, output_suffix=".osu"
+            )
+
+        index = 1
+        conversion_input = input_path.with_name(
+            f"{input_path.stem}__to_osu_{index}.mc"
+        )
+        while conversion_input.exists() or conversion_input.with_suffix(".osu").exists():
+            index += 1
+            conversion_input = input_path.with_name(
+                f"{input_path.stem}__to_osu_{index}.mc"
+            )
+        shutil.copy2(input_path, conversion_input)
+        try:
+            return await _run_native_tool(
+                tool_path("ma2om.exe"), conversion_input, output_suffix=".osu"
+            )
+        finally:
+            conversion_input.unlink(missing_ok=True)
+    if suffix not in {".mcz", ".osz", ".zip"}:
+        raise ValueError("只支持 .mc、.mcz、.osz 和 .zip 文件")
+
+    work_dir = input_path.parent / f"{input_path.stem}_osu_work"
+    _extract_archive_safely(input_path, work_dir)
+    mc_files = sorted(
+        path for path in work_dir.rglob("*")
+        if path.is_file() and path.suffix.lower() == ".mc"
+    )
+    if not mc_files:
+        raise ValueError("压缩包中没有找到 .mc 谱面")
+
+    executable = tool_path("ma2om.exe")
+    for mc_path in mc_files:
+        conversion_input = mc_path
+        collision_index = 1
+        while (
+            conversion_input.exists()
+            or conversion_input.with_suffix(".osu").exists()
+        ):
+            conversion_input = mc_path.with_name(
+                f"{mc_path.stem}__from_mc_{collision_index}.mc"
+            )
+            collision_index += 1
+        if conversion_input != mc_path:
+            shutil.copy2(mc_path, conversion_input)
+        await _run_native_tool(
+            executable, conversion_input, output_suffix=".osu"
+        )
+        if conversion_input != mc_path:
+            conversion_input.unlink(missing_ok=True)
+        mc_path.unlink(missing_ok=True)
+
+    output_path = input_path.with_suffix(".osz")
+    if output_path == input_path:
+        output_path = input_path.with_name(f"{input_path.stem}_converted.osz")
+    if output_path.exists():
+        index = 1
+        while True:
+            candidate = output_path.with_name(
+                f"{output_path.stem}_{index}{output_path.suffix}"
+            )
+            if not candidate.exists():
+                output_path = candidate
+                break
+            index += 1
+    _repack_archive(work_dir, output_path)
+    return output_path
+
+
+@ma2om.handle()
+async def handle_ma2om(bot: Bot, event: MessageEvent):
+    file_info = _event_file_info(event)
+    if not file_info:
+        await ma2om.finish("请发送或回复 .mc、.mcz、.osz 或 .zip 文件。")
+
+    source_name = Path(file_info["name"]).name
+    if Path(source_name).suffix.lower() not in MALODY_INPUT_EXTS:
+        await ma2om.finish("ma2om 只支持 .mc、.mcz、.osz 和 .zip 文件。")
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="ma2osu_") as temporary:
+            source = Path(temporary) / source_name
+            if not await _download_file_info(bot, file_info, source):
+                await ma2om.finish("文件下载失败，请重试。")
+            output = await convert_malody_to_osu(source)
+            await _send_result_file(bot, event, output)
+    except FinishedException:
+        raise
+    except (ValueError, FileNotFoundError, RuntimeError, zipfile.BadZipFile) as exc:
+        logger.exception(f"[{source_name}] Malody 转 osu!mania 失败")
+        await ma2om.finish("转换失败：请检查文件后重试。")
+    except Exception as exc:
+        logger.exception(f"[{source_name}] Malody 转 osu!mania 出错")
+        await ma2om.finish("转换出错，请检查后台日志。")
 
 
 def _parse_osu_reference(text: str) -> tuple[str, str] | None:
@@ -766,10 +877,6 @@ async def handle_unzip(matcher, bot: Bot, event: MessageEvent):
         logger.error(f"[unzip] 出错: {e}")
         await matcher.finish()
 # ---- 为不同命令绑定同一个处理函数 ----
-@ma2om.handle()
-async def _(bot: Bot, event: MessageEvent):
-    await handle_conversion(ma2om, bot, event, "ma2om")
-
 @mp32ogg.handle()
 async def _(bot: Bot, event: MessageEvent):
     await handle_conversion(mp32ogg, bot, event, "mp32ogg")
