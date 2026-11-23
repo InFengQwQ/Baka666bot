@@ -93,12 +93,14 @@ def _restore_previous_commit(previous_commit: str) -> None:
 
 
 def _apply_update(target_commit: str, previous_commit: str) -> None:
-    _run_git("reset", "--hard", target_commit)
     try:
+        # Remove non-ignored files first so an untracked path cannot block a
+        # tracked file introduced by the published version.
+        _run_git("clean", "-fd", timeout=300)
+        _run_git("reset", "--hard", target_commit)
         _run_git("submodule", "sync", "--recursive", timeout=300)
         _run_git("submodule", "update", "--init", "--recursive", "--force", timeout=900)
         _run_git("lfs", "pull", "origin", BRANCH, timeout=1800)
-        _run_git("clean", "-fd", timeout=300)
     except Exception:
         logger.exception("Baka666Bot update failed during file synchronization; restoring the previous version")
         _restore_previous_commit(previous_commit)
