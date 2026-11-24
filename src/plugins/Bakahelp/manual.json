@@ -1,37 +1,1475 @@
 {
   "plugins": {
-    "Bakahelp": {"name": "Bakahelp", "category": "通用", "description": "打开这份帮助目录。"},
-    "Malody_toolkit": {"name": "Malody 工具箱", "category": "Malody", "description": "谱面搜索、转换、下载与回放处理。"},
-    "MalodyVClientPlugin": {"name": "Malody 成绩与账户", "category": "Malody", "description": "Malody 账户、成绩和 MM 查询。"},
-    "MalodyBakaRating": {"name": "Baka Rating", "category": "Malody", "description": "提交谱面进行 Baka Rating 相关处理。"},
-    "Malody_guess_song": {"name": "Malody 猜歌", "category": "Malody", "description": "听片段猜歌，支持提示和答案查询。"},
-    "Malody_new_chart": {"name": "Malody 新谱速递", "category": "Malody"},
-    "nonebot_plugin_osubot": {"name": "osu! bot", "category": "osu!", "description": "osu! 玩家、成绩与谱面工具。"},
-    "nonebot_plugin_osugreek": {"name": "osu! Greek", "category": "osu!"},
-    "nonebot_plugin_osumania_toolkit": {"name": "osu!mania 工具箱", "category": "osu!", "description": "osu!mania 谱面与游玩工具。"},
-    "multiplatform": {"name": "跨平台功能", "category": "通用", "description": "Discord / Telegram 平台的功能适配。"},
-    "baka_chat": {"name": "Baka 对话", "category": "通用"},
-    "image_generation": {"name": "图片生成", "category": "创作与娱乐"},
-    "nonebot_plugin_memes": {"name": "表情包制作", "category": "创作与娱乐"},
-    "nonebot_plugin_capoo": {"name": "猫猫虫", "category": "创作与娱乐"},
-    "nonebot_plugin_arcaea_sticker": {"name": "Arcaea 贴纸", "category": "创作与娱乐"},
-    "group_file_cleaner": {"name": "群文件清理", "category": "管理", "defaults": {"audience": "管理员"}},
-    "nonebot_plugin_blacklist": {"name": "黑名单管理", "category": "管理", "defaults": {"audience": "管理员"}}
+    "Bakahelp": {
+      "name": "Bakahelp",
+      "category": "通用",
+      "description": "查看帮助目录，或按消息条件自动提示目录入口。"
+    },
+    "Malody_toolkit": {
+      "name": "Malody 工具箱",
+      "category": "Malody",
+      "description": "谱面搜索、转换、下载与回放处理。"
+    },
+    "MalodyVClientPlugin": {
+      "name": "Malody 成绩与账户",
+      "category": "Malody",
+      "description": "Malody 账户、玩家资料、谱面、商店和排行工具。"
+    },
+    "MalodyBakaRating": {
+      "name": "Baka Rating",
+      "category": "Malody",
+      "description": "提交谱面进行 Baka Rating 相关处理。"
+    },
+    "Malody_guess_song": {
+      "name": "Malody 猜歌",
+      "category": "Malody",
+      "description": "听片段猜歌，支持提示和答案查询。"
+    },
+    "Malody_new_chart": {
+      "name": "Malody 新谱速递",
+      "category": "Malody"
+    },
+    "nonebot_plugin_osubot": {
+      "name": "osu! bot",
+      "category": "osu!",
+      "description": "osu! 玩家、成绩与谱面工具。"
+    },
+    "nonebot_plugin_osugreek": {
+      "name": "osu! Greek",
+      "category": "osu!"
+    },
+    "nonebot_plugin_osumania_toolkit": {
+      "name": "osu!mania 工具箱",
+      "category": "osu!",
+      "description": "osu!mania 谱面与游玩工具。"
+    },
+    "multiplatform": {
+      "name": "跨平台功能",
+      "category": "通用",
+      "description": "Discord / Telegram 平台的功能适配。"
+    },
+    "baka_chat": {
+      "name": "Baka 对话",
+      "category": "通用"
+    },
+    "image_generation": {
+      "name": "图片生成",
+      "category": "创作与娱乐"
+    },
+    "nonebot_plugin_memes": {
+      "name": "表情包制作",
+      "category": "创作与娱乐",
+      "description": "使用关键词、图片、文字或@用户生成表情包。"
+    },
+    "nonebot_plugin_capoo": {
+      "name": "猫猫虫",
+      "category": "创作与娱乐"
+    },
+    "nonebot_plugin_arcaea_sticker": {
+      "name": "Arcaea 贴纸",
+      "category": "创作与娱乐"
+    },
+    "group_file_cleaner": {
+      "name": "群文件整理",
+      "category": "管理",
+      "description": "清理配置范围内的群文件。",
+      "defaults": {
+        "audience": "管理员"
+      }
+    },
+    "nonebot_plugin_blacklist": {
+      "name": "黑名单管理",
+      "category": "管理",
+      "defaults": {
+        "audience": "超级用户"
+      }
+    },
+    "nonebot_plugin_add_friends": {
+      "name": "好友与群邀请管理",
+      "category": "管理",
+      "description": "收集好友申请与群邀请，并由管理员审批。",
+      "defaults": {
+        "audience": "超级用户"
+      }
+    },
+    "baka666bot_updater": {
+      "name": "账号同步与更新",
+      "category": "通用",
+      "description": "启动时检查 Bot 更新、同步主 QQ 账号资料并检查总群状态。"
+    },
+    "bilibili_parse": {
+      "name": "哔哩哔哩视频解析",
+      "category": "通用",
+      "description": "解析视频链接并发送视频。"
+    },
+    "free_egg": {
+      "name": "群聊表情互动",
+      "category": "创作与娱乐",
+      "description": "群内斜杠消息附加指定表情反应。"
+    },
+    "ping": {
+      "name": "连通性测试",
+      "category": "通用",
+      "description": "检查 Bot 是否在线。"
+    }
   },
   "triggers": [
-    {"plugin": "Bakahelp", "match": ["/bakahelp", "bakahelp"], "title": "打开帮助目录", "description": "仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。", "examples": ["bakahelp", "help", "/bakahelp", "/help", "TD"]},
-    {"plugin": "Malody_toolkit", "match": ["/sm"], "title": "搜索 Malody 谱面", "description": "按歌曲关键词搜索谱面。", "usage": "/sm <歌曲关键词>", "examples": ["/sm conflict"]},
-    {"plugin": "Malody_toolkit", "match": ["/ma2om", "/ma2osu", "/mc2osu", "/mc2om"], "title": "Malody 转 osu!mania", "description": "将 .mc 转为 .osu；将 .mcz、.osz 或 .zip 内的 .mc 谱面转为 osu!mania 并打包为 .osz。"},
-    {"plugin": "Malody_toolkit", "match": ["/om2ma", "/osu2ma", "/om2mc", "/osu2mc"], "title": "osu!mania 转 Malody", "description": "将 .osu 转为 .mc；将 .osz 或 .zip 内的 .osu 转为 .mc 并打包为 .mcz，包内 MP3 音频会转为 OGG 并同步更新谱面引用。"},
-    {"plugin": "Malody_toolkit", "match": ["/level"], "title": "预测谱面难度", "description": "回复一条包含 .mc 文件的消息，发送 /level 预测难度。", "examples": ["/level"]},
-    {"plugin": "Malody_toolkit", "match": ["/download"], "title": "下载 Malody 谱面", "description": "Malody 谱面下载工具，参数用法待补充。"},
-    {"plugin": "Malody_toolkit", "match": ["/rank"], "title": "查看谱面排行榜", "description": "查询指定谱面的排行榜。", "usage": "/rank <cid> [mode]"},
-    {"plugin": "Malody_toolkit", "match": ["/exptop", "/mmtop"], "title": "查看 TOP100", "description": "查询经验或 MM 排行榜。"},
-    {"plugin": "Malody_toolkit", "match": ["/mrv2mr"], "title": "转换回放格式", "description": "将 .mrv 回放转换为 .mr 格式。"},
-    {"plugin": "Malody_toolkit", "match": ["/replayrd"], "title": "渲染回放", "description": "回放渲染工具，参数和文件提交步骤待补充。"},
-    {"plugin": "Malody_toolkit", "match": ["/toinverse"], "title": "补全反键尾判定", "description": "为 .mc / .mcz 谱面补全反键尾判定。"},
-    {"plugin": "image_generation", "match": ["/生图帮助"], "title": "图片生成用法", "description": "查看图片生成插件自带的详细帮助。", "examples": ["/生图帮助"]},
-    {"plugin": "MalodyBakaRating", "match": ["/提交谱面"], "title": "提交谱面", "description": "提交谱面进行处理，具体步骤以 Bot 的后续提示为准。"}
+    {
+      "plugin": "Bakahelp",
+      "match": [
+        "/bakahelp",
+        "bakahelp"
+      ],
+      "title": "打开帮助目录",
+      "description": "仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。",
+      "examples": [
+        "bakahelp",
+        "help",
+        "/bakahelp",
+        "/help",
+        "TD"
+      ]
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/sm",
+        "/搜歌"
+      ],
+      "title": "搜索 Malody 谱面",
+      "description": "按歌曲名或 SID 搜索 Malody 歌曲并显示谱面信息。",
+      "usage": "/sm <歌曲关键词或 SID>",
+      "examples": [
+        "/sm conflict"
+      ]
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/ma2om",
+        "/ma2osu",
+        "/mc2osu",
+        "/mc2om"
+      ],
+      "title": "Malody 转 osu!mania",
+      "description": "将 .mc 转为 .osu；将 .mcz、.osz 或 .zip 内的 .mc 谱面转为 osu!mania 并打包为 .osz。"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/om2ma",
+        "/osu2ma",
+        "/om2mc",
+        "/osu2mc"
+      ],
+      "title": "osu!mania 转 Malody",
+      "description": "将 .osu 转为 .mc；将 .osz 或 .zip 内的 .osu 转为 .mc 并打包为 .mcz，包内 MP3 音频会转为 OGG 并同步更新谱面引用。"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/level",
+        "/lv"
+      ],
+      "title": "预测谱面难度",
+      "description": "回复一条包含 .mc 谱面文件的消息，估算谱面难度。",
+      "examples": [
+        "回复 .mc 文件并发送 /level"
+      ]
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/download"
+      ],
+      "title": "下载 Malody 谱面",
+      "description": "回复谱面文件或提供 CID，下载对应谱面及资源。",
+      "arguments": "[CID]"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/rank"
+      ],
+      "title": "查看谱面排行榜",
+      "description": "查看指定 Malody 谱面的成绩排行榜。",
+      "usage": "/rank <CID> [模式]"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/exptop",
+        "/mmtop"
+      ],
+      "title": "查看 TOP100",
+      "description": "查询经验或 MM 排行榜。"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/mrv2mr"
+      ],
+      "title": "转换回放格式",
+      "description": "将 .mrv 回放转换为 .mr 格式。"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/replayrd"
+      ],
+      "title": "渲染回放",
+      "description": "将回复中的 Malody 回放渲染成视频。",
+      "arguments": "回复 .mr/.mrv 回放文件"
+    },
+    {
+      "plugin": "Malody_toolkit",
+      "match": [
+        "/toinverse"
+      ],
+      "title": "补全反键尾判定",
+      "description": "为 .mc / .mcz 谱面补全反键尾判定。"
+    },
+    {
+      "plugin": "image_generation",
+      "match": [
+        "/生图帮助",
+        "/绘图帮助"
+      ],
+      "title": "图片生成用法",
+      "description": "查看提示词、尺寸、模型、随机种子和负面提示词等用法。",
+      "examples": [
+        "/生图帮助"
+      ]
+    },
+    {
+      "plugin": "MalodyBakaRating",
+      "match": [
+        "/提交谱面"
+      ],
+      "title": "提交谱面",
+      "description": "提交谱面进行处理，具体步骤以 Bot 的后续提示为准。"
+    }
   ],
+  "commands": {
+    "/rework": {
+      "condition_label": "允许的群聊或私聊消息中发送 /rework。回复谱面文件可直接分析附件。",
+      "arguments": "[谱面ID、谱包ID或 CID] [速度、mods、OD]"
+    },
+    "/tc": {
+      "title": "提交谱面进行 Baka Rating",
+      "description": "回复 4K Malody .mcz 谱面包，按提示填写键型和难度后提交。",
+      "arguments": "回复 .mcz 文件"
+    },
+    "/login": {
+      "title": "登录 Malody 账号",
+      "description": "开始账号登录流程，密码通过后续私聊消息输入。",
+      "arguments": "<用户名>"
+    },
+    "/MM": {
+      "title": "计算 Malody 成绩 MM",
+      "description": "按输入的成绩信息计算 Malody MM。",
+      "arguments": "[成绩、模式或玩家信息]"
+    },
+    "/mmocr": {
+      "title": "识别并计算 MM",
+      "description": "提交成绩截图，按提示填写等级和倍率后识别成绩。",
+      "arguments": "回复或附上成绩图片"
+    },
+    "/mabest": {
+      "title": "查看 Malody Best 成绩",
+      "description": "查询玩家的最佳成绩列表并生成成绩卡片。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/mag": {
+      "title": "开始 Malody 猜歌",
+      "description": "在群聊开始随机 Malody 谱面猜歌游戏。",
+      "arguments": "[模式或筛选条件]"
+    },
+    "/tishi": {
+      "title": "获取猜歌提示",
+      "description": "为当前群正在进行的猜歌游戏提供提示。",
+      "arguments": "无"
+    },
+    "/ans": {
+      "title": "结束猜歌并公布答案",
+      "description": "结束当前群的猜歌游戏并公布答案。",
+      "arguments": "无"
+    },
+    "/mapview": {
+      "title": "分析谱面键型与难度",
+      "description": "分析 osu!mania 谱面键型和难度估计，支持回复谱面文件或输入谱面 ID。",
+      "arguments": "[谱面ID] [+mods] [x速度] [OD数值]"
+    },
+    "/ma2om": {
+      "title": "Malody 谱面转换为 osu!mania",
+      "description": "将 .mc 转为 .osu；可将 .mcz、.osz、.zip 中的谱面转换并输出 .osz。",
+      "arguments": "回复 .mc/.mcz/.osz/.zip 文件"
+    },
+    "/om2ma": {
+      "title": "osu!mania 谱面转换为 Malody",
+      "description": "将 .osu 转为 .mc；可将 .osz/.zip 中谱面转为 .mcz，MP3 音频会转成 OGG 并更新谱面引用。",
+      "arguments": "回复 .osu/.osz/.zip 文件"
+    },
+    "/ncm2ogg": {
+      "title": "NCM 转 OGG",
+      "description": "将回复的 NCM 音频文件转换成 OGG。",
+      "arguments": "回复 .ncm 文件"
+    },
+    "/ncm2mp3": {
+      "title": "NCM 转 MP3",
+      "description": "将回复的 NCM 音频文件转换成 MP3。",
+      "arguments": "回复 .ncm 文件"
+    },
+    "/mp32ogg": {
+      "title": "MP3 转 OGG",
+      "description": "将回复的 MP3 音频文件转换成 OGG。",
+      "arguments": "回复 .mp3 文件"
+    },
+    "/unzip": {
+      "title": "解压谱面压缩包",
+      "description": "解压 ZIP、OSZ 或 MCZ 文件并发送其中内容。",
+      "arguments": "回复 .zip/.osz/.mcz 文件"
+    },
+    "/toinverse": {
+      "title": "反键尾判定补全",
+      "description": "补全谱面反键尾判定信息。",
+      "arguments": "回复 .mc/.mcz 文件"
+    },
+    "/倍速": {
+      "title": "osu!mania 倍速工具",
+      "description": "按指定速度处理 osu!mania 谱面或回放。",
+      "arguments": "<速度> 并提交所需文件"
+    },
+    "/倍速变调": {
+      "title": "调整音频速度和音调",
+      "description": "按指定速度和音调调整回复的音频文件。",
+      "arguments": "<倍速及音调参数>，并回复音频文件"
+    },
+    "/mrv2mr": {
+      "title": "Malody 回放转换",
+      "description": "将 .mrv 回放转换为 .mr。",
+      "arguments": "回复 .mrv 文件"
+    },
+    "/exptop": {
+      "title": "查看 Malody 经验排行",
+      "description": "显示 Malody 玩家经验排行榜。",
+      "arguments": "[页码或数量]"
+    },
+    "/mmtop": {
+      "title": "查看 Malody MM 排行",
+      "description": "显示 Malody 玩家 MM 排行榜。",
+      "arguments": "[页码或数量]"
+    },
+    "/acc": {
+      "title": "查询谱面或准确率数据",
+      "description": "运行 Malody Toolkit 的 acc 工具。",
+      "arguments": "[谱面或成绩参数]"
+    },
+    "/timeinverse": {
+      "title": "反转谱面时间",
+      "description": "将谱面事件沿时间轴反转。",
+      "arguments": "回复 .osu/.mc/.osz/.mcz 文件"
+    },
+    "/tojack": {
+      "trigger_label": "以 to1K 至 to9K 开头，可附最多三项参数",
+      "title": "按键数转换谱面",
+      "description": "将 Malody 按键谱面转换到指定轨道数。",
+      "arguments": "<1到9的键数>K [附加参数1] [附加参数2] [附加参数3]"
+    },
+    "/合谱": {
+      "title": "合并 Malody 谱面",
+      "description": "使用 Malody 合谱工具组合多份谱面。",
+      "arguments": "按提示提交谱面文件"
+    },
+    "/parse": {
+      "title": "解析并发送哔哩哔哩视频",
+      "description": "解析哔哩哔哩视频链接并发送视频文件。链接可写在命令参数中，也可回复包含视频链接的消息。",
+      "arguments": "[视频链接]"
+    },
+    "/生图": {
+      "title": "根据提示词生成图片",
+      "description": "按文本提示生成图片，可设置尺寸、模型、随机种子和负面提示词。",
+      "arguments": "<提示词> [--width <宽度>] [--height <高度>] [--model <模型>] [--seed <种子>] [--negative <文本>] [--nologo] [--enhance] [--private]"
+    },
+    "/osugreek": {
+      "title": "Greek 图片效果",
+      "description": "在图片中央添加指定希腊字母效果。",
+      "arguments": "<希腊字母> 并附图片"
+    },
+    "/arc": {
+      "title": "制作 Arcaea 贴纸",
+      "description": "选择贴纸角色和文字，生成 Arcaea 风格图片。",
+      "arguments": "<文字> [--id <表情ID>] [--name <角色>] [-x <坐标>] [-y <坐标>] [-r <角度>] [--size <大小>] [-c <颜色>]"
+    },
+    "/表情包制作": {
+      "title": "查看表情模板",
+      "description": "查看表情模板列表，模板名称还可展开查看对应的触发词。",
+      "arguments": "无"
+    },
+    "/capoo": {
+      "title": "发送猫猫虫咖波图片",
+      "description": "发送一张猫猫虫咖波图片。",
+      "arguments": "无"
+    },
+    "/ping": {
+      "title": "测试 Bot 连通性",
+      "description": "查看 Bot 是否正常响应。",
+      "arguments": "无"
+    },
+    "/sm": {
+      "title": "Malody 谱面搜索",
+      "description": "通过歌曲关键词或 SID 搜索 Malody 谱面。",
+      "arguments": "<歌曲关键词或SID>"
+    },
+    "/搜歌": {
+      "title": "Malody 谱面搜索",
+      "description": "通过歌曲关键词或 SID 搜索 Malody 谱面。",
+      "arguments": "<歌曲关键词或SID>"
+    },
+    "/level": {
+      "title": "Malody 难度预测",
+      "description": "读取回复的 Malody 谱面并估计难度。",
+      "arguments": "回复 .mc 文件"
+    },
+    "/lv": {
+      "title": "Malody 难度预测",
+      "description": "读取回复的 Malody 谱面并估计难度。",
+      "arguments": "回复 .mc 文件"
+    },
+    "/download": {
+      "title": "Malody 谱面下载",
+      "description": "下载 Malody 谱面或图包。",
+      "arguments": "[CID]"
+    },
+    "/replayrd": {
+      "title": "回放渲染",
+      "description": "渲染已提交的谱面回放。",
+      "arguments": "回复回放文件"
+    },
+    "/rank": {
+      "title": "Malody 谱面排行",
+      "description": "查看谱面成绩排行榜。",
+      "arguments": "<CID> [模式]"
+    },
+    "/ma": {
+      "title": "Malody V 命令入口",
+      "description": "使用 ma 子命令查询玩家、谱面、商店和排行，写操作需要账号登录。",
+      "arguments": "<子命令> [参数]"
+    },
+    "/ma help": {
+      "title": "查看 Malody V 帮助",
+      "description": "显示可用的 Malody V 子命令和使用提示。",
+      "arguments": "无"
+    },
+    "/ma profile": {
+      "title": "查看玩家资料",
+      "description": "查询玩家资料卡。",
+      "arguments": "[玩家]"
+    },
+    "/ma search": {
+      "title": "搜索玩家",
+      "description": "按名称搜索 Malody V 玩家。",
+      "arguments": "<关键词>"
+    },
+    "/ma rank": {
+      "title": "查看玩家段位",
+      "description": "查看玩家各模式段位。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/ma dan": {
+      "title": "查看段位通过记录",
+      "description": "查看玩家的段位通过记录。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/ma danall": {
+      "title": "查看所有段位",
+      "description": "列出指定模式的段位信息。",
+      "arguments": "[模式]"
+    },
+    "/ma global": {
+      "title": "查看全球排行",
+      "description": "查询全球玩家排名。",
+      "arguments": "[模式] [榜单类型] [数量]"
+    },
+    "/ma friend": {
+      "title": "查看好友列表",
+      "description": "查看 Malody V 好友列表。",
+      "arguments": "[页码]"
+    },
+    "/ma addfriend": {
+      "title": "添加 Malody V 好友",
+      "description": "向指定玩家发送好友请求。",
+      "arguments": "<玩家UID>"
+    },
+    "/ma achieve": {
+      "title": "查看玩家成就",
+      "description": "查看指定玩家的成就列表。",
+      "arguments": "[玩家]"
+    },
+    "/ma items": {
+      "title": "查看玩家道具",
+      "description": "查看指定玩家拥有的道具。",
+      "arguments": "[玩家]"
+    },
+    "/ma marlo": {
+      "title": "查看 Marlo 记录",
+      "description": "查询玩家的 Marlo 记录。",
+      "arguments": "[玩家]"
+    },
+    "/ma activity": {
+      "title": "查看玩家动态",
+      "description": "查看玩家近期动态。",
+      "arguments": "[玩家]"
+    },
+    "/ma puzzle": {
+      "title": "查看拼图进度",
+      "description": "查看玩家拼图收集进度。",
+      "arguments": "[玩家]"
+    },
+    "/ma quest": {
+      "title": "查看任务",
+      "description": "查看 Malody V 任务信息。",
+      "arguments": "无"
+    },
+    "/ma news": {
+      "title": "查看系统消息",
+      "description": "查看 Malody V 系统消息和推送。",
+      "arguments": "无"
+    },
+    "/ma chart": {
+      "title": "查看谱面信息",
+      "description": "查看谱面详情和封面。",
+      "arguments": "<CID>"
+    },
+    "/ma chartlist": {
+      "title": "浏览谱面列表",
+      "description": "分页浏览玩家的谱面列表。",
+      "arguments": "[页码]"
+    },
+    "/ma chartonline": {
+      "title": "查询在线谱面",
+      "description": "按谱面哈希查询在线谱面。",
+      "arguments": "<谱面哈希>"
+    },
+    "/ma song": {
+      "title": "查看歌曲信息",
+      "description": "查询歌曲详情。",
+      "arguments": "<SID>"
+    },
+    "/ma wiki": {
+      "title": "查询谱面 Wiki",
+      "description": "查看歌曲或谱面的 Wiki 信息。",
+      "arguments": "<SID> [CID]"
+    },
+    "/ma store": {
+      "title": "浏览谱面商店",
+      "description": "浏览谱面商店列表，支持页码或数量参数。",
+      "arguments": "[数量或页码]"
+    },
+    "/ma choice": {
+      "title": "查看精选内容",
+      "description": "查看商店精选内容。",
+      "arguments": "[数量]"
+    },
+    "/ma promote": {
+      "title": "查看推广列表",
+      "description": "查看 Malody V 推广谱面。",
+      "arguments": "[数量]"
+    },
+    "/ma skin": {
+      "title": "浏览皮肤商店",
+      "description": "浏览皮肤列表。",
+      "arguments": "[页码或数量]"
+    },
+    "/ma comment": {
+      "title": "查看谱面评论",
+      "description": "查看指定谱面的评论。",
+      "arguments": "<CID> [数量]"
+    },
+    "/ma addcomment": {
+      "title": "发表评论",
+      "description": "为指定谱面发表评论。",
+      "arguments": "<CID> <评论内容>"
+    },
+    "/ma delcomment": {
+      "title": "删除评论",
+      "description": "删除指定评论。",
+      "arguments": "<评论ID>"
+    },
+    "/ma like": {
+      "title": "点赞谱面",
+      "description": "为指定谱面点赞。",
+      "arguments": "<CID>"
+    },
+    "/ma chartrank": {
+      "title": "查看谱面排行",
+      "description": "查询谱面的玩家成绩排行。",
+      "arguments": "<CID> [模式] [数量]"
+    },
+    "/ma eventrank": {
+      "title": "查看活动排行",
+      "description": "查询 Malody 活动排行。",
+      "arguments": "<活动ID> [数量]"
+    },
+    "/ma review": {
+      "title": "查看谱面审核记录",
+      "description": "查看指定谱面的审核记录。",
+      "arguments": "<CID> [数量]"
+    },
+    "/ma reviewqueue": {
+      "title": "查看审核队列",
+      "description": "查看待处理审核队列。",
+      "arguments": "[模式] [数量]"
+    },
+    "/ma myreview": {
+      "title": "查看我的审核",
+      "description": "查看自己提交的审核记录。",
+      "arguments": "[数量]"
+    },
+    "/ma reviewcharts": {
+      "title": "查看歌曲审核谱面",
+      "description": "列出指定歌曲下待审核谱面。",
+      "arguments": "<SID>"
+    },
+    "/ma addreview": {
+      "title": "提交谱面审核",
+      "description": "为谱面添加审核记录。",
+      "arguments": "<CID> <内容>"
+    },
+    "/ma reviewreply": {
+      "title": "回复审核",
+      "description": "查看或回复审核内容。",
+      "arguments": "<审核ID> [回复内容]"
+    },
+    "/ma reviewaction": {
+      "title": "处理审核",
+      "description": "对指定审核执行审核操作。",
+      "arguments": "<审核ID> <操作>"
+    },
+    "/ma reviewstatus": {
+      "title": "修改审核状态",
+      "description": "更改审核状态。",
+      "arguments": "<审核ID> <状态>"
+    },
+    "/ma delreview": {
+      "title": "删除审核记录",
+      "description": "删除指定审核记录。",
+      "arguments": "<审核ID>"
+    },
+    "/ma mychart": {
+      "title": "查看玩家谱面",
+      "description": "查看自己的或指定玩家创建的谱面。",
+      "arguments": "[玩家] [数量]"
+    },
+    "/ma createchart": {
+      "title": "创建谱面条目",
+      "description": "在 Malody V 创建谱面记录。",
+      "arguments": "<SID> <版本> <模式> <难度>"
+    },
+    "/ma createsong": {
+      "title": "创建歌曲条目",
+      "description": "在 Malody V 创建歌曲记录。",
+      "arguments": "<标题> <艺术家>"
+    },
+    "/ma donate": {
+      "title": "赞助谱面",
+      "description": "向谱面捐赠金币。",
+      "arguments": "<CID> <金币数>"
+    },
+    "/ma chartpromote": {
+      "title": "推广谱面",
+      "description": "推广指定谱面，需要输入确认参数。",
+      "arguments": "<CID> confirm"
+    },
+    "/ma settype": {
+      "title": "设置谱面类型",
+      "description": "修改谱面的类型标记。",
+      "arguments": "<CID> <类型>"
+    },
+    "/ma updatehash": {
+      "title": "更新谱面哈希",
+      "description": "更新谱面文件哈希。",
+      "arguments": "<CID> <哈希>"
+    },
+    "/ma searchstore": {
+      "title": "搜索谱面商店",
+      "description": "按关键词搜索谱面商店。",
+      "arguments": "<关键词>"
+    },
+    "/ma friendstore": {
+      "title": "浏览好友商店",
+      "description": "浏览好友分享的谱面商店内容。",
+      "arguments": "[数量]"
+    },
+    "/ma download": {
+      "title": "获取谱面下载信息",
+      "description": "获取指定谱面的下载信息。",
+      "arguments": "<CID>"
+    },
+    "/ma storeinfo": {
+      "title": "查询商店信息",
+      "description": "查看商店账号信息。",
+      "arguments": "无"
+    },
+    "/ma renew": {
+      "title": "刷新登录状态",
+      "description": "更新 Malody V 登录令牌。",
+      "arguments": "无"
+    },
+    "/ma delaccount": {
+      "title": "注销 Malody 账号",
+      "description": "删除当前绑定账号，需要二次确认。",
+      "arguments": "confirm"
+    },
+    "/ma mute": {
+      "title": "屏蔽玩家",
+      "description": "屏蔽指定玩家，需要二次确认。",
+      "arguments": "<玩家UID> confirm"
+    },
+    "/ma slot": {
+      "title": "设置模式插槽",
+      "description": "设置指定模式的插槽数量。",
+      "arguments": "<模式> <插槽数量>"
+    },
+    "/ma skincheck": {
+      "title": "检查皮肤",
+      "description": "按皮肤哈希检查皮肤信息。",
+      "arguments": "<皮肤哈希>"
+    },
+    "/ma buyskin": {
+      "title": "购买皮肤",
+      "description": "购买指定皮肤，需要二次确认。",
+      "arguments": "<皮肤ID> confirm"
+    },
+    "/ma logout": {
+      "title": "退出 Malody 账号",
+      "description": "退出当前 Malody V 登录。",
+      "arguments": "无"
+    },
+    "/ma store p2": {
+      "title": "翻到谱面商店第 2 页",
+      "description": "分页浏览谱面商店。",
+      "arguments": "<页码>"
+    },
+    "/ma skin p3": {
+      "title": "翻到皮肤列表第 3 页",
+      "description": "分页浏览皮肤商店。",
+      "arguments": "<页码>"
+    },
+    "/omtk": {
+      "title": "查看 osu!mania 工具箱目录",
+      "description": "查看分析、回放处理和成绩工具的列表；可追加工具名查看详细用法。",
+      "arguments": "[工具名] [页码]"
+    },
+    "/omtk mapview": {
+      "title": "谱面键型与难度分析",
+      "description": "分析 osu!mania 谱面键型和难度估计。",
+      "arguments": "回复谱面文件或填写谱面ID，可选速度、mods和OD"
+    },
+    "/omtk pressingtime": {
+      "title": "回放按压时长分析",
+      "description": "根据 osu! 或 Malody 回放生成按压时间分布。",
+      "arguments": "回复 .osr/.mr 文件"
+    },
+    "/omtk analyze": {
+      "title": "回放作弊特征分析",
+      "description": "分析回放的按压时长、频谱和判定偏差等特征。",
+      "arguments": "回复回放文件 [谱面ID] [-reason]"
+    },
+    "/omtk delta": {
+      "title": "判定偏差图",
+      "description": "绘制回放判定偏差分布图。",
+      "arguments": "回复回放文件 [谱面ID]"
+    },
+    "/omtk lifebar": {
+      "title": "回放血条变化图",
+      "description": "绘制回放中的血条变化。",
+      "arguments": "回复 .osr 文件"
+    },
+    "/omtk spectrum": {
+      "title": "回放打击频谱图",
+      "description": "生成回放打击事件的频谱图。",
+      "arguments": "回复 .osr/.mr 文件"
+    },
+    "/omtk scatter": {
+      "title": "判定散点图",
+      "description": "绘制回放判定偏差随时间变化的散点图。",
+      "arguments": "回复回放文件 [谱面ID]"
+    },
+    "/omtk pattern": {
+      "title": "谱面键型分析",
+      "description": "分析谱面的键型和相关结构。",
+      "arguments": "回复谱面文件或填写谱面ID"
+    },
+    "/omtk percy": {
+      "title": "检查或调整投皮",
+      "description": "检查 LN 面身图片投皮程度，或按目标值调整 PNG。",
+      "arguments": "回复 PNG [目标值] [lazer/lzr]"
+    },
+    "/omtk acc": {
+      "title": "计算段位单曲 ACC",
+      "description": "计算段位单曲准确率或根据单曲 ACC 推算段内变化。",
+      "arguments": "<段位> <ACC序列> 或回复谱面 [--sv2] [-r]"
+    },
+    "/omtk ett": {
+      "title": "计算谱面 MSD",
+      "description": "计算谱面 Etterna MSD 难度值。",
+      "arguments": "回复谱面文件或填写谱面ID [x速度]"
+    },
+    "/omtk cvtscore": {
+      "title": "按目标规则重算成绩",
+      "description": "用指定 ruleset 对回放重新计算成绩。",
+      "arguments": "[目标ruleset] [谱面ID] [--sv2/--nosv2]"
+    },
+    "/omtk report": {
+      "title": "反馈工具箱问题",
+      "description": "查看工具箱问题反馈入口。",
+      "arguments": "无"
+    },
+    "/arcaea帮助": {
+      "title": "查看 Arcaea 贴纸帮助",
+      "description": "查看 Arcaea 贴纸的参数和用法。",
+      "arguments": "无"
+    },
+    "/arc帮助": {
+      "title": "查看 Arcaea 贴纸帮助",
+      "description": "查看 Arcaea 贴纸的参数和用法。",
+      "arguments": "无"
+    },
+    "/同意申请": {
+      "title": "同意好友或群邀请",
+      "description": "通过指定 QQ 号的好友申请或群号对应的群邀请。",
+      "arguments": "<QQ号或群号>"
+    },
+    "/拒绝申请": {
+      "title": "拒绝好友或群邀请",
+      "description": "拒绝指定好友申请或群邀请。",
+      "arguments": "<QQ号或群号>"
+    },
+    "/同意全部申请": {
+      "title": "同意全部好友申请和群邀请",
+      "description": "批量通过当前已收集的好友申请与群邀请。",
+      "arguments": "无"
+    },
+    "/拒绝全部申请": {
+      "title": "拒绝全部好友申请和群邀请",
+      "description": "批量拒绝当前已收集的好友申请与群邀请。",
+      "arguments": "无"
+    },
+    "/查看申请": {
+      "title": "查看待处理申请",
+      "description": "列出已收集的好友申请与群邀请。",
+      "arguments": "无"
+    },
+    "/清空申请列表": {
+      "title": "清空申请列表",
+      "description": "清空本地保存的好友申请和群邀请记录。",
+      "arguments": "无"
+    },
+    "/静默": {
+      "title": "静默当前群",
+      "description": "将当前群加入 Bot 黑名单。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/响应": {
+      "title": "恢复当前群响应",
+      "description": "从 Bot 黑名单移除当前群。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/群聊静默": {
+      "title": "关闭群聊响应",
+      "description": "关闭当前 Bot 的所有群聊响应。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/群聊响应": {
+      "title": "开启群聊响应",
+      "description": "开启当前 Bot 的群聊响应。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/私聊静默": {
+      "title": "关闭私聊响应",
+      "description": "关闭当前 Bot 的私聊响应。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/私聊响应": {
+      "title": "开启私聊响应",
+      "description": "开启当前 Bot 的私聊响应。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/拉黑用户": {
+      "title": "添加用户黑名单",
+      "description": "屏蔽指定 QQ 用户。",
+      "arguments": "<QQ号...>（仅限超级用户）"
+    },
+    "/解禁用户": {
+      "title": "移除用户黑名单",
+      "description": "解除指定 QQ 用户屏蔽。",
+      "arguments": "<QQ号...>（仅限超级用户）"
+    },
+    "/拉黑群": {
+      "title": "添加群黑名单",
+      "description": "屏蔽指定群聊。",
+      "arguments": "<群号...>（仅限超级用户）"
+    },
+    "/解禁群": {
+      "title": "移除群黑名单",
+      "description": "解除指定群聊屏蔽。",
+      "arguments": "<群号...>（仅限超级用户）"
+    },
+    "/拉黑私聊": {
+      "title": "添加私聊黑名单",
+      "description": "屏蔽指定 QQ 用户的私聊。",
+      "arguments": "<QQ号...>（仅限超级用户）"
+    },
+    "/解禁私聊": {
+      "title": "移除私聊黑名单",
+      "description": "解除指定 QQ 用户的私聊屏蔽。",
+      "arguments": "<QQ号...>（仅限超级用户）"
+    },
+    "/拉黑所有群": {
+      "title": "屏蔽所有已加入群",
+      "description": "将 Bot 当前已加入的所有群加入黑名单。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/解禁所有群": {
+      "title": "解除所有群屏蔽",
+      "description": "清除 Bot 的群黑名单。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/拉黑所有好友": {
+      "title": "屏蔽所有好友",
+      "description": "将 Bot 当前好友加入用户黑名单。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/解禁所有好友": {
+      "title": "解除所有好友屏蔽",
+      "description": "清除 Bot 的用户黑名单。",
+      "arguments": "无（仅限超级用户）"
+    },
+    "/查看群聊黑名单": {
+      "title": "查看群黑名单",
+      "description": "查看当前 Bot 屏蔽的群聊和响应状态。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/查看私聊黑名单": {
+      "title": "查看私聊黑名单",
+      "description": "查看当前 Bot 屏蔽的私聊用户。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/查看用户黑名单": {
+      "title": "查看用户黑名单",
+      "description": "查看当前 Bot 屏蔽的用户。",
+      "arguments": "[Bot QQ号]（仅限超级用户）"
+    },
+    "/重置黑名单": {
+      "title": "重置指定 Bot 黑名单",
+      "description": "确认后清空指定 Bot 的黑名单设置。",
+      "arguments": "[Bot QQ号] 后按提示确认（仅限超级用户）"
+    },
+    "/重置所有黑名单": {
+      "title": "重置所有黑名单",
+      "description": "确认后清除全部 Bot 的黑名单设置。",
+      "arguments": "无，按提示确认（仅限超级用户）"
+    },
+    "/自觉静默": {
+      "title": "设置禁言后自动静默",
+      "description": "开关 Bot 被群禁言后自动屏蔽该群的行为。",
+      "arguments": "[开/关]（仅限超级用户）"
+    },
+    "/更新模式": {
+      "title": "切换 osu! 模式",
+      "description": "设置 osu! 查分与谱面查询使用的游戏模式。",
+      "arguments": "[模式]"
+    },
+    "/osudl": {
+      "title": "下载 osu! 谱面",
+      "description": "按谱面或谱包 ID 获取 osu! 谱面文件。",
+      "arguments": "<谱面ID或谱包ID>"
+    },
+    "/bind": {
+      "title": "绑定 osu! 账号",
+      "description": "将 osu! 用户名或用户 ID 绑定到当前账号。",
+      "arguments": "<osu!用户名或ID>"
+    },
+    "/unbind": {
+      "title": "解除 osu! 账号绑定",
+      "description": "解除当前账号与 osu! 用户的绑定。",
+      "arguments": "无"
+    },
+    "/osuhelp": {
+      "title": "查看 osu! bot 帮助",
+      "description": "查看 osu! 查分插件的使用说明。",
+      "arguments": "无"
+    },
+    "/OSUBot": {
+      "title": "查看 osu! bot 帮助",
+      "description": "查看 osu! 查分插件的使用说明。",
+      "arguments": "无"
+    },
+    "/PR": {
+      "title": "查询 osu! 玩家排名",
+      "description": "查看 osu! 用户排名信息。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/RE": {
+      "title": "查询最近一次成绩",
+      "description": "查看 osu! 玩家最近游玩成绩。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/bp": {
+      "title": "查看最佳成绩",
+      "description": "查询 osu! 玩家最佳成绩列表。",
+      "arguments": "[页码] [玩家]"
+    },
+    "/bplist": {
+      "title": "查看最佳成绩列表",
+      "description": "查询 osu! 玩家 Best Performance 成绩列表。",
+      "arguments": "[玩家] [数量]"
+    },
+    "/tbp": {
+      "title": "查看今日最佳成绩",
+      "description": "查询今日新增的最佳成绩。",
+      "arguments": "[玩家]"
+    },
+    "/INFO": {
+      "title": "查看 osu! 玩家资料",
+      "description": "查看 osu! 玩家资料和统计信息。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/history": {
+      "title": "查看 osu! 成绩历史",
+      "description": "查看玩家近期成绩历史。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/bmap": {
+      "title": "查看 osu! 谱面信息",
+      "description": "查询指定 osu! 谱面信息。",
+      "arguments": "<谱面ID或谱面链接>"
+    },
+    "/map": {
+      "title": "查看谱面信息",
+      "description": "查询 osu! 谱面详情。",
+      "arguments": "<谱面ID或谱面链接>"
+    },
+    "/getbg": {
+      "title": "获取谱面背景图",
+      "description": "提取指定谱面的背景图片。",
+      "arguments": "<谱面ID或链接>"
+    },
+    "/preview": {
+      "title": "预览 osu! 谱面",
+      "description": "生成或播放谱面预览。",
+      "arguments": "<谱面ID或谱面链接>"
+    },
+    "/recommend": {
+      "title": "推荐 osu! 谱面",
+      "description": "按玩家信息推荐 osu! 谱面。",
+      "arguments": "[玩家] [模式]"
+    },
+    "/rating": {
+      "title": "查询 osu! 评级",
+      "description": "查询 osu! 玩家或成绩的评级信息。",
+      "arguments": "[玩家或成绩链接]"
+    },
+    "/score": {
+      "title": "查询 osu! 成绩",
+      "description": "查询指定玩家的谱面成绩。",
+      "arguments": "[玩家] <谱面ID>"
+    },
+    "/medal": {
+      "title": "查询 osu! 勋章",
+      "description": "查看玩家获得的 osu! 勋章。",
+      "arguments": "[玩家]"
+    },
+    "/mu": {
+      "title": "查询 osu! mania 技能值",
+      "description": "查看 mania 玩家技能值信息。",
+      "arguments": "[玩家]"
+    },
+    "/群内排名": {
+      "title": "查看群内 osu! 排名",
+      "description": "展示当前群成员的 osu! 排名。",
+      "arguments": "[模式]"
+    },
+    "/convert": {
+      "title": "转换 mania 成绩规则",
+      "description": "将 osu!mania 回放成绩转换到指定规则集。",
+      "arguments": "[--set <规则>] [--map <谱面>] [--rate <速度>] [--fln]"
+    },
+    "/切换lazer": {
+      "title": "切换 Lazer 成绩模式",
+      "description": "切换 osu! 成绩查询使用的 lazer 模式。",
+      "arguments": "[开/关]"
+    },
+    "/更改背景": {
+      "title": "更改 osu! bot 背景",
+      "description": "设置成绩图片使用的背景。",
+      "arguments": "回复图片或提供图片"
+    },
+    "/清空背景": {
+      "title": "清除成绩图片背景",
+      "description": "清除当前账号设置的成绩图片背景。",
+      "arguments": "无"
+    },
+    "/开始osu!谱面猜歌游戏": {
+      "title": "开始 osu! 谱面猜歌",
+      "description": "在群内启动 osu! 谱面猜歌游戏。",
+      "arguments": "无"
+    },
+    "/开始osu!mania图片猜歌游戏": {
+      "title": "开始 mania 图片猜歌",
+      "description": "在群内启动 osu!mania 图片猜歌游戏。",
+      "arguments": "无"
+    },
+    "/开始osu!mania音频猜歌游戏": {
+      "title": "开始 mania 音频猜歌",
+      "description": "在群内启动 osu!mania 音频猜歌游戏。",
+      "arguments": "无"
+    },
+    "/谱面提示": {
+      "title": "获取 osu! 猜谱提示",
+      "description": "为正在进行的 osu! 谱面猜歌提供提示。",
+      "arguments": "无（游戏进行时）"
+    },
+    "/图片提示": {
+      "title": "获取 mania 图片提示",
+      "description": "为正在进行的图片猜歌游戏提供提示。",
+      "arguments": "无（游戏进行时）"
+    },
+    "/osu音频提示": {
+      "title": "获取 mania 音频提示",
+      "description": "为正在进行的音频猜歌游戏提供提示。",
+      "arguments": "无（游戏进行时）"
+    },
+    "/变速": {
+      "title": "转换回放速度",
+      "description": "设置回放转换时使用的速度。",
+      "arguments": "<速度>"
+    },
+    "/反键": {
+      "title": "转换反键谱面",
+      "description": "对 osu!mania 谱面执行反键处理。",
+      "arguments": "回复谱面文件"
+    },
+    "/cvtscore": {
+      "title": "转换回放成绩",
+      "description": "按目标规则集重新计算回放成绩。",
+      "arguments": "<目标规则集> 并提交回放及谱面"
+    },
+    "/pressingtime": {
+      "title": "回放按压时长分布",
+      "description": "分析回放中各轨道的按压时长。",
+      "arguments": "回复回放文件"
+    },
+    "/analyze": {
+      "title": "分析回放作弊特征",
+      "description": "计算回放的按压、频谱和偏差特征。",
+      "arguments": "回复回放文件 [谱面ID] [-reason]"
+    },
+    "/delta": {
+      "title": "绘制回放偏差图",
+      "description": "根据回放绘制判定偏差柱状图。",
+      "arguments": "回复回放文件 [谱面ID]"
+    },
+    "/lifebar": {
+      "title": "绘制回放血条图",
+      "description": "绘制回放中的血条变化曲线。",
+      "arguments": "回复 .osr 文件"
+    },
+    "/spectrum": {
+      "title": "绘制回放频谱图",
+      "description": "分析回放打击事件频谱。",
+      "arguments": "回复 .osr/.mr 文件"
+    },
+    "/scatter": {
+      "title": "绘制判定散点图",
+      "description": "绘制回放偏差随时间变化的散点图。",
+      "arguments": "回复回放文件 [谱面ID]"
+    },
+    "/pattern": {
+      "title": "分析谱面键型",
+      "description": "分析谱面中的键型结构。",
+      "arguments": "回复谱面文件或输入谱面ID"
+    },
+    "/percy": {
+      "title": "分析或修改投皮",
+      "description": "分析 LN 皮肤投皮数值，或按目标数值修改图片。",
+      "arguments": "回复 PNG [数值] [lazer/lzr]"
+    },
+    "/ett": {
+      "title": "计算谱面 MSD",
+      "description": "估算谱面 Etterna MSD 难度。",
+      "arguments": "回复谱面或输入ID [速度]"
+    },
+    "/mapview b": {
+      "trigger_label": "输入谱面ID或链接，或回复谱面/图包文件",
+      "title": "Rework 谱面分析",
+      "description": "生成谱面分析卡片，显示键型、难度和相关图表。",
+      "arguments": "<谱面ID或谱包ID> [+mods] [x速度] [OD数值]"
+    },
+    "下载https://osu.ppy.sh/beatmapsets/([0-9]+)#([^/]+/[0-9]+)": {
+      "trigger_label": "发送“下载”加 osu! 谱包链接（链接需包含谱包ID、模式和谱面ID）",
+      "title": "下载 osu! 谱面",
+      "description": "识别 osu.ppy.sh 谱包链接并下载指定谱面。",
+      "arguments": "下载https://osu.ppy.sh/beatmapsets/<谱包ID>#<模式>/<谱面ID>"
+    },
+    "^/?to[1-9]\\d*k(?:\\s+\\S+){0,3}$": {
+      "trigger_label": "以 to1K 至 to9K 开头，可附最多三项内容",
+      "title": "转换谱面键数",
+      "description": "按指令中的键数转换谱面格式。",
+      "arguments": "<键数>K [附加内容]"
+    },
+    "^/?tojack(?:\\s+\\d+)?$": {
+      "trigger_label": "发送 tojack，可选一个整数参数",
+      "title": "统一谱面拍点分母",
+      "description": "将回复谱面的 beat 和 endbeat 分母统一为指定值。",
+      "arguments": "[正整数]"
+    },
+    "/help": {
+      "title": "打开帮助目录",
+      "description": "打开 Baka666Bot 指令与功能帮助。",
+      "arguments": "无"
+    },
+    "/baka帮助": {
+      "title": "打开帮助目录",
+      "description": "打开 Baka666Bot 指令与功能帮助。",
+      "arguments": "无"
+    },
+    "/bpa": {
+      "title": "查看 osu! 游玩构成",
+      "description": "绘制绑定玩家的 pp 成绩、游玩时长和谱面作者分布图。可在末尾临时填写玩家名称和模式。",
+      "arguments": "[玩家名称] [模式]"
+    },
+    "/match": {
+      "title": "查看 osu! 多人房记录",
+      "description": "抓取指定多人房间并生成记录截图。",
+      "arguments": "<多人房间ID>"
+    },
+    "/sbbind": {
+      "title": "绑定 ppysb 账号",
+      "description": "将当前 QQ 账号关联到 ppysb 的 osu! 玩家。",
+      "arguments": "<玩家名称>"
+    },
+    "/sbunbind": {
+      "title": "解除 ppysb 账号绑定",
+      "description": "解除当前 QQ 账号关联的 ppysb 玩家。",
+      "arguments": "无"
+    },
+    "/update": {
+      "title": "刷新 osu! 玩家资料",
+      "description": "清理并更新当前绑定玩家的缓存个人资料。",
+      "arguments": "无"
+    },
+    "/生图帮助": {
+      "title": "查看图片生成用法",
+      "description": "查看图片生成支持的指令和参数。",
+      "arguments": "无"
+    },
+    "/绘图帮助": {
+      "title": "查看图片生成用法",
+      "description": "查看图片生成支持的指令和参数。",
+      "arguments": "无"
+    },
+    "//响应": {
+      "title": "启用本群 Bot 响应",
+      "description": "从群聊黑名单中移除当前群。",
+      "arguments": "无",
+      "audience": "超级用户"
+    },
+    "//静默": {
+      "title": "暂停本群 Bot 响应",
+      "description": "将当前群加入群聊黑名单。",
+      "arguments": "无",
+      "audience": "超级用户"
+    },
+    "/gif倒放": {
+      "title": "倒放 GIF",
+      "description": "将回复中的 GIF 动画反向播放。",
+      "arguments": "<GIF 图片>"
+    },
+    "/gif分解": {
+      "title": "分解 GIF",
+      "description": "将 GIF 拆分成逐帧图片并发送。",
+      "arguments": "<GIF 图片>"
+    },
+    "/gif变速": {
+      "title": "调整 GIF 速度",
+      "description": "调整动画速度或帧率。倍率、百分比、秒数和 FPS 格式见帮助详情。",
+      "arguments": "<速度参数> <GIF 图片>"
+    },
+    "/gif合成": {
+      "title": "合成 GIF",
+      "description": "将多张图片按顺序合成为 GIF，可设置帧间隔。",
+      "arguments": "[帧间隔秒数] <多张图片>"
+    },
+    "/全局启用表情": {
+      "title": "将表情加入黑名单模式",
+      "description": "切换全局表情管控模式后，未被禁用的表情均可使用。",
+      "arguments": "<表情关键词>",
+      "audience": "Bot 超级用户"
+    },
+    "/全局禁用表情": {
+      "title": "将表情加入白名单模式",
+      "description": "切换全局表情管控模式后，仅已启用的表情可使用。",
+      "arguments": "<表情关键词>",
+      "audience": "Bot 超级用户"
+    },
+    "/反相": {
+      "title": "反相图片颜色",
+      "description": "对回复的图片进行颜色反相处理。",
+      "arguments": "<图片>"
+    },
+    "/启用表情": {
+      "title": "启用表情模板",
+      "description": "为当前用户解除指定表情模板的禁用状态。",
+      "arguments": "<表情关键词>",
+      "audience": "群管理员或 Bot 超级用户"
+    },
+    "/图片操作": {
+      "title": "查看图片操作列表",
+      "description": "显示支持的 GIF 和图片操作指令。",
+      "arguments": "无"
+    },
+    "/旋转": {
+      "title": "旋转图片",
+      "description": "按角度旋转回复的图片。",
+      "arguments": "[角度] <图片>"
+    },
+    "/横向拼接": {
+      "title": "横向拼接图片",
+      "description": "按发送顺序将多张图片横向拼接。",
+      "arguments": "<多张图片>"
+    },
+    "/水平翻转": {
+      "title": "水平翻转图片",
+      "description": "将回复的图片左右翻转。",
+      "arguments": "<图片>"
+    },
+    "/灰度图": {
+      "title": "转换为灰度图",
+      "description": "将回复的图片转换为灰度图。",
+      "arguments": "<图片>"
+    },
+    "/禁用表情": {
+      "title": "禁用表情模板",
+      "description": "为当前用户禁用指定表情模板。",
+      "arguments": "<表情关键词>",
+      "audience": "群管理员或 Bot 超级用户"
+    },
+    "/竖直翻转": {
+      "title": "竖直翻转图片",
+      "description": "将回复的图片上下翻转。",
+      "arguments": "<图片>"
+    },
+    "/纵向拼接": {
+      "title": "纵向拼接图片",
+      "description": "按发送顺序将多张图片纵向拼接。",
+      "arguments": "<多张图片>"
+    },
+    "/缩放": {
+      "title": "缩放图片",
+      "description": "按像素尺寸或百分比缩放回复的图片，例如 100x100、100x 或 50%。",
+      "arguments": "<尺寸或比例> <图片>"
+    },
+    "/表情搜索": {
+      "title": "搜索表情模板",
+      "description": "按关键词查找表情模板。",
+      "arguments": "<关键词>"
+    },
+    "/表情详情": {
+      "title": "查看表情用法",
+      "description": "查看表情模板的触发词、素材数量、参数和预览。",
+      "arguments": "<表情名称>"
+    },
+    "/表情调用统计": {
+      "title": "统计表情调用次数",
+      "description": "生成指定时间范围、用户或全局范围内的表情调用统计图。",
+      "arguments": "[我的] [全局] [时间范围] [表情名称]"
+    },
+    "/裁剪": {
+      "title": "裁剪图片",
+      "description": "按指定的坐标范围、像素尺寸或宽高比裁剪回复的图片。",
+      "arguments": "<裁剪参数> <图片>"
+    },
+    "/随机表情": {
+      "title": "随机制作表情",
+      "description": "从当前可用模板中选择一个符合素材数量的表情制作。",
+      "arguments": "[文字、图片或@用户]"
+    }
+  },
+  "handlers": {
+    "Bakahelp": {
+      "handle_td": {
+        "title": "关闭自动帮助提示",
+        "trigger_label": "发送 TD 或 /TD",
+        "description": "关闭所在群的自动帮助提示；私聊仅关闭当前用户的提示。",
+        "arguments": "无"
+      },
+      "handle_slash": {
+        "title": "斜杠消息帮助提示",
+        "trigger_label": "群或私聊消息以 / 开头",
+        "description": "在尚未关闭提示的会话中自动发送帮助页入口。",
+        "arguments": "消息内容"
+      }
+    },
+    "free_egg": {
+      "title": "为斜杠群消息添加表情反应",
+      "trigger_label": "群聊消息以 / 开头，且当前消息没有相同表情反应",
+      "description": "查询并添加群聊表情反应；已有反应时拦截该条消息的后续命令处理。",
+      "arguments": "无"
+    },
+    "Malody_guess_song": {
+      "_poke_hint": {
+        "title": "戳一戳获取猜歌提示",
+        "trigger_label": "在猜歌游戏进行中戳 Bot",
+        "description": "为当前群猜歌游戏发送一条提示。",
+        "arguments": "无"
+      },
+      "handle_guess": {
+        "title": "猜歌答案判定",
+        "trigger_label": "猜歌游戏进行中发送正确歌名",
+        "description": "匹配当前群正在猜的 Malody 歌曲并公布结果。",
+        "arguments": "<歌曲答案>"
+      }
+    },
+    "MalodyVClientPlugin": {
+      "on_private_message": {
+        "title": "接收登录密码",
+        "trigger_label": "等待 Malody 登录密码时发送私聊消息",
+        "description": "接收登录流程需要的密码，不作为独立查询命令使用。",
+        "arguments": "<密码>"
+      }
+    },
+    "nonebot_plugin_add_friends": {
+      "handle_friend_add": {
+        "title": "收到好友申请",
+        "trigger_label": "QQ 好友申请事件",
+        "description": "记录申请资料并通知超级用户审批。",
+        "arguments": "事件触发"
+      },
+      "handle_group_invite": {
+        "title": "收到群聊邀请",
+        "trigger_label": "Bot 收到加入群聊的邀请事件",
+        "description": "记录群邀请资料并通知超级用户审批。",
+        "arguments": "事件触发"
+      }
+    },
+    "nonebot_plugin_blacklist": {
+      "_": {
+        "title": "群成员禁言提醒",
+        "trigger_label": "Bot 在群内被禁言",
+        "description": "根据配置可自动将该群加入黑名单。",
+        "arguments": "事件触发"
+      }
+    },
+    "baka666bot_updater": {
+      "_accept_main_group_invite": {
+        "title": "自动接受总群邀请",
+        "trigger_label": "Bot 收到已配置的群聊邀请",
+        "description": "自动接受已配置的群聊邀请。Bot 启动连接时也会检查群状态。",
+        "arguments": "事件触发"
+      }
+    }
+  },
   "entries": {}
 }

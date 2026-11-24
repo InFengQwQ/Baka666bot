@@ -12,6 +12,8 @@
 
 面向音游社区的 NoneBot2 机器人，当前通过 OneBot V11 连接 QQ。项目以终端方式运行，内含 Malody、osu!mania、群管理、帮助和跨平台消息适配等插件。
 
+把多个 Baka666Bot 拉进同一个 QQ 群不会造成重复回复，可以放心拉。每个 Bot 都启用群聊“贴蛋”后，会先检查当前消息上的 🥚 反应，已贴蛋的 Bot 不再触发这条斜杠指令。
+
 ## 功能
 
 - Malody V 账号与谱面 API、排行榜、谱面下载、猜曲和分数工具
@@ -68,4 +70,10 @@ if (-not (Test-Path config\malody.env)) { Copy-Item config\malody.env.example co
 ## 第三方许可
 
 机器人包含独立维护的第三方插件 fork。各插件上游、分支和许可信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。许可证文本保存在 `licenses/` 和各插件目录中。
+
+## 参与改进
+
+如果你想进行本地定制，欢迎先将希望加入的新功能或发现的 bug 提交到 GitHub Issue 讨论。准备好代码后，也欢迎将扩展功能整理为 Pull Request，方便一起审查和维护。
+
+当前可触发指令见 [COMMANDS.md](COMMANDS.md)，也可在 [在线帮助页](https://malody.top/bakahelp) 搜索和筛选。
 

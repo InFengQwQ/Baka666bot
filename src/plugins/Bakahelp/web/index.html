@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#eff7fe">
-  <link rel="icon" type="image/png" href="BAKAHELP_BRAND_IMAGE">
+  <link rel="icon" type="image/png" href="BAKAHELP_FAVICON">
   <meta name="description" content="Baka666Bot 帮助文档：Malody、osu!、谱面工具与全部插件的指令及触发方式。">
   <title>Bakahelp · Baka666Bot 帮助文档</title>
   <style>/* BAKAHELP_STYLE */</style>
@@ -14,27 +14,26 @@
   <aside class="sidebar">
     <a class="brand" href="#main" aria-label="Bakahelp 首页"><img class="brand-mark" src="BAKAHELP_BRAND_IMAGE" alt=""><span>Bakahelp<span class="brand-note">Baka666Bot 使用指南</span></span></a>
     <nav id="categories" aria-label="功能分类"></nav>
-    <div class="side-note"><span class="note-title">从这里开始</span><p>找到指令，复制到聊天中。<br>带 <code>/</code> 的命令记得保留斜杠。</p><a href="#reading-guide">怎么看触发方式</a></div>
-    <div class="side-footer">猫猫虫小窝<span>指令速查 · 随用随查</span></div>
+    <div class="side-footer">猫猫虫小窝<span>指令速查</span></div>
   </aside>
   <main id="main">
-    <section class="intro" aria-labelledby="title"><div><h1 id="title">Baka666Bot 指令速查</h1><p>查找指令、复制输入、展开用法。Malody / osu! 优先收录。<span id="updated" class="updated"></span></p></div><img class="project-picture" src="BAKAHELP_BRAND_IMAGE" alt=""></section>
+    <section class="intro" aria-labelledby="title"><div><h1 id="title">Baka666Bot 指令目录</h1><p>搜索触发方式、参数和功能说明。</p></div><img class="project-picture" src="BAKAHELP_BRAND_IMAGE" alt=""></section>
     <section class="finder" aria-label="查找功能">
       <label class="search" for="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search" type="search" aria-label="搜索指令、功能、别名或插件" placeholder="搜索指令、功能、别名或插件…" autocomplete="off"><kbd aria-hidden="true">/</kbd></label>
-      <div class="quick"><span>试试搜索</span><button data-query="谱面">谱面</button><button data-query="成绩">成绩</button><button data-query="转换">转换</button><button data-query="猜歌">猜歌</button></div>
+      <div class="quick"><button data-query="谱面">谱面</button><button data-query="成绩">成绩</button><button data-query="转换">转换</button><button data-query="表情包">表情包</button></div>
       <div class="filters"><label>插件<select id="plugin"><option value="">全部插件</option></select></label><label>触发方式<select id="kind"><option value="">全部方式</option></select></label><label class="check"><input id="documented" type="checkbox">只看有使用说明</label><button id="reset" class="reset">重置筛选</button></div>
     </section>
     <section aria-labelledby="results-title"><div class="result-heading"><h2 id="results-title">全部功能</h2><span id="count" role="status" aria-live="polite"></span></div>
-      <p class="table-hint">点击输入即可复制；展开详情查看参数与条件。<span>窄屏可左右滑动表格。</span></p>
-      <div id="table-scroll" class="table-scroll" role="region" aria-label="指令表格，可横向滚动" tabindex="0"><table class="command-table"><caption class="sr-only">按插件分组的指令、别名与使用说明</caption><colgroup><col class="feature-col"><col class="input-col"><col class="usage-col"></colgroup><thead><tr><th scope="col">指令</th><th scope="col">别名 / 触发方式</th><th scope="col">用法与说明</th></tr></thead><tbody id="results"></tbody></table></div>
+      <p class="table-hint"><code>&lt;参数&gt;</code> 必填，<code>[参数]</code> 可选。展开表情包分组可查看全部触发词。</p>
+      <div id="table-scroll" class="table-scroll" role="region" aria-label="指令表格，可横向滚动" tabindex="0"><table class="command-table"><caption class="sr-only">指令触发方式、参数和功能说明</caption><colgroup><col class="trigger-col"><col class="arguments-col"><col class="function-col"></colgroup><thead><tr><th scope="col">触发名或触发语义</th><th scope="col">参数</th><th scope="col">功能说明</th></tr></thead><tbody id="results"></tbody></table></div>
       <div id="empty" hidden><h3>暂时没找到这个功能</h3><p>换一个关键词，或重置筛选后再试试。</p><button id="empty-reset">查看全部功能</button></div><button id="more" hidden>显示更多功能</button>
     </section>
-    <section class="guide" id="reading-guide"><h2>同一个 Bot，不止一种触发方式。</h2><div class="guide-columns"><div><h3>命令与完整匹配</h3><p>命令通常带 <code>/</code>，后面可以接参数；完整匹配需要发送列出的完整文字。尖括号表示必填参数，方括号表示可选参数。</p></div><div><h3>关键词、正则与事件</h3><p>关键词会匹配包含指定词语的消息；正则是一条匹配规则，不是可直接复制的指令。入群、通知等事件会在相应情形下触发。</p></div><div><h3>使用范围</h3><p>部分功能还需要 @Bot、特定平台、群聊或管理权限。能否使用，以插件规则及当前 Bot 状态为准；没有说明的条目等待补充。</p></div></div></section>
+    <section class="guide" id="reading-guide"><h2>参数与触发</h2><p><code>&lt;参数&gt;</code> 为必填，<code>[参数]</code> 为可选。规则触发和群事件会用自然语言说明触发条件。</p></section>
     <footer><span>Bakahelp / Baka666Bot</span><a href="#main">回到顶部</a></footer>
   </main>
   <aside id="floating-index" class="floating-index" aria-label="悬浮插件索引">
     <button id="index-toggle" class="index-toggle" type="button" aria-expanded="false" aria-controls="index-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M3 6h1M3 12h1M3 18h1"/></svg><span>索引</span></button>
-    <div id="index-panel" class="index-panel" hidden><div class="index-heading"><h2>快速定位</h2><button id="index-close" type="button" aria-label="关闭索引"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><p>按插件跳转，自动展开未显示的条目。</p><div id="index-links"></div><button id="index-top" type="button">回到搜索</button></div>
+    <div id="index-panel" class="index-panel" hidden><div class="index-heading"><h2>快速定位</h2><button id="index-close" type="button" aria-label="关闭索引"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 18 6 6"/></svg></button></div><div id="index-links"></div><button id="index-top" type="button">回到搜索</button></div>
   </aside>
   <div id="toast" role="status" aria-live="polite"></div>
   <noscript><p>请启用 JavaScript 使用搜索和指令目录，也可以查看同目录中的 catalog.json。</p></noscript>

@@ -16,3 +16,35 @@ main{margin-left:210px;max-width:1660px;padding:18px 80px 0 32px}.masthead{displ
 @media(max-width:760px){.intro{padding-top:12px}.updated{display:block;margin:5px 0 0}.quick button,select,.check,.reset,#index-close{min-height:44px}#index-close{width:44px}}
 
 .brand-mark{object-fit:contain;box-shadow:none;background:none;height:38px}.project-picture{width:88px;height:88px;object-fit:contain;flex-shrink:0}@media(max-width:760px){.project-picture{width:57px;height:57px}.brand-mark{height:32px}}
+
+/* Compact command-reference table */
+.command-table{table-layout:fixed;width:100%}
+.command-table .trigger-col{width:29%}
+.command-table .arguments-col{width:24%}
+.command-table .function-col{width:47%}
+.command-table th,.command-table td{vertical-align:top}
+.command-table td,.command-table th{overflow-wrap:anywhere}
+.trigger-cell h3{margin:0 0 5px;font-size:14px;line-height:1.45;font-weight:700}
+.arguments-syntax{display:inline-block;white-space:normal;overflow-wrap:anywhere;color:#164c78;font-size:12px;line-height:1.65}
+.entry-desc{margin:0;line-height:1.65;color:#17364f}
+.function-cell .entry-details{margin-top:7px}
+.entry-details summary,.meme-details summary{display:inline-flex;min-height:36px;align-items:center;color:#075e9e;font-size:12px;font-weight:650;cursor:pointer}
+.details-content{padding:10px 0 4px;color:#274a64}
+.details-content h4{margin:12px 0 4px;color:#17364f;font-size:12px}
+.details-content p{margin:4px 0 8px;white-space:pre-line;line-height:1.6}
+.details-content pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 inherit}
+.audience,.function-name{display:inline-block;margin-top:5px;color:#164c78;font-size:11px;font-weight:600}
+.meme-group .trigger-cell h3{margin-bottom:4px}
+.meme-details{margin-top:3px}
+.meme-list{display:grid;gap:7px;margin:10px 0 0;padding:0;list-style:none}
+.meme-list li{display:grid;grid-template-columns:minmax(130px,1fr) minmax(140px,1fr) minmax(180px,2fr);gap:10px;align-items:start;padding:7px 0;border-top:1px solid #c6dcec}
+.meme-trigger,.meme-arguments{white-space:normal;overflow-wrap:anywhere;color:#164c78;font-size:12px;line-height:1.5}
+.meme-list li span{font-size:12px;line-height:1.55}
+@media(max-width:700px){
+  .command-table .trigger-col{width:32%}
+  .command-table .arguments-col{width:31%}
+  .command-table .function-col{width:37%}
+  .meme-list li{grid-template-columns:1fr;gap:3px}
+}
+
+.details-content pre{font-family:inherit;font-size:12px;line-height:1.6}

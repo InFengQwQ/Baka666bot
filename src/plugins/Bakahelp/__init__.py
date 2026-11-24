@@ -34,7 +34,8 @@ async def build_help():
     try:
         destination = Path(getattr(get_driver().config, "bakahelp_output_dir", "") or
                            Path(__file__).parent / "dist")
-        result = await asyncio.to_thread(export_site, destination)
+        result = await asyncio.to_thread(export_site, destination,
+                                         markdown_path=Path(__file__).resolve().parents[3] / "COMMANDS.md")
         logger.info(f"Bakahelp: exported {result['entry_count']} entries to {destination}")
     except Exception:
         # Documentation failure must not prevent the bot from connecting.

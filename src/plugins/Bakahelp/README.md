@@ -11,17 +11,19 @@ Baka666bot使用帮助:malody.top/bakahelp
 
 自动提示不阻断业务响应；同一条消息仅提示一次。普通聊天、非斜杠指令、网址和文字中间的斜杠不会自动提示。
 
-`free_egg.py` 仅处理以 `/` 开头的群消息，在优先级 -100 查询蛋表情：已有则拦截当前消息，否则贴蛋后继续后续插件。它不修改群名片，不查询或拦截非斜杠消息。各 Bot 都需启用此插件。接口失败时放行原指令。纯贴蛋查询不是原子锁，极端同时处理仍可能重复。
+`free_egg.py` 通过 QQ 群消息上的蛋表情去重。每个运行实例的 Bot 都需启用此插件。处理 `/` 开头的群消息时，Bot 先查看同一条消息是否已有这枚表情：有则拦截本 Bot 的后续命令处理，没有则贴蛋后继续。先贴蛋的 Bot 处理指令，同群中的其他 Bot 看到蛋后会跳过。此机制用于 QQ OneBot V11 群聊。Bot 自身发出的消息和非斜杠消息不参与；表情接口异常时会放行消息，保持指令可用。
 
 网页优先展示 Malody / osu!，支持搜索、插件/触发类型筛选、说明筛选、复制命令、移动端布局。生成的 `dist/index.html` 内嵌全部 CSS、JS 和数据，可以保存后直接打开，不依赖 CDN。
 
 ## 自动收录
 
-在 Bot 启动、Bot 连接时读取实际已注册的 Matcher；同时支持手动构建。涵盖 `on_command`、别名、元组子命令/CommandGroup、`on_shell_command`、`on_fullmatch`、`on_startswith`、`on_endswith`、`on_keyword`、`on_regex`、Alconna 及其快捷规则、消息/通知/请求等事件。使用实际 `command_start` / `command_sep`；无须为第三方插件改源码。
+在 Bot 启动、Bot 连接时读取实际已注册的 Matcher；同时支持手动构建。涵盖 `on_command`、别名、元组子命令/CommandGroup、`on_shell_command`、`on_fullmatch`、`on_startswith`、`on_endswith`、`on_keyword`、`on_regex`、Alconna 及其快捷规则、消息/通知/请求等事件。`ma`、`/omtk` 等共享入口的分派子命令从其实际运行时分派表及内置帮助数据补充。使用实际 `command_start` / `command_sep`；无须为第三方插件改源码。
 
 只收录已经加载并注册的响应器，临时会话响应器被排除。未启用、加载失败的插件不算可用功能；只有依赖功能的插件可能没有独立条目。启动日志应确认全部预期插件加载成功。动态注册的内容会在下次连接或导出时更新。
 
-任意 Python 自定义规则、处理函数中的分支、权限复合判断、运行时用户上下文不能可靠还原为完整用法。目录保留规则名并提示手动补充；权限徽标只是提示，不能替代真实权限检查。正则与快捷规则不显示直接复制按钮。自动生成的参数帮助只来自插件自己的 parser / Alconna 元数据。
+任意 Python 自定义规则、处理函数中的分支、权限复合判断、运行时用户上下文不能可靠还原为完整用法。`manual.json` 可通过 handler 或命令覆盖补充可读语义。页面用自然语言说明已知消息格式和事件条件，不展示原始正则表达式。权限提示不能替代真实权限检查。自动生成的参数帮助只来自插件自己的 parser / Alconna 元数据。
+
+`nonebot_plugin_memes` 的数百个模板触发项由插件运行时元数据生成，并在网页和 Markdown 中折叠展示，避免长目录挤占其他功能。
 
 ## 手写说明
 
@@ -67,6 +69,6 @@ venv/Scripts/python.exe src/plugins/Bakahelp/export_site.py --site-root <MalodyS
 
 站点的 /bakahelp Vue 路由负责转到同源 /bakahelp/index.html，防止站内导航进入自定义 404 页。验收要检查实际标题、目录和交互，不能只看 HTTP 200。
 
-Bot 启动/连接只自动更新本地文件；插件或使用说明变化后仍需重新导出、提交并正式发布。详见站点 docs/BAKAHELP.md。
+Bot 启动/连接会自动更新本地网页和 `COMMANDS.md`；插件或说明变化后，需要把当前构建导出到 MalodySite 源码仓库、审查搜索与分类功能，再通过站点正式发布流程部署。详见站点 docs/BAKAHELP.md。
 
 旧 src/plugins/help.py 及跨平台插件中的旧帮助响应器已移除。新插件由 src/plugins 自动加载，正在运行的 Bot 需要重启一次。
