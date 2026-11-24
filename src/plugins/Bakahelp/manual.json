@@ -253,12 +253,14 @@
   "commands": {
     "/rework": {
       "condition_label": "允许的群聊或私聊消息中发送 /rework。回复谱面文件可直接分析附件。",
-      "arguments": "[谱面ID、谱包ID或 CID] [速度、mods、OD]"
+      "arguments": "[谱面ID、谱包ID或 CID] [速度、mods、OD]",
+      "title": "分析 osu!mania 谱面",
+      "description": "回复 .osu、.osz、.mc、.mcz 或 .zip 文件，或提供谱面/谱包 ID，生成键型分类、重叠键标注和难度分析图。"
     },
     "/tc": {
       "title": "提交谱面进行 Baka Rating",
       "description": "回复 4K Malody .mcz 谱面包，按提示填写键型和难度后提交。",
-      "arguments": "回复 .mcz 文件"
+      "arguments": "<回复 .mcz 文件>"
     },
     "/login": {
       "title": "登录 Malody 账号",
@@ -273,7 +275,7 @@
     "/mmocr": {
       "title": "识别并计算 MM",
       "description": "提交成绩截图，按提示填写等级和倍率后识别成绩。",
-      "arguments": "回复或附上成绩图片"
+      "arguments": "<回复或附上成绩图片>"
     },
     "/mabest": {
       "title": "查看 Malody Best 成绩",
@@ -303,37 +305,37 @@
     "/ma2om": {
       "title": "Malody 谱面转换为 osu!mania",
       "description": "将 .mc 转为 .osu；可将 .mcz、.osz、.zip 中的谱面转换并输出 .osz。",
-      "arguments": "回复 .mc/.mcz/.osz/.zip 文件"
+      "arguments": "<回复 .mc/.mcz/.osz/.zip 文件>"
     },
     "/om2ma": {
       "title": "osu!mania 谱面转换为 Malody",
       "description": "将 .osu 转为 .mc；可将 .osz/.zip 中谱面转为 .mcz，MP3 音频会转成 OGG 并更新谱面引用。",
-      "arguments": "回复 .osu/.osz/.zip 文件"
+      "arguments": "<回复 .osu/.osz/.zip 文件>"
     },
     "/ncm2ogg": {
       "title": "NCM 转 OGG",
       "description": "将回复的 NCM 音频文件转换成 OGG。",
-      "arguments": "回复 .ncm 文件"
+      "arguments": "<回复 .ncm 文件>"
     },
     "/ncm2mp3": {
       "title": "NCM 转 MP3",
       "description": "将回复的 NCM 音频文件转换成 MP3。",
-      "arguments": "回复 .ncm 文件"
+      "arguments": "<回复 .ncm 文件>"
     },
     "/mp32ogg": {
       "title": "MP3 转 OGG",
       "description": "将回复的 MP3 音频文件转换成 OGG。",
-      "arguments": "回复 .mp3 文件"
+      "arguments": "<回复 .mp3 文件>"
     },
     "/unzip": {
       "title": "解压谱面压缩包",
       "description": "解压 ZIP、OSZ 或 MCZ 文件并发送其中内容。",
-      "arguments": "回复 .zip/.osz/.mcz 文件"
+      "arguments": "<回复 .zip/.osz/.mcz 文件>"
     },
     "/toinverse": {
       "title": "反键尾判定补全",
       "description": "补全谱面反键尾判定信息。",
-      "arguments": "回复 .mc/.mcz 文件"
+      "arguments": "<回复 .mc/.mcz 文件>"
     },
     "/倍速": {
       "title": "osu!mania 倍速工具",
@@ -348,7 +350,7 @@
     "/mrv2mr": {
       "title": "Malody 回放转换",
       "description": "将 .mrv 回放转换为 .mr。",
-      "arguments": "回复 .mrv 文件"
+      "arguments": "<回复 .mrv 文件>"
     },
     "/exptop": {
       "title": "查看 Malody 经验排行",
@@ -368,7 +370,7 @@
     "/timeinverse": {
       "title": "反转谱面时间",
       "description": "将谱面事件沿时间轴反转。",
-      "arguments": "回复 .osu/.mc/.osz/.mcz 文件"
+      "arguments": "<回复 .osu/.mc/.osz/.mcz 文件>"
     },
     "/tojack": {
       "trigger_label": "以 to1K 至 to9K 开头，可附最多三项参数",
@@ -379,7 +381,7 @@
     "/合谱": {
       "title": "合并 Malody 谱面",
       "description": "使用 Malody 合谱工具组合多份谱面。",
-      "arguments": "按提示提交谱面文件"
+      "arguments": "<按提示提交谱面文件>"
     },
     "/parse": {
       "title": "解析并发送哔哩哔哩视频",
@@ -429,7 +431,7 @@
     "/level": {
       "title": "Malody 难度预测",
       "description": "读取回复的 Malody 谱面并估计难度。",
-      "arguments": "回复 .mc 文件"
+      "arguments": "<回复 .mc 文件>"
     },
     "/lv": {
       "title": "Malody 难度预测",
@@ -444,7 +446,7 @@
     "/replayrd": {
       "title": "回放渲染",
       "description": "渲染已提交的谱面回放。",
-      "arguments": "回复回放文件"
+      "arguments": "<回复 .mr/.mrv 回放文件>"
     },
     "/rank": {
       "title": "Malody 谱面排行",
@@ -1104,7 +1106,7 @@
     "/更改背景": {
       "title": "更改 osu! bot 背景",
       "description": "设置成绩图片使用的背景。",
-      "arguments": "回复图片或提供图片"
+      "arguments": "<回复或发送图片>"
     },
     "/清空背景": {
       "title": "清除成绩图片背景",
@@ -1149,7 +1151,7 @@
     "/反键": {
       "title": "转换反键谱面",
       "description": "对 osu!mania 谱面执行反键处理。",
-      "arguments": "回复谱面文件"
+      "arguments": "<回复谱面文件>"
     },
     "/cvtscore": {
       "title": "转换回放成绩",
@@ -1159,7 +1161,7 @@
     "/pressingtime": {
       "title": "回放按压时长分布",
       "description": "分析回放中各轨道的按压时长。",
-      "arguments": "回复回放文件"
+      "arguments": "<回复回放文件>"
     },
     "/analyze": {
       "title": "分析回放作弊特征",
@@ -1179,7 +1181,7 @@
     "/spectrum": {
       "title": "绘制回放频谱图",
       "description": "分析回放打击事件频谱。",
-      "arguments": "回复 .osr/.mr 文件"
+      "arguments": "<回复 .osr/.mr 文件>"
     },
     "/scatter": {
       "title": "绘制判定散点图",
@@ -1189,7 +1191,7 @@
     "/pattern": {
       "title": "分析谱面键型",
       "description": "分析谱面中的键型结构。",
-      "arguments": "回复谱面文件或输入谱面ID"
+      "arguments": "<回复谱面文件或谱面ID>"
     },
     "/percy": {
       "title": "分析或修改投皮",
@@ -1395,6 +1397,20 @@
       "title": "随机制作表情",
       "description": "从当前可用模板中选择一个符合素材数量的表情制作。",
       "arguments": "[文字、图片或@用户]"
+    },
+    "/ma event": {
+      "title": "查看 Malody 活动列表",
+      "description": "列出当前及已结束的 Malody V 活动。需要登录，可指定返回数量，最多 100 条。",
+      "arguments": "[数量]"
+    },
+    "arc": {
+      "title": "生成 Arcaea 贴纸",
+      "description": "使用文字、图片或@用户生成 Arcaea 风格贴纸，可设置角色、文字位置、旋转、颜色和描边。"
+    },
+    "capoo": {
+      "title": "随机发送 Capoo 图片",
+      "description": "在群聊中随机发送一张 Capoo 图片。",
+      "arguments": "无"
     }
   },
   "handlers": {
@@ -1466,10 +1482,29 @@
       "_accept_main_group_invite": {
         "title": "自动接受总群邀请",
         "trigger_label": "Bot 收到已配置的群聊邀请",
-        "description": "自动接受已配置的群聊邀请。Bot 启动连接时也会检查群状态。",
+        "description": "Bot 连接时检查总群并自动接受尚未处理的群聊邀请；收到新的总群邀请时也会自动接受。",
         "arguments": "事件触发"
       }
     }
   },
-  "entries": {}
+  "entries": {
+    "free_egg:9bc3023e00cc": {
+      "title": "斜杠指令跨 Bot 去重",
+      "trigger_label": "群聊消息以 / 开头",
+      "description": "检查消息上是否已有蛋表情反应；已有时阻止当前 Bot 继续触发命令，否则先添加蛋反应再继续处理。各 Bot 都需启用此插件。",
+      "arguments": "无"
+    },
+    "Malody_toolkit:886878582a9d": {
+      "title": "等待回放分析所需谱面",
+      "trigger_label": "发送 /replayrd 后，Bot 在同群等待谱面文件",
+      "description": "接收与回放格式对应的 .mc/.mcz 或 .osu/.osz 文件。等待期间发送 1 可取消或跳过。",
+      "arguments": "<对应谱面文件> 或 [1 取消]"
+    },
+    "nonebot_plugin_osubot:62fe332ccd91": {
+      "title": "提交谱面猜歌答案",
+      "trigger_label": "群内谱面猜歌游戏进行中发送答案",
+      "description": "比较发送内容与当前谱面歌曲名；匹配成功后结束游戏并公布答案。",
+      "arguments": "<歌曲名>"
+    }
+  }
 }

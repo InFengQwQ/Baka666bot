@@ -20,7 +20,7 @@ from typing import Any
 ROOT = Path(__file__).parent
 LABELS = {"command": "命令", "shell": "Shell 命令", "fullmatch": "完整匹配",
           "startswith": "前缀匹配", "endswith": "后缀匹配", "keyword": "关键词",
-          "regex": "正则匹配", "alconna": "Alconna", "shortcut": "快捷规则",
+          "regex": "文字格式", "alconna": "Alconna", "shortcut": "自然语言说法",
           "message": "消息事件", "notice": "通知事件", "request": "请求事件",
           "meta_event": "元事件", "custom": "自定义规则"}
 
@@ -278,9 +278,6 @@ def apply_manual(catalog: dict, manual: dict) -> dict:
             if matching:
                 doc.update(matching[0])
                 doc["meme_template"] = True
-        for command, command_doc in command_docs.items():
-            if command in values:
-                doc.update(command_doc)
         if entry.get("dispatcher") == "omtk":
             if entry["help_topic"] == "星数重算":
                 doc.update(
@@ -296,6 +293,9 @@ def apply_manual(catalog: dict, manual: dict) -> dict:
                              if handler in plugin_handler_docs]
         if matching_handlers:
             doc.update(matching_handlers[0])
+        for command, command_doc in command_docs.items():
+            if command in values:
+                doc.update(command_doc)
         for override in manual.get("triggers", []):
             if override.get("plugin", entry["plugin"]) == entry["plugin"] and values.intersection(override.get("match", [])):
                 doc.update({k: v for k, v in override.items() if k not in {"plugin", "match"}})
@@ -304,6 +304,14 @@ def apply_manual(catalog: dict, manual: dict) -> dict:
             continue
         entry["doc"] = doc
         doc.setdefault("arguments", _entry_arguments(entry))
+        for trigger in entry["triggers"]:
+            values = trigger.get("values", [])
+            contains_pattern = trigger.get("kind") == "regex" or any(
+                re.search(r"(?:^|/)re:", value) for value in values
+            )
+            if contains_pattern:
+                trigger["values"] = []
+                trigger.pop("syntax", None)
         visible.append(entry)
     catalog["entries"] = visible
     return catalog
@@ -404,69 +412,78 @@ def _markdown_cell(value: str, *, code: bool = False) -> str:
 
 
 def render_commands_markdown(catalog: dict) -> str:
-    """Render a compact three-column command reference from the live catalogue."""
+    """Render a compact three-column command reference grouped by category."""
     plugins = {plugin["id"]: plugin for plugin in catalog.get("plugins", [])}
     entries = catalog.get("entries", [])
-    meme_entries = [entry for entry in entries if entry["doc"].get("meme_template")]
+    memes = [entry for entry in entries if entry["doc"].get("meme_template")]
+    category_order = ("Malody", "osu!", "创作与娱乐", "管理", "通用")
+    tick = chr(96)
 
     def category(entry: dict) -> str:
         return str(plugins.get(entry["plugin"], {}).get("category") or "通用")
 
-    def sort_key(entry: dict) -> tuple[str, str, str]:
-        plugin = plugins.get(entry["plugin"], {})
-        return (
-            category(entry),
-            str(plugin.get("name") or entry["plugin"]).casefold(),
-            _trigger_label(entry).casefold(),
-        )
+    def sort_key(entry: dict) -> str:
+        return _trigger_label(entry).casefold()
 
     rows = [
         "# Baka666Bot 指令目录",
         "",
-        f"根据当前运行配置收录 {len(entries)} 个触发条目。`<参数>` 表示必填，`[参数]` 表示可选。",
-        "表情包指令已折叠，展开后可以查到每个触发词、参数和对应效果。",
+        f"根据当前运行配置收录 {len(entries)} 个触发条目。{tick}<参数>{tick} 表示必填，{tick}[参数]{tick} 表示可选。",
+        f"表情包指令已折叠，展开后可以查到每个触发词、参数和对应效果。",
         "",
-        "| 触发名或触发语义 | 参数 | 功能说明 |",
-        "| --- | --- | --- |",
     ]
 
-    for entry in sorted(entries, key=sort_key):
-        if entry["doc"].get("meme_template"):
+    for category_name in category_order:
+        category_entries = [
+            entry for entry in entries
+            if category(entry) == category_name and not entry["doc"].get("meme_template")
+        ]
+        category_memes = [entry for entry in memes if category(entry) == category_name]
+        if not category_entries and not category_memes:
             continue
-        plugin = plugins.get(entry["plugin"], {})
-        description = entry.get("doc", {}).get("description") or plugin.get("description") or "功能说明待补充。"
-        plugin_name = plugin.get("name") or entry["plugin"]
-        function = f"**{plugin_name}** · {description}"
-        rows.append(
-            "| " + " | ".join((
-                _markdown_cell(_trigger_label(entry), code=True),
-                _markdown_cell(_entry_arguments(entry), code=True),
-                _markdown_cell(function),
-            )) + " |"
-        )
 
-    if meme_entries:
-        rows.append(
-            "| 表情包关键词与文字格式（展开下方列表） | 见展开列表 | "
-            f"表情包制作，共 {len(meme_entries)} 个触发项。 |"
-        )
-        rows.extend(("", f"<details><summary>展开 {len(meme_entries)} 个表情包触发项</summary>", ""))
         rows.extend((
+            f"## {category_name}",
+            "",
             "| 触发名或触发语义 | 参数 | 功能说明 |",
             "| --- | --- | --- |",
         ))
-        for entry in sorted(meme_entries, key=sort_key):
+        for entry in sorted(category_entries, key=sort_key):
             doc = entry.get("doc", {})
+            plugin = plugins.get(entry["plugin"], {})
+            description = doc.get("description") or plugin.get("description") or "按功能提示提供内容。"
             rows.append(
                 "| " + " | ".join((
                     _markdown_cell(_trigger_label(entry), code=True),
                     _markdown_cell(_entry_arguments(entry), code=True),
-                    _markdown_cell(doc.get("description") or "制作对应模板的表情包。"),
+                    _markdown_cell(description),
                 )) + " |"
             )
-        rows.extend(("", "</details>"))
 
-    rows.append("")
+        if category_memes:
+            rows.append(
+                "| 表情包关键词与文字格式（展开下方列表） | 见展开列表 | "
+                f"表情包模板，共 {len(category_memes)} 个触发项。 |"
+            )
+            rows.extend((
+                "",
+                f"<details><summary>展开 {len(category_memes)} 个表情包触发项</summary>",
+                "",
+                "| 触发名或触发语义 | 参数 | 功能说明 |",
+                "| --- | --- | --- |",
+            ))
+            for entry in sorted(category_memes, key=sort_key):
+                doc = entry.get("doc", {})
+                rows.append(
+                    "| " + " | ".join((
+                        _markdown_cell(_trigger_label(entry), code=True),
+                        _markdown_cell(_entry_arguments(entry), code=True),
+                        _markdown_cell(doc.get("description") or "制作对应模板的表情包。"),
+                    )) + " |"
+                )
+            rows.extend(("", "</details>"))
+        rows.append("")
+
     return "\n".join(rows)
 
 

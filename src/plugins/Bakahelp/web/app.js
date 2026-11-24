@@ -166,9 +166,37 @@
     return button;
   }
 
+  function alternateTriggers(entry) {
+    const primary = primaryCommand(entry)?.toLocaleLowerCase();
+    const seen = new Set();
+    const alternatives = [];
+
+    for (const trigger of entry.triggers) {
+      for (const value of trigger.values || []) {
+        const normalized = value.toLocaleLowerCase();
+        if (normalized === primary || seen.has(normalized)) continue;
+        seen.add(normalized);
+        alternatives.push({ kind: trigger.kind, value });
+      }
+    }
+
+    return alternatives;
+  }
+
+  function hasRuleDetails(entry) {
+    return Boolean(
+      entry.doc.usage
+      || entry.doc.examples?.length
+      || entry.doc.notes
+      || entry.conditions.length
+      || entry.permissions.length
+      || alternateTriggers(entry).length,
+    );
+  }
+
   function addRuleDetails(container, entry) {
     const details = createElement('details', undefined, 'entry-details');
-    const summary = createElement('summary', '其他触发方式与使用条件');
+    const summary = createElement('summary', '更多用法与触发方式');
     const content = createElement('div', undefined, 'details-content');
 
     if (entry.doc.usage) {
@@ -181,14 +209,15 @@
       content.append(examples);
     }
 
+    const alternatives = alternateTriggers(entry);
+    if (alternatives.length) {
+      content.append(createElement('h4', '其他触发方式'));
+      const triggers = createElement('div', undefined, 'triggers');
+      alternatives.forEach(({ value }) => triggers.append(triggerButton(value)));
+      content.append(triggers);
+    }
+
     for (const trigger of entry.triggers) {
-      content.append(createElement('h4', labels[trigger.kind] || trigger.kind));
-      if (trigger.values.length) {
-        const values = trigger.kind === 'regex' || trigger.kind === 'shortcut'
-          ? entry.doc.trigger_label || '按上方说明匹配相应文字格式'
-          : trigger.values.join('\n');
-        content.append(createElement('p', values));
-      }
       if (trigger.kind === 'startswith') content.append(createElement('p', '消息以列出的文字开头。'));
       if (trigger.kind === 'endswith') content.append(createElement('p', '消息以列出的文字结尾。'));
       if (trigger.kind === 'keyword') content.append(createElement('p', '消息中包含列出的关键词。'));
@@ -234,7 +263,6 @@
       heading.textContent = triggerText(entry);
     }
     triggerCell.append(heading);
-    if (entry.doc.title) triggerCell.append(createElement('span', entry.doc.title, 'function-name'));
 
     const argumentCell = createElement('td', undefined, 'arguments-cell');
     argumentCell.append(createElement('code', argumentsText(entry), 'arguments-syntax'));
@@ -245,10 +273,7 @@
     if (entry.doc.audience || entry.restricted) {
       functionCell.append(createElement('span', entry.doc.audience || '权限受限', 'audience'));
     }
-    if (entry.doc.arguments || entry.doc.usage || entry.conditions.length
-      || entry.permissions.length || entry.triggers.some(trigger => trigger.values.length > 1)) {
-      addRuleDetails(functionCell, entry);
-    }
+    if (hasRuleDetails(entry)) addRuleDetails(functionCell, entry);
 
     row.append(triggerCell, argumentCell, functionCell);
     return row;

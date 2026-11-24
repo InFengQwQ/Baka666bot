@@ -184,30 +184,37 @@ def _read_qq_avatar(qq: int) -> bytes:
         raise ValueError("QQ avatar exceeds the 5 MiB limit")
 
     with Image.open(BytesIO(data)) as image:
-        if image.width * image.height > 16_777_216:
+        if image.width * image.height > 4_194_304:
             raise ValueError("QQ avatar dimensions exceed the supported limit")
-        normalized = image.convert("RGB")
-        output = BytesIO()
-        normalized.save(output, format="JPEG", quality=92, optimize=True)
-    return output.getvalue()
+        image.verify()
+    return data
+
+
+def _avatar_fingerprint(data: bytes) -> bytes:
+    with Image.open(BytesIO(data)) as image:
+        image.load()
+        pixels = image.convert("RGB")
+        dimensions = f"{pixels.width}x{pixels.height}:".encode("ascii")
+        return hashlib.sha256(dimensions + pixels.tobytes()).digest()
 
 
 async def _synchronize_qq_profile(bot: Bot) -> None:
     try:
         login = await bot.call_api("get_login_info")
-        source = await bot.call_api(
-            "get_stranger_info",
-            user_id=MAIN_ACCOUNT_QQ,
-            no_cache=True,
-        )
-        source_nickname = str(source.get("nickname") or "").strip()
         current_nickname = str(login.get("nickname") or "").strip()
         current_qq = int(login.get("user_id") or 0)
         if current_qq <= 0:
             raise ValueError("connected QQ account could not be identified")
 
-        if not source_nickname and current_qq == MAIN_ACCOUNT_QQ:
+        if current_qq == MAIN_ACCOUNT_QQ:
             source_nickname = current_nickname
+        else:
+            source = await bot.call_api(
+                "get_stranger_info",
+                user_id=MAIN_ACCOUNT_QQ,
+                no_cache=True,
+            )
+            source_nickname = str(source.get("nickname") or "").strip()
         if not source_nickname:
             raise ValueError("main QQ account nickname is unavailable")
 
@@ -222,7 +229,7 @@ async def _synchronize_qq_profile(bot: Bot) -> None:
             asyncio.to_thread(_read_qq_avatar, MAIN_ACCOUNT_QQ),
             asyncio.to_thread(_read_qq_avatar, current_qq),
         )
-        if hashlib.sha256(source_avatar).digest() == hashlib.sha256(current_avatar).digest():
+        if _avatar_fingerprint(source_avatar) == _avatar_fingerprint(current_avatar):
             return
 
         encoded_avatar = base64.b64encode(source_avatar).decode("ascii")
@@ -230,6 +237,48 @@ async def _synchronize_qq_profile(bot: Bot) -> None:
         logger.info("QQ profile avatar synchronized from {}", MAIN_ACCOUNT_QQ)
     except Exception:
         logger.exception("QQ profile synchronization failed")
+
+
+async def _accept_pending_main_group_invites(bot: Bot) -> int:
+    try:
+        response = await bot.call_api("get_group_system_msg", count=100)
+    except Exception:
+        logger.exception("Could not check pending invitations to main group {}", MAIN_GROUP_ID)
+        return 0
+
+    if not isinstance(response, dict):
+        logger.warning("Unexpected group invitation response for main group {}", MAIN_GROUP_ID)
+        return 0
+
+    invitations = response.get("invited_requests") or response.get("InvitedRequest") or []
+    accepted = 0
+    for invitation in invitations:
+        if not isinstance(invitation, dict):
+            continue
+        if str(invitation.get("group_id", "")) != str(MAIN_GROUP_ID):
+            continue
+        if invitation.get("checked", False):
+            continue
+
+        request_id = invitation.get("request_id")
+        if request_id is None:
+            continue
+        try:
+            await bot.call_api(
+                "set_group_add_request",
+                flag=str(request_id),
+                approve=True,
+            )
+            accepted += 1
+        except Exception:
+            logger.exception(
+                "Could not accept a pending invitation to main group {}",
+                MAIN_GROUP_ID,
+            )
+
+    if accepted:
+        logger.info("Accepted {} pending invitation(s) to main group {}", accepted, MAIN_GROUP_ID)
+    return accepted
 
 
 def _is_main_group_invite(event: Event) -> bool:
@@ -262,12 +311,16 @@ async def synchronize_account_and_check_group(bot: Bot) -> None:
     try:
         groups = await bot.call_api("get_group_list")
         joined = any(int(group.get("group_id", 0)) == MAIN_GROUP_ID for group in groups)
+        if not joined:
+            await _accept_pending_main_group_invites(bot)
+            groups = await bot.call_api("get_group_list")
+            joined = any(int(group.get("group_id", 0)) == MAIN_GROUP_ID for group in groups)
         if joined:
             logger.info("Baka666Bot is already in main group {}", MAIN_GROUP_ID)
         else:
             logger.warning(
-                "Baka666Bot is not in main group {}. OneBot cannot join a group without an invitation. "
-                "An invitation to this group will be accepted automatically.",
+                "Baka666Bot is not in main group {}. QQ requires an invitation from a group member. "
+                "Pending invitations and new invitations are accepted automatically.",
                 MAIN_GROUP_ID,
             )
     except Exception:

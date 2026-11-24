@@ -3,240 +3,213 @@
 根据当前运行配置收录 655 个触发条目。`<参数>` 表示必填，`[参数]` 表示可选。
 表情包指令已折叠，展开后可以查到每个触发词、参数和对应效果。
 
+## Malody
+
 | 触发名或触发语义 | 参数 | 功能说明 |
 | --- | --- | --- |
-| `/tc、/提交谱面` | `回复 .mcz 文件` | **Baka Rating** · 提交谱面进行处理，具体步骤以 Bot 的后续提示为准。 |
-| `/acc、//acc` | `[谱面或成绩参数]` | **Malody 工具箱** · 运行 Malody Toolkit 的 acc 工具。 |
-| `/download` | `[CID]` | **Malody 工具箱** · 回复谱面文件或提供 CID，下载对应谱面及资源。 |
-| `/exptop` | `[页码或数量]` | **Malody 工具箱** · 查询经验或 MM 排行榜。 |
-| `/lv、/level` | `回复 .mc 文件` | **Malody 工具箱** · 回复一条包含 .mc 谱面文件的消息，估算谱面难度。 |
-| `/ma2om、/mc2om、/ma2osu、/mc2osu` | `回复 .mc/.mcz/.osz/.zip 文件` | **Malody 工具箱** · 将 .mc 转为 .osu；将 .mcz、.osz 或 .zip 内的 .mc 谱面转为 osu!mania 并打包为 .osz。 |
-| `/mmtop` | `[页码或数量]` | **Malody 工具箱** · 查询经验或 MM 排行榜。 |
-| `/mp32ogg` | `回复 .mp3 文件` | **Malody 工具箱** · 将回复的 MP3 音频文件转换成 OGG。 |
-| `/mrv2mr` | `回复 .mrv 文件` | **Malody 工具箱** · 将 .mrv 回放转换为 .mr 格式。 |
-| `/ncm2mp3` | `回复 .ncm 文件` | **Malody 工具箱** · 将回复的 NCM 音频文件转换成 MP3。 |
-| `/ncm2ogg` | `回复 .ncm 文件` | **Malody 工具箱** · 将回复的 NCM 音频文件转换成 OGG。 |
-| `/om2ma、/om2mc、/osu2ma、/osu2mc` | `回复 .osu/.osz/.zip 文件` | **Malody 工具箱** · 将 .osu 转为 .mc；将 .osz 或 .zip 内的 .osu 转为 .mc 并打包为 .mcz，包内 MP3 音频会转为 OGG 并同步更新谱面引用。 |
-| `/rank` | `<CID> [模式]` | **Malody 工具箱** · 查看指定 Malody 谱面的成绩排行榜。 |
-| `/replayrd` | `回复 .mr/.mrv 回放文件` | **Malody 工具箱** · 将回复中的 Malody 回放渲染成视频。 |
-| `/sm、/搜歌` | `<歌曲关键词或SID>` | **Malody 工具箱** · 按歌曲名或 SID 搜索 Malody 歌曲并显示谱面信息。 |
-| `/timeinverse` | `回复 .osu/.mc/.osz/.mcz 文件` | **Malody 工具箱** · 将谱面事件沿时间轴反转。 |
-| `/toinverse` | `回复 .mc/.mcz 文件` | **Malody 工具箱** · 为 .mc / .mcz 谱面补全反键尾判定。 |
-| `/倍速` | `<速度> 并提交所需文件` | **Malody 工具箱** · 按指定速度处理 osu!mania 谱面或回放。 |
-| `/倍速变调` | `<倍速及音调参数>，并回复音频文件` | **Malody 工具箱** · 按指定速度和音调调整回复的音频文件。 |
-| `/合谱` | `按提示提交谱面文件` | **Malody 工具箱** · 使用 Malody 合谱工具组合多份谱面。 |
-| `/解压、/unzip` | `回复 .zip/.osz/.mcz 文件` | **Malody 工具箱** · 解压 ZIP、OSZ 或 MCZ 文件并发送其中内容。 |
-| `以 to1K 至 to9K 开头，可附最多三项内容` | `<键数>K [附加内容]` | **Malody 工具箱** · 按指令中的键数转换谱面格式。 |
-| `发送 tojack，可选一个整数参数` | `[正整数]` | **Malody 工具箱** · 将回复谱面的 beat 和 endbeat 分母统一为指定值。 |
-| `符合消息条件时触发` | `无（由消息或事件触发）` | **Malody 工具箱** · 谱面搜索、转换、下载与回放处理。 |
-| `/ma achieve、/MA achieve、/Ma achieve、/malody achieve` | `[玩家]` | **Malody 成绩与账户** · 查看指定玩家的成就列表。 |
-| `/ma activity、/MA activity、/Ma activity、/malody activity` | `[玩家]` | **Malody 成绩与账户** · 查看玩家近期动态。 |
-| `/ma addcomment、/MA addcomment、/Ma addcomment、/malody addcomment` | `<CID> <评论内容>` | **Malody 成绩与账户** · 为指定谱面发表评论。 |
-| `/ma addfriend、/MA addfriend、/Ma addfriend、/malody addfriend` | `<玩家UID>` | **Malody 成绩与账户** · 向指定玩家发送好友请求。 |
-| `/ma addreview、/MA addreview、/Ma addreview、/malody addreview` | `<CID> <内容>` | **Malody 成绩与账户** · 为谱面添加审核记录。 |
-| `/ma buyskin、/MA buyskin、/Ma buyskin、/malody buyskin` | `<皮肤ID> confirm` | **Malody 成绩与账户** · 购买指定皮肤，需要二次确认。 |
-| `/ma chartlist、/MA chartlist、/Ma chartlist、/malody chartlist` | `[页码]` | **Malody 成绩与账户** · 分页浏览玩家的谱面列表。 |
-| `/ma chartonline、/MA chartonline、/Ma chartonline、/malody chartonline` | `<谱面哈希>` | **Malody 成绩与账户** · 按谱面哈希查询在线谱面。 |
-| `/ma chartpromote、/MA chartpromote、/Ma chartpromote、/malody chartpromote` | `<CID> confirm` | **Malody 成绩与账户** · 推广指定谱面，需要输入确认参数。 |
-| `/ma chartrank、/MA chartrank、/Ma chartrank、/malody chartrank` | `<CID> [模式] [数量]` | **Malody 成绩与账户** · 查询谱面的玩家成绩排行。 |
-| `/ma chart、/MA chart、/Ma chart、/malody chart` | `<CID>` | **Malody 成绩与账户** · 查看谱面详情和封面。 |
-| `/ma choice、/MA choice、/Ma choice、/malody choice` | `[数量]` | **Malody 成绩与账户** · 查看商店精选内容。 |
-| `/ma comment、/MA comment、/Ma comment、/malody comment` | `<CID> [数量]` | **Malody 成绩与账户** · 查看指定谱面的评论。 |
-| `/ma createchart、/MA createchart、/Ma createchart、/malody createchart` | `<SID> <版本> <模式> <难度>` | **Malody 成绩与账户** · 在 Malody V 创建谱面记录。 |
-| `/ma createsong、/MA createsong、/Ma createsong、/malody createsong` | `<标题> <艺术家>` | **Malody 成绩与账户** · 在 Malody V 创建歌曲记录。 |
-| `/ma danall、/MA danall、/Ma danall、/malody danall` | `[模式]` | **Malody 成绩与账户** · 列出指定模式的段位信息。 |
-| `/ma dan、/MA dan、/Ma dan、/malody dan` | `[玩家] [模式]` | **Malody 成绩与账户** · 查看玩家的段位通过记录。 |
-| `/ma delaccount、/MA delaccount、/Ma delaccount、/malody delaccount` | `confirm` | **Malody 成绩与账户** · 删除当前绑定账号，需要二次确认。 |
-| `/ma delcomment、/MA delcomment、/Ma delcomment、/malody delcomment` | `<评论ID>` | **Malody 成绩与账户** · 删除指定评论。 |
-| `/ma delreview、/MA delreview、/Ma delreview、/malody delreview` | `<审核ID>` | **Malody 成绩与账户** · 删除指定审核记录。 |
-| `/ma donate、/MA donate、/Ma donate、/malody donate` | `<CID> <金币数>` | **Malody 成绩与账户** · 向谱面捐赠金币。 |
-| `/ma download、/MA download、/Ma download、/malody download` | `<CID>` | **Malody 成绩与账户** · 获取指定谱面的下载信息。 |
-| `/ma eventrank、/MA eventrank、/Ma eventrank、/malody eventrank` | `<活动ID> [数量]` | **Malody 成绩与账户** · 查询 Malody 活动排行。 |
-| `/ma event、/MA event、/Ma event、/malody event` | `按功能提示提供所需内容` | **Malody 成绩与账户** · Malody 账户、玩家资料、谱面、商店和排行工具。 |
-| `/ma friendstore、/MA friendstore、/Ma friendstore、/malody friendstore` | `[数量]` | **Malody 成绩与账户** · 浏览好友分享的谱面商店内容。 |
-| `/ma friend、/MA friend、/Ma friend、/malody friend` | `[页码]` | **Malody 成绩与账户** · 查看 Malody V 好友列表。 |
-| `/ma global、/MA global、/Ma global、/malody global` | `[模式] [榜单类型] [数量]` | **Malody 成绩与账户** · 查询全球玩家排名。 |
-| `/ma help、/MA help、/Ma help、/malody help` | `无` | **Malody 成绩与账户** · 显示可用的 Malody V 子命令和使用提示。 |
-| `/ma items、/MA items、/Ma items、/malody items` | `[玩家]` | **Malody 成绩与账户** · 查看指定玩家拥有的道具。 |
-| `/ma like、/MA like、/Ma like、/malody like` | `<CID>` | **Malody 成绩与账户** · 为指定谱面点赞。 |
-| `/ma logout、/MA logout、/Ma logout、/malody logout` | `无` | **Malody 成绩与账户** · 退出当前 Malody V 登录。 |
-| `/ma marlo、/MA marlo、/Ma marlo、/malody marlo` | `[玩家]` | **Malody 成绩与账户** · 查询玩家的 Marlo 记录。 |
-| `/ma mute、/MA mute、/Ma mute、/malody mute` | `<玩家UID> confirm` | **Malody 成绩与账户** · 屏蔽指定玩家，需要二次确认。 |
-| `/ma mychart、/MA mychart、/Ma mychart、/malody mychart` | `[玩家] [数量]` | **Malody 成绩与账户** · 查看自己的或指定玩家创建的谱面。 |
-| `/ma myreview、/MA myreview、/Ma myreview、/malody myreview` | `[数量]` | **Malody 成绩与账户** · 查看自己提交的审核记录。 |
-| `/ma news、/MA news、/Ma news、/malody news` | `无` | **Malody 成绩与账户** · 查看 Malody V 系统消息和推送。 |
-| `/ma profile、/MA profile、/Ma profile、/malody profile` | `[玩家]` | **Malody 成绩与账户** · 查询玩家资料卡。 |
-| `/ma promote、/MA promote、/Ma promote、/malody promote` | `[数量]` | **Malody 成绩与账户** · 查看 Malody V 推广谱面。 |
-| `/ma puzzle、/MA puzzle、/Ma puzzle、/malody puzzle` | `[玩家]` | **Malody 成绩与账户** · 查看玩家拼图收集进度。 |
-| `/ma quest、/MA quest、/Ma quest、/malody quest` | `无` | **Malody 成绩与账户** · 查看 Malody V 任务信息。 |
-| `/ma rank、/MA rank、/Ma rank、/malody rank` | `[玩家] [模式]` | **Malody 成绩与账户** · 查看玩家各模式段位。 |
-| `/ma renew、/MA renew、/Ma renew、/malody renew` | `无` | **Malody 成绩与账户** · 更新 Malody V 登录令牌。 |
-| `/ma reviewaction、/MA reviewaction、/Ma reviewaction、/malody reviewaction` | `<审核ID> <操作>` | **Malody 成绩与账户** · 对指定审核执行审核操作。 |
-| `/ma reviewcharts、/MA reviewcharts、/Ma reviewcharts、/malody reviewcharts` | `<SID>` | **Malody 成绩与账户** · 列出指定歌曲下待审核谱面。 |
-| `/ma reviewqueue、/MA reviewqueue、/Ma reviewqueue、/malody reviewqueue` | `[模式] [数量]` | **Malody 成绩与账户** · 查看待处理审核队列。 |
-| `/ma reviewreply、/MA reviewreply、/Ma reviewreply、/malody reviewreply` | `<审核ID> [回复内容]` | **Malody 成绩与账户** · 查看或回复审核内容。 |
-| `/ma reviewstatus、/MA reviewstatus、/Ma reviewstatus、/malody reviewstatus` | `<审核ID> <状态>` | **Malody 成绩与账户** · 更改审核状态。 |
-| `/ma review、/MA review、/Ma review、/malody review` | `<CID> [数量]` | **Malody 成绩与账户** · 查看指定谱面的审核记录。 |
-| `/ma searchstore、/MA searchstore、/Ma searchstore、/malody searchstore` | `<关键词>` | **Malody 成绩与账户** · 按关键词搜索谱面商店。 |
-| `/ma search、/MA search、/Ma search、/malody search` | `<关键词>` | **Malody 成绩与账户** · 按名称搜索 Malody V 玩家。 |
-| `/ma settype、/MA settype、/Ma settype、/malody settype` | `<CID> <类型>` | **Malody 成绩与账户** · 修改谱面的类型标记。 |
-| `/ma skincheck、/MA skincheck、/Ma skincheck、/malody skincheck` | `<皮肤哈希>` | **Malody 成绩与账户** · 按皮肤哈希检查皮肤信息。 |
-| `/ma skin、/MA skin、/Ma skin、/malody skin` | `[页码或数量]` | **Malody 成绩与账户** · 浏览皮肤列表。 |
-| `/ma slot、/MA slot、/Ma slot、/malody slot` | `<模式> <插槽数量>` | **Malody 成绩与账户** · 设置指定模式的插槽数量。 |
-| `/ma song、/MA song、/Ma song、/malody song` | `<SID>` | **Malody 成绩与账户** · 查询歌曲详情。 |
-| `/ma storeinfo、/MA storeinfo、/Ma storeinfo、/malody storeinfo` | `无` | **Malody 成绩与账户** · 查看商店账号信息。 |
-| `/ma store、/MA store、/Ma store、/malody store` | `[数量或页码]` | **Malody 成绩与账户** · 浏览谱面商店列表，支持页码或数量参数。 |
-| `/ma updatehash、/MA updatehash、/Ma updatehash、/malody updatehash` | `<CID> <哈希>` | **Malody 成绩与账户** · 更新谱面文件哈希。 |
-| `/ma wiki、/MA wiki、/Ma wiki、/malody wiki` | `<SID> [CID]` | **Malody 成绩与账户** · 查看歌曲或谱面的 Wiki 信息。 |
-| `/ma、/MA、/Ma、/malody` | `<子命令> [参数]` | **Malody 成绩与账户** · 使用 ma 子命令查询玩家、谱面、商店和排行，写操作需要账号登录。 |
-| `/mb、/mmb、/mabest、/mmbest` | `[玩家] [模式]` | **Malody 成绩与账户** · 查询玩家的最佳成绩列表并生成成绩卡片。 |
-| `/mm、/MM` | `[成绩、模式或玩家信息]` | **Malody 成绩与账户** · 按输入的成绩信息计算 Malody MM。 |
-| `/mm识别、/mmocr` | `回复或附上成绩图片` | **Malody 成绩与账户** · 提交成绩截图，按提示填写等级和倍率后识别成绩。 |
-| `/登录、/login` | `<用户名>` | **Malody 成绩与账户** · 开始账号登录流程，密码通过后续私聊消息输入。 |
-| `等待 Malody 登录密码时发送私聊消息` | `<密码>` | **Malody 成绩与账户** · 接收登录流程需要的密码，不作为独立查询命令使用。 |
-| `/mag、/ma猜歌、/音频猜歌、/malody猜歌` | `[模式或筛选条件]` | **Malody 猜歌** · 在群聊开始随机 Malody 谱面猜歌游戏。 |
-| `/ts、/提示、/猜歌提示、/音频提示、/tishi` | `无` | **Malody 猜歌** · 为当前群正在进行的猜歌游戏提供提示。 |
-| `/答案、/结束、/ans、/取消猜歌、/结束猜歌、/answer` | `无` | **Malody 猜歌** · 结束当前群的猜歌游戏并公布答案。 |
-| `在猜歌游戏进行中戳 Bot` | `无` | **Malody 猜歌** · 为当前群猜歌游戏发送一条提示。 |
-| `猜歌游戏进行中发送正确歌名` | `<歌曲答案>` | **Malody 猜歌** · 匹配当前群正在猜的 Malody 歌曲并公布结果。 |
-| `/bind` | `<osu!用户名或ID>` | **osu! bot** · 将 osu! 用户名或用户 ID 绑定到当前账号。 |
-| `/bmap` | `<谱面ID或谱面链接>` | **osu! bot** · 查询指定 osu! 谱面信息。 |
-| `/bp` | `[页码] [玩家]` | **osu! bot** · 查询 osu! 玩家最佳成绩列表。 |
-| `/bpa、/bp分析` | `[玩家名称] [模式]` | **osu! bot** · 绘制绑定玩家的 pp 成绩、游玩时长和谱面作者分布图。可在末尾临时填写玩家名称和模式。 |
-| `/convert` | `[--set <规则>] [--map <谱面>] [--rate <速度>] [--fln]` | **osu! bot** · 将 osu!mania 回放成绩转换到指定规则集。 |
-| `/getbg` | `<谱面ID或链接>` | **osu! bot** · 提取指定谱面的背景图片。 |
-| `/history` | `[玩家] [模式]` | **osu! bot** · 查看玩家近期成绩历史。 |
-| `/info、/INFO、/Info` | `[玩家] [模式]` | **osu! bot** · 查看 osu! 玩家资料和统计信息。 |
-| `/map` | `<谱面ID或谱面链接>` | **osu! bot** · 查询 osu! 谱面详情。 |
-| `/match` | `<多人房间ID>` | **osu! bot** · 抓取指定多人房间并生成记录截图。 |
-| `/mu` | `[玩家]` | **osu! bot** · 查看 mania 玩家技能值信息。 |
-| `/osubot、/OSUBot、/osuhelp` | `无` | **osu! bot** · 查看 osu! 查分插件的使用说明。 |
-| `/osudl` | `<谱面ID或谱包ID>` | **osu! bot** · 按谱面或谱包 ID 获取 osu! 谱面文件。 |
-| `/osu音频提示` | `无（游戏进行时）` | **osu! bot** · 为正在进行的音频猜歌游戏提供提示。 |
-| `/pfm、/bplist` | `[玩家] [数量]` | **osu! bot** · 查询 osu! 玩家 Best Performance 成绩列表。 |
-| `/pr、/PR、/Pr、/pR` | `[玩家] [模式]` | **osu! bot** · 查看 osu! 用户排名信息。 |
-| `/rating` | `[玩家或成绩链接]` | **osu! bot** · 查询 osu! 玩家或成绩的评级信息。 |
-| `/re、/RE、/Re、/rE、/recent` | `[玩家] [模式]` | **osu! bot** · 查看 osu! 玩家最近游玩成绩。 |
-| `/sbbind` | `<玩家名称>` | **osu! bot** · 将当前 QQ 账号关联到 ppysb 的 osu! 玩家。 |
-| `/sbunbind` | `无` | **osu! bot** · 解除当前 QQ 账号关联的 ppysb 玩家。 |
-| `/score` | `[玩家] <谱面ID>` | **osu! bot** · 查询指定玩家的谱面成绩。 |
-| `/tbp、/todaybp` | `[玩家]` | **osu! bot** · 查询今日新增的最佳成绩。 |
-| `/unbind` | `无` | **osu! bot** · 解除当前账号与 osu! 用户的绑定。 |
-| `/倍速` | `<速度> 并提交所需文件` | **osu! bot** · 按指定速度处理 osu!mania 谱面或回放。 |
-| `/切换lazer` | `[开/关]` | **osu! bot** · 切换 osu! 成绩查询使用的 lazer 模式。 |
-| `/反键` | `回复谱面文件` | **osu! bot** · 对 osu!mania 谱面执行反键处理。 |
-| `/图片提示` | `无（游戏进行时）` | **osu! bot** · 为正在进行的图片猜歌游戏提供提示。 |
-| `/开始osu!mania图片猜歌游戏` | `无` | **osu! bot** · 在群内启动 osu!mania 图片猜歌游戏。 |
-| `/开始osu!mania音频猜歌游戏` | `无` | **osu! bot** · 在群内启动 osu!mania 音频猜歌游戏。 |
-| `/开始osu!谱面猜歌游戏` | `无` | **osu! bot** · 在群内启动 osu! 谱面猜歌游戏。 |
-| `/成就、/medal` | `[玩家]` | **osu! bot** · 查看玩家获得的 osu! 勋章。 |
-| `/推荐、/推荐谱面、/推荐铺面、/recommend` | `[玩家] [模式]` | **osu! bot** · 按玩家信息推荐 osu! 谱面。 |
-| `/更改背景、/更新背景` | `回复图片或提供图片` | **osu! bot** · 设置成绩图片使用的背景。 |
-| `/更新信息、/update` | `无` | **osu! bot** · 清理并更新当前绑定玩家的缓存个人资料。 |
-| `/更新模式` | `[模式]` | **osu! bot** · 设置 osu! 查分与谱面查询使用的游戏模式。 |
-| `/清空背景、/清除背景、/重置背景` | `无` | **osu! bot** · 清除当前账号设置的成绩图片背景。 |
-| `/群内排名` | `[模式]` | **osu! bot** · 展示当前群成员的 osu! 排名。 |
-| `/谱面提示` | `无（游戏进行时）` | **osu! bot** · 为正在进行的 osu! 谱面猜歌提供提示。 |
-| `/预览、/完整预览、/preview` | `<谱面ID或谱面链接>` | **osu! bot** · 生成或播放谱面预览。 |
-| `发送“下载”加 osu! 谱包链接（链接需包含谱包ID、模式和谱面ID）` | `下载https://osu.ppy.sh/beatmapsets/<谱包ID>#<模式>/<谱面ID>` | **osu! bot** · 识别 osu.ppy.sh 谱包链接并下载指定谱面。 |
-| `符合消息条件时触发` | `无（由消息或事件触发）` | **osu! bot** · osu! 玩家、成绩与谱面工具。 |
-| `/希腊字母生成、/osugreek` | `<希腊字母> 并附图片` | **osu! Greek** · 在图片中央添加指定希腊字母效果。 |
-| `/ett、/msd` | `回复谱面或输入ID [速度]` | **osu!mania 工具箱** · 估算谱面 Etterna MSD 难度。 |
-| `/mapview、/rework2` | `[谱面ID] [+mods] [x速度] [OD数值]` | **osu!mania 工具箱** · 分析 osu!mania 谱面键型和难度估计，支持回复谱面文件或输入谱面 ID。 |
-| `/omtk` | `[工具名] [页码]` | **osu!mania 工具箱** · 查看分析、回放处理和成绩工具的列表；可追加工具名查看详细用法。 |
-| `/omtk ett` | `[页码]` | **osu!mania 工具箱** · 查看「Etterna难度计算」的工具箱帮助，可指定页码。 |
-| `/omtk mapview` | `[页码]` | **osu!mania 工具箱** · 查看「键型分析与难度估计」的工具箱帮助，可指定页码。 |
-| `/omtk report` | `[页码]` | **osu!mania 工具箱** · 查看「反馈问题」的工具箱帮助，可指定页码。 |
-| `/omtk rework` | `无` | **osu!mania 工具箱** · 该入口已转由 /mapview 提供键型分析和难度估计。 |
-| `/omtk 偏差、/omtk delta` | `[页码]` | **osu!mania 工具箱** · 查看「判定偏差柱状图」的工具箱帮助，可指定页码。 |
-| `/omtk 分析、/omtk analyze` | `[页码]` | **osu!mania 工具箱** · 查看「作弊分析」的工具箱帮助，可指定页码。 |
-| `/omtk 单曲、/omtk acc` | `[页码]` | **osu!mania 工具箱** · 查看「单曲ACC计算」的工具箱帮助，可指定页码。 |
-| `/omtk 投皮、/omtk percy` | `[页码]` | **osu!mania 工具箱** · 查看「投皮」的工具箱帮助，可指定页码。 |
-| `/omtk 按压、/omtk pressingtime` | `[页码]` | **osu!mania 工具箱** · 查看「回放按键时间分析」的工具箱帮助，可指定页码。 |
-| `/omtk 散点、/omtk scatter` | `[页码]` | **osu!mania 工具箱** · 查看「判定散点图」的工具箱帮助，可指定页码。 |
-| `/omtk 血条、/omtk lifebar` | `[页码]` | **osu!mania 工具箱** · 查看「血条变化折线图」的工具箱帮助，可指定页码。 |
-| `/omtk 转换、/omtk cvtscore` | `[页码]` | **osu!mania 工具箱** · 查看「成绩转换」的工具箱帮助，可指定页码。 |
-| `/omtk 键型、/omtk pattern` | `[页码]` | **osu!mania 工具箱** · 查看「键型分析」的工具箱帮助，可指定页码。 |
-| `/omtk 频谱、/omtk spectrum` | `[页码]` | **osu!mania 工具箱** · 查看「回放频谱」的工具箱帮助，可指定页码。 |
-| `/偏差、/delta` | `回复回放文件 [谱面ID]` | **osu!mania 工具箱** · 根据回放绘制判定偏差柱状图。 |
-| `/分析、/analyse、/analyze` | `回复回放文件 [谱面ID] [-reason]` | **osu!mania 工具箱** · 计算回放的按压、频谱和偏差特征。 |
-| `/单曲、/acc` | `[谱面或成绩参数]` | **osu!mania 工具箱** · 运行 Malody Toolkit 的 acc 工具。 |
-| `/投皮、/percy` | `回复 PNG [数值] [lazer/lzr]` | **osu!mania 工具箱** · 分析 LN 皮肤投皮数值，或按目标数值修改图片。 |
-| `/按压、/pressingtime` | `回复回放文件` | **osu!mania 工具箱** · 分析回放中各轨道的按压时长。 |
-| `/散点、/scatter` | `回复回放文件 [谱面ID]` | **osu!mania 工具箱** · 绘制回放偏差随时间变化的散点图。 |
-| `/血条、/life、/lifebar` | `回复 .osr 文件` | **osu!mania 工具箱** · 绘制回放中的血条变化曲线。 |
-| `/转换、/cvtscore` | `<目标规则集> 并提交回放及谱面` | **osu!mania 工具箱** · 按目标规则集重新计算回放成绩。 |
-| `/键型、/pattern` | `回复谱面文件或输入谱面ID` | **osu!mania 工具箱** · 分析谱面中的键型结构。 |
-| `/频谱、/spectrum` | `回复 .osr/.mr 文件` | **osu!mania 工具箱** · 分析回放打击事件频谱。 |
-| `/arc帮助、/arcaea帮助` | `无` | **Arcaea 贴纸** · 查看 Arcaea 贴纸的参数和用法。 |
-| `arc` | `<文字、图片或@用户> [--id <表情 ID，不提供时则随机选择>] [--name <角色名称，例如 luna，与 -i 参数二选一>] [-x <文字的中心 x 坐标>] [-y <文字的中心 y 坐标>] [--rotate <文字旋转的角度>] [--size <文字的大小>] [--color <文字颜色，使用 16 进制格式>] [--stroke-width <文本描边宽度>] [--stroke-color <文本描边颜色，使用 16 进制格式>]` | **Arcaea 贴纸** · 生成Arcaea风格的表情包（跨平台支持） |
-| `/生图、/画图、/生成图片` | `<提示词> [--width <宽度>] [--height <高度>] [--model <模型>] [--seed <种子>] [--negative <文本>] [--nologo] [--enhance] [--private]` | **图片生成** · 按文本提示生成图片，可设置尺寸、模型、随机种子和负面提示词。 |
-| `/生图帮助、/绘图帮助` | `无` | **图片生成** · 查看提示词、尺寸、模型、随机种子和负面提示词等用法。 |
-| `capoo` | `无` | **猫猫虫** · 发送capoo指令后bot会随机发出一张capoo的可爱表情包 |
-| `符合消息条件时触发` | `无（由消息或事件触发）` | **群聊表情互动** · 群内斜杠消息附加指定表情反应。 |
-| `/gif倒放` | `<GIF 图片>` | **表情包制作** · 将回复中的 GIF 动画反向播放。 |
-| `/gif分解` | `<GIF 图片>` | **表情包制作** · 将 GIF 拆分成逐帧图片并发送。 |
-| `/gif变速` | `<速度参数> <GIF 图片>` | **表情包制作** · 调整动画速度或帧率。倍率、百分比、秒数和 FPS 格式见帮助详情。 |
-| `/gif合成` | `[帧间隔秒数] <多张图片>` | **表情包制作** · 将多张图片按顺序合成为 GIF，可设置帧间隔。 |
-| `/全局启用表情` | `<表情关键词>` | **表情包制作** · 切换全局表情管控模式后，未被禁用的表情均可使用。 |
-| `/全局禁用表情` | `<表情关键词>` | **表情包制作** · 切换全局表情管控模式后，仅已启用的表情可使用。 |
-| `/反相` | `<图片>` | **表情包制作** · 对回复的图片进行颜色反相处理。 |
-| `/启用表情` | `<表情关键词>` | **表情包制作** · 为当前用户解除指定表情模板的禁用状态。 |
-| `/图片操作` | `无` | **表情包制作** · 显示支持的 GIF 和图片操作指令。 |
-| `/旋转` | `[角度] <图片>` | **表情包制作** · 按角度旋转回复的图片。 |
-| `/横向拼接` | `<多张图片>` | **表情包制作** · 按发送顺序将多张图片横向拼接。 |
-| `/水平翻转` | `<图片>` | **表情包制作** · 将回复的图片左右翻转。 |
-| `/灰度图` | `<图片>` | **表情包制作** · 将回复的图片转换为灰度图。 |
-| `/禁用表情` | `<表情关键词>` | **表情包制作** · 为当前用户禁用指定表情模板。 |
-| `/竖直翻转` | `<图片>` | **表情包制作** · 将回复的图片上下翻转。 |
-| `/纵向拼接` | `<多张图片>` | **表情包制作** · 按发送顺序将多张图片纵向拼接。 |
-| `/缩放` | `<尺寸或比例> <图片>` | **表情包制作** · 按像素尺寸或百分比缩放回复的图片，例如 100x100、100x 或 50%。 |
-| `/表情包制作` | `无` | **表情包制作** · 查看表情模板列表，模板名称还可展开查看对应的触发词。 |
-| `/表情搜索` | `<关键词>` | **表情包制作** · 按关键词查找表情模板。 |
-| `/表情详情` | `<表情名称>` | **表情包制作** · 查看表情模板的触发词、素材数量、参数和预览。 |
-| `/表情调用统计` | `[我的] [全局] [时间范围] [表情名称]` | **表情包制作** · 生成指定时间范围、用户或全局范围内的表情调用统计图。 |
-| `/裁剪` | `<裁剪参数> <图片>` | **表情包制作** · 按指定的坐标范围、像素尺寸或宽高比裁剪回复的图片。 |
-| `/随机表情` | `[文字、图片或@用户]` | **表情包制作** · 从当前可用模板中选择一个符合素材数量的表情制作。 |
-| `/同意全部申请` | `无` | **好友与群邀请管理** · 批量通过当前已收集的好友申请与群邀请。 |
-| `/同意申请` | `<QQ号或群号>` | **好友与群邀请管理** · 通过指定 QQ 号的好友申请或群号对应的群邀请。 |
-| `/拒绝全部申请` | `无` | **好友与群邀请管理** · 批量拒绝当前已收集的好友申请与群邀请。 |
-| `/拒绝申请` | `<QQ号或群号>` | **好友与群邀请管理** · 拒绝指定好友申请或群邀请。 |
-| `/查看申请` | `无` | **好友与群邀请管理** · 列出已收集的好友申请与群邀请。 |
-| `/清空申请列表` | `无` | **好友与群邀请管理** · 清空本地保存的好友申请和群邀请记录。 |
-| `Bot 收到加入群聊的邀请事件` | `事件触发` | **好友与群邀请管理** · 记录群邀请资料并通知超级用户审批。 |
-| `QQ 好友申请事件` | `事件触发` | **好友与群邀请管理** · 记录申请资料并通知超级用户审批。 |
-| `//响应` | `无` | **黑名单管理** · 从群聊黑名单中移除当前群。 |
-| `//静默` | `无` | **黑名单管理** · 将当前群加入群聊黑名单。 |
-| `/屏蔽所有好友、/拉黑所有好友` | `无（仅限超级用户）` | **黑名单管理** · 将 Bot 当前好友加入用户黑名单。 |
-| `/屏蔽所有群、/拉黑所有群` | `无（仅限超级用户）` | **黑名单管理** · 将 Bot 当前已加入的所有群加入黑名单。 |
-| `/屏蔽用户、/拉黑用户` | `<QQ号...>（仅限超级用户）` | **黑名单管理** · 屏蔽指定 QQ 用户。 |
-| `/屏蔽私聊、/拉黑私聊` | `<QQ号...>（仅限超级用户）` | **黑名单管理** · 屏蔽指定 QQ 用户的私聊。 |
-| `/屏蔽群、/拉黑群` | `<群号...>（仅限超级用户）` | **黑名单管理** · 屏蔽指定群聊。 |
-| `/查看用户黑名单` | `[Bot QQ号]（仅限超级用户）` | **黑名单管理** · 查看当前 Bot 屏蔽的用户。 |
-| `/查看私聊黑名单` | `[Bot QQ号]（仅限超级用户）` | **黑名单管理** · 查看当前 Bot 屏蔽的私聊用户。 |
-| `/查看群聊黑名单` | `[Bot QQ号]（仅限超级用户）` | **黑名单管理** · 查看当前 Bot 屏蔽的群聊和响应状态。 |
-| `/清空所有黑名单、/重置所有黑名单` | `无，按提示确认（仅限超级用户）` | **黑名单管理** · 确认后清除全部 Bot 的黑名单设置。 |
-| `/解封所有好友、/解禁所有好友` | `无（仅限超级用户）` | **黑名单管理** · 清除 Bot 的用户黑名单。 |
-| `/解封所有群、/解禁所有群` | `无（仅限超级用户）` | **黑名单管理** · 清除 Bot 的群黑名单。 |
-| `/解封用户、/解禁用户` | `<QQ号...>（仅限超级用户）` | **黑名单管理** · 解除指定 QQ 用户屏蔽。 |
-| `/解封私聊、/解禁私聊` | `<QQ号...>（仅限超级用户）` | **黑名单管理** · 解除指定 QQ 用户的私聊屏蔽。 |
-| `/解封群、/解禁群` | `<群号...>（仅限超级用户）` | **黑名单管理** · 解除指定群聊屏蔽。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `Bot 在群内被禁言` | `事件触发` | **黑名单管理** · 根据配置可自动将该群加入黑名单。 |
-| `/help、/baka帮助、/bakahelp` | `无` | **Bakahelp** · 仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。 |
-| `help、baka帮助、bakahelp` | `无` | **Bakahelp** · 仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。 |
-| `发送 TD 或 /TD` | `无` | **Bakahelp** · 关闭所在群的自动帮助提示；私聊仅关闭当前用户的提示。 |
-| `群或私聊消息以 / 开头` | `消息内容` | **Bakahelp** · 在尚未关闭提示的会话中自动发送帮助页入口。 |
-| `/rework` | `[谱面ID、谱包ID或 CID] [速度、mods、OD]` | **Rework 谱面分析** · 发送 /rework2，生成 ManiaMapAnalyser 风格的 osu! 谱面分析卡片。 |
-| `/解析、/parse` | `[视频链接]` | **哔哩哔哩视频解析** · 解析哔哩哔哩视频链接并发送视频文件。链接可写在命令参数中，也可回复包含视频链接的消息。 |
-| `Bot 收到已配置的群聊邀请` | `事件触发` | **账号同步与更新** · 自动接受已配置的群聊邀请。Bot 启动连接时也会检查群状态。 |
-| `/测试、/ping` | `无` | **连通性测试** · 查看 Bot 是否正常响应。 |
-| 表情包关键词与文字格式（展开下方列表） | 见展开列表 | 表情包制作，共 424 个触发项。 |
+| `/acc、//acc` | `[谱面或成绩参数]` | 运行 Malody Toolkit 的 acc 工具。 |
+| `/download` | `[CID]` | 回复谱面文件或提供 CID，下载对应谱面及资源。 |
+| `/exptop` | `[页码或数量]` | 查询经验或 MM 排行榜。 |
+| `/lv、/level` | `回复 .mc 文件` | 回复一条包含 .mc 谱面文件的消息，估算谱面难度。 |
+| `/ma achieve、/MA achieve、/Ma achieve、/malody achieve` | `[玩家]` | 查看指定玩家的成就列表。 |
+| `/ma activity、/MA activity、/Ma activity、/malody activity` | `[玩家]` | 查看玩家近期动态。 |
+| `/ma addcomment、/MA addcomment、/Ma addcomment、/malody addcomment` | `<CID> <评论内容>` | 为指定谱面发表评论。 |
+| `/ma addfriend、/MA addfriend、/Ma addfriend、/malody addfriend` | `<玩家UID>` | 向指定玩家发送好友请求。 |
+| `/ma addreview、/MA addreview、/Ma addreview、/malody addreview` | `<CID> <内容>` | 为谱面添加审核记录。 |
+| `/ma buyskin、/MA buyskin、/Ma buyskin、/malody buyskin` | `<皮肤ID> confirm` | 购买指定皮肤，需要二次确认。 |
+| `/ma chartlist、/MA chartlist、/Ma chartlist、/malody chartlist` | `[页码]` | 分页浏览玩家的谱面列表。 |
+| `/ma chartonline、/MA chartonline、/Ma chartonline、/malody chartonline` | `<谱面哈希>` | 按谱面哈希查询在线谱面。 |
+| `/ma chartpromote、/MA chartpromote、/Ma chartpromote、/malody chartpromote` | `<CID> confirm` | 推广指定谱面，需要输入确认参数。 |
+| `/ma chartrank、/MA chartrank、/Ma chartrank、/malody chartrank` | `<CID> [模式] [数量]` | 查询谱面的玩家成绩排行。 |
+| `/ma chart、/MA chart、/Ma chart、/malody chart` | `<CID>` | 查看谱面详情和封面。 |
+| `/ma choice、/MA choice、/Ma choice、/malody choice` | `[数量]` | 查看商店精选内容。 |
+| `/ma comment、/MA comment、/Ma comment、/malody comment` | `<CID> [数量]` | 查看指定谱面的评论。 |
+| `/ma createchart、/MA createchart、/Ma createchart、/malody createchart` | `<SID> <版本> <模式> <难度>` | 在 Malody V 创建谱面记录。 |
+| `/ma createsong、/MA createsong、/Ma createsong、/malody createsong` | `<标题> <艺术家>` | 在 Malody V 创建歌曲记录。 |
+| `/ma danall、/MA danall、/Ma danall、/malody danall` | `[模式]` | 列出指定模式的段位信息。 |
+| `/ma dan、/MA dan、/Ma dan、/malody dan` | `[玩家] [模式]` | 查看玩家的段位通过记录。 |
+| `/ma delaccount、/MA delaccount、/Ma delaccount、/malody delaccount` | `confirm` | 删除当前绑定账号，需要二次确认。 |
+| `/ma delcomment、/MA delcomment、/Ma delcomment、/malody delcomment` | `<评论ID>` | 删除指定评论。 |
+| `/ma delreview、/MA delreview、/Ma delreview、/malody delreview` | `<审核ID>` | 删除指定审核记录。 |
+| `/ma donate、/MA donate、/Ma donate、/malody donate` | `<CID> <金币数>` | 向谱面捐赠金币。 |
+| `/ma download、/MA download、/Ma download、/malody download` | `<CID>` | 获取指定谱面的下载信息。 |
+| `/ma eventrank、/MA eventrank、/Ma eventrank、/malody eventrank` | `<活动ID> [数量]` | 查询 Malody 活动排行。 |
+| `/ma event、/MA event、/Ma event、/malody event` | `[数量]` | 列出当前及已结束的 Malody V 活动。需要登录，可指定返回数量，最多 100 条。 |
+| `/ma friendstore、/MA friendstore、/Ma friendstore、/malody friendstore` | `[数量]` | 浏览好友分享的谱面商店内容。 |
+| `/ma friend、/MA friend、/Ma friend、/malody friend` | `[页码]` | 查看 Malody V 好友列表。 |
+| `/ma global、/MA global、/Ma global、/malody global` | `[模式] [榜单类型] [数量]` | 查询全球玩家排名。 |
+| `/ma help、/MA help、/Ma help、/malody help` | `无` | 显示可用的 Malody V 子命令和使用提示。 |
+| `/ma items、/MA items、/Ma items、/malody items` | `[玩家]` | 查看指定玩家拥有的道具。 |
+| `/ma like、/MA like、/Ma like、/malody like` | `<CID>` | 为指定谱面点赞。 |
+| `/ma logout、/MA logout、/Ma logout、/malody logout` | `无` | 退出当前 Malody V 登录。 |
+| `/ma marlo、/MA marlo、/Ma marlo、/malody marlo` | `[玩家]` | 查询玩家的 Marlo 记录。 |
+| `/ma mute、/MA mute、/Ma mute、/malody mute` | `<玩家UID> confirm` | 屏蔽指定玩家，需要二次确认。 |
+| `/ma mychart、/MA mychart、/Ma mychart、/malody mychart` | `[玩家] [数量]` | 查看自己的或指定玩家创建的谱面。 |
+| `/ma myreview、/MA myreview、/Ma myreview、/malody myreview` | `[数量]` | 查看自己提交的审核记录。 |
+| `/ma news、/MA news、/Ma news、/malody news` | `无` | 查看 Malody V 系统消息和推送。 |
+| `/ma profile、/MA profile、/Ma profile、/malody profile` | `[玩家]` | 查询玩家资料卡。 |
+| `/ma promote、/MA promote、/Ma promote、/malody promote` | `[数量]` | 查看 Malody V 推广谱面。 |
+| `/ma puzzle、/MA puzzle、/Ma puzzle、/malody puzzle` | `[玩家]` | 查看玩家拼图收集进度。 |
+| `/ma quest、/MA quest、/Ma quest、/malody quest` | `无` | 查看 Malody V 任务信息。 |
+| `/ma rank、/MA rank、/Ma rank、/malody rank` | `[玩家] [模式]` | 查看玩家各模式段位。 |
+| `/ma renew、/MA renew、/Ma renew、/malody renew` | `无` | 更新 Malody V 登录令牌。 |
+| `/ma reviewaction、/MA reviewaction、/Ma reviewaction、/malody reviewaction` | `<审核ID> <操作>` | 对指定审核执行审核操作。 |
+| `/ma reviewcharts、/MA reviewcharts、/Ma reviewcharts、/malody reviewcharts` | `<SID>` | 列出指定歌曲下待审核谱面。 |
+| `/ma reviewqueue、/MA reviewqueue、/Ma reviewqueue、/malody reviewqueue` | `[模式] [数量]` | 查看待处理审核队列。 |
+| `/ma reviewreply、/MA reviewreply、/Ma reviewreply、/malody reviewreply` | `<审核ID> [回复内容]` | 查看或回复审核内容。 |
+| `/ma reviewstatus、/MA reviewstatus、/Ma reviewstatus、/malody reviewstatus` | `<审核ID> <状态>` | 更改审核状态。 |
+| `/ma review、/MA review、/Ma review、/malody review` | `<CID> [数量]` | 查看指定谱面的审核记录。 |
+| `/ma searchstore、/MA searchstore、/Ma searchstore、/malody searchstore` | `<关键词>` | 按关键词搜索谱面商店。 |
+| `/ma search、/MA search、/Ma search、/malody search` | `<关键词>` | 按名称搜索 Malody V 玩家。 |
+| `/ma settype、/MA settype、/Ma settype、/malody settype` | `<CID> <类型>` | 修改谱面的类型标记。 |
+| `/ma skincheck、/MA skincheck、/Ma skincheck、/malody skincheck` | `<皮肤哈希>` | 按皮肤哈希检查皮肤信息。 |
+| `/ma skin、/MA skin、/Ma skin、/malody skin` | `[页码或数量]` | 浏览皮肤列表。 |
+| `/ma slot、/MA slot、/Ma slot、/malody slot` | `<模式> <插槽数量>` | 设置指定模式的插槽数量。 |
+| `/ma song、/MA song、/Ma song、/malody song` | `<SID>` | 查询歌曲详情。 |
+| `/ma storeinfo、/MA storeinfo、/Ma storeinfo、/malody storeinfo` | `无` | 查看商店账号信息。 |
+| `/ma store、/MA store、/Ma store、/malody store` | `[数量或页码]` | 浏览谱面商店列表，支持页码或数量参数。 |
+| `/ma updatehash、/MA updatehash、/Ma updatehash、/malody updatehash` | `<CID> <哈希>` | 更新谱面文件哈希。 |
+| `/ma wiki、/MA wiki、/Ma wiki、/malody wiki` | `<SID> [CID]` | 查看歌曲或谱面的 Wiki 信息。 |
+| `/ma2om、/mc2om、/ma2osu、/mc2osu` | `<回复 .mc/.mcz/.osz/.zip 文件>` | 将 .mc 转为 .osu；将 .mcz、.osz 或 .zip 内的 .mc 谱面转为 osu!mania 并打包为 .osz。 |
+| `/mag、/ma猜歌、/音频猜歌、/malody猜歌` | `[模式或筛选条件]` | 在群聊开始随机 Malody 谱面猜歌游戏。 |
+| `/ma、/MA、/Ma、/malody` | `<子命令> [参数]` | 使用 ma 子命令查询玩家、谱面、商店和排行，写操作需要账号登录。 |
+| `/mb、/mmb、/mabest、/mmbest` | `[玩家] [模式]` | 查询玩家的最佳成绩列表并生成成绩卡片。 |
+| `/mmtop` | `[页码或数量]` | 查询经验或 MM 排行榜。 |
+| `/mm、/MM` | `[成绩、模式或玩家信息]` | 按输入的成绩信息计算 Malody MM。 |
+| `/mm识别、/mmocr` | `<回复或附上成绩图片>` | 提交成绩截图，按提示填写等级和倍率后识别成绩。 |
+| `/mp32ogg` | `<回复 .mp3 文件>` | 将回复的 MP3 音频文件转换成 OGG。 |
+| `/mrv2mr` | `<回复 .mrv 文件>` | 将 .mrv 回放转换为 .mr 格式。 |
+| `/ncm2mp3` | `<回复 .ncm 文件>` | 将回复的 NCM 音频文件转换成 MP3。 |
+| `/ncm2ogg` | `<回复 .ncm 文件>` | 将回复的 NCM 音频文件转换成 OGG。 |
+| `/om2ma、/om2mc、/osu2ma、/osu2mc` | `<回复 .osu/.osz/.zip 文件>` | 将 .osu 转为 .mc；将 .osz 或 .zip 内的 .osu 转为 .mc 并打包为 .mcz，包内 MP3 音频会转为 OGG 并同步更新谱面引用。 |
+| `/rank` | `<CID> [模式]` | 查看指定 Malody 谱面的成绩排行榜。 |
+| `/replayrd` | `回复 .mr/.mrv 回放文件` | 将回复中的 Malody 回放渲染成视频。 |
+| `/sm、/搜歌` | `<歌曲关键词或SID>` | 按歌曲名或 SID 搜索 Malody 歌曲并显示谱面信息。 |
+| `/tc、/提交谱面` | `<回复 .mcz 文件>` | 提交谱面进行处理，具体步骤以 Bot 的后续提示为准。 |
+| `/timeinverse` | `<回复 .osu/.mc/.osz/.mcz 文件>` | 将谱面事件沿时间轴反转。 |
+| `/toinverse` | `<回复 .mc/.mcz 文件>` | 为 .mc / .mcz 谱面补全反键尾判定。 |
+| `/ts、/提示、/猜歌提示、/音频提示、/tishi` | `无` | 为当前群正在进行的猜歌游戏提供提示。 |
+| `/倍速` | `<速度> 并提交所需文件` | 按指定速度处理 osu!mania 谱面或回放。 |
+| `/倍速变调` | `<倍速及音调参数>，并回复音频文件` | 按指定速度和音调调整回复的音频文件。 |
+| `/合谱` | `<按提示提交谱面文件>` | 使用 Malody 合谱工具组合多份谱面。 |
+| `/登录、/login` | `<用户名>` | 开始账号登录流程，密码通过后续私聊消息输入。 |
+| `/答案、/结束、/ans、/取消猜歌、/结束猜歌、/answer` | `无` | 结束当前群的猜歌游戏并公布答案。 |
+| `/解压、/unzip` | `<回复 .zip/.osz/.mcz 文件>` | 解压 ZIP、OSZ 或 MCZ 文件并发送其中内容。 |
+| `以 to1K 至 to9K 开头，可附最多三项内容` | `<键数>K [附加内容]` | 按指令中的键数转换谱面格式。 |
+| `发送 /replayrd 后，Bot 在同群等待谱面文件` | `<对应谱面文件> 或 [1 取消]` | 接收与回放格式对应的 .mc/.mcz 或 .osu/.osz 文件。等待期间发送 1 可取消或跳过。 |
+| `发送 tojack，可选一个整数参数` | `[正整数]` | 将回复谱面的 beat 和 endbeat 分母统一为指定值。 |
+| `在猜歌游戏进行中戳 Bot` | `无` | 为当前群猜歌游戏发送一条提示。 |
+| `猜歌游戏进行中发送正确歌名` | `<歌曲答案>` | 匹配当前群正在猜的 Malody 歌曲并公布结果。 |
+| `等待 Malody 登录密码时发送私聊消息` | `<密码>` | 接收登录流程需要的密码，不作为独立查询命令使用。 |
+
+## osu!
+
+| 触发名或触发语义 | 参数 | 功能说明 |
+| --- | --- | --- |
+| `/bind` | `<osu!用户名或ID>` | 将 osu! 用户名或用户 ID 绑定到当前账号。 |
+| `/bmap` | `<谱面ID或谱面链接>` | 查询指定 osu! 谱面信息。 |
+| `/bp` | `[页码] [玩家]` | 查询 osu! 玩家最佳成绩列表。 |
+| `/bpa、/bp分析` | `[玩家名称] [模式]` | 绘制绑定玩家的 pp 成绩、游玩时长和谱面作者分布图。可在末尾临时填写玩家名称和模式。 |
+| `/convert` | `[--set <规则>] [--map <谱面>] [--rate <速度>] [--fln]` | 将 osu!mania 回放成绩转换到指定规则集。 |
+| `/ett、/msd` | `回复谱面或输入ID [速度]` | 估算谱面 Etterna MSD 难度。 |
+| `/getbg` | `<谱面ID或链接>` | 提取指定谱面的背景图片。 |
+| `/history` | `[玩家] [模式]` | 查看玩家近期成绩历史。 |
+| `/info、/INFO、/Info` | `[玩家] [模式]` | 查看 osu! 玩家资料和统计信息。 |
+| `/map` | `<谱面ID或谱面链接>` | 查询 osu! 谱面详情。 |
+| `/mapview、/rework2` | `[谱面ID] [+mods] [x速度] [OD数值]` | 分析 osu!mania 谱面键型和难度估计，支持回复谱面文件或输入谱面 ID。 |
+| `/match` | `<多人房间ID>` | 抓取指定多人房间并生成记录截图。 |
+| `/mu` | `[玩家]` | 查看 mania 玩家技能值信息。 |
+| `/omtk` | `[工具名] [页码]` | 查看分析、回放处理和成绩工具的列表；可追加工具名查看详细用法。 |
+| `/omtk ett` | `回复谱面文件或填写谱面ID [x速度]` | 计算谱面 Etterna MSD 难度值。 |
+| `/omtk mapview` | `回复谱面文件或填写谱面ID，可选速度、mods和OD` | 分析 osu!mania 谱面键型和难度估计。 |
+| `/omtk report` | `无` | 查看工具箱问题反馈入口。 |
+| `/omtk rework` | `无` | 该入口已转由 /mapview 提供键型分析和难度估计。 |
+| `/omtk 偏差、/omtk delta` | `回复回放文件 [谱面ID]` | 绘制回放判定偏差分布图。 |
+| `/omtk 分析、/omtk analyze` | `回复回放文件 [谱面ID] [-reason]` | 分析回放的按压时长、频谱和判定偏差等特征。 |
+| `/omtk 单曲、/omtk acc` | `<段位> <ACC序列> 或回复谱面 [--sv2] [-r]` | 计算段位单曲准确率或根据单曲 ACC 推算段内变化。 |
+| `/omtk 投皮、/omtk percy` | `回复 PNG [目标值] [lazer/lzr]` | 检查 LN 面身图片投皮程度，或按目标值调整 PNG。 |
+| `/omtk 按压、/omtk pressingtime` | `回复 .osr/.mr 文件` | 根据 osu! 或 Malody 回放生成按压时间分布。 |
+| `/omtk 散点、/omtk scatter` | `回复回放文件 [谱面ID]` | 绘制回放判定偏差随时间变化的散点图。 |
+| `/omtk 血条、/omtk lifebar` | `回复 .osr 文件` | 绘制回放中的血条变化。 |
+| `/omtk 转换、/omtk cvtscore` | `[目标ruleset] [谱面ID] [--sv2/--nosv2]` | 用指定 ruleset 对回放重新计算成绩。 |
+| `/omtk 键型、/omtk pattern` | `回复谱面文件或填写谱面ID` | 分析谱面的键型和相关结构。 |
+| `/omtk 频谱、/omtk spectrum` | `回复 .osr/.mr 文件` | 生成回放打击事件的频谱图。 |
+| `/osubot、/OSUBot、/osuhelp` | `无` | 查看 osu! 查分插件的使用说明。 |
+| `/osudl` | `<谱面ID或谱包ID>` | 按谱面或谱包 ID 获取 osu! 谱面文件。 |
+| `/osu音频提示` | `无（游戏进行时）` | 为正在进行的音频猜歌游戏提供提示。 |
+| `/pfm、/bplist` | `[玩家] [数量]` | 查询 osu! 玩家 Best Performance 成绩列表。 |
+| `/pr、/PR、/Pr、/pR` | `[玩家] [模式]` | 查看 osu! 用户排名信息。 |
+| `/rating` | `[玩家或成绩链接]` | 查询 osu! 玩家或成绩的评级信息。 |
+| `/re、/RE、/Re、/rE、/recent` | `[玩家] [模式]` | 查看 osu! 玩家最近游玩成绩。 |
+| `/sbbind` | `<玩家名称>` | 将当前 QQ 账号关联到 ppysb 的 osu! 玩家。 |
+| `/sbunbind` | `无` | 解除当前 QQ 账号关联的 ppysb 玩家。 |
+| `/score` | `[玩家] <谱面ID>` | 查询指定玩家的谱面成绩。 |
+| `/tbp、/todaybp` | `[玩家]` | 查询今日新增的最佳成绩。 |
+| `/unbind` | `无` | 解除当前账号与 osu! 用户的绑定。 |
+| `/倍速` | `<速度> 并提交所需文件` | 按指定速度处理 osu!mania 谱面或回放。 |
+| `/偏差、/delta` | `回复回放文件 [谱面ID]` | 根据回放绘制判定偏差柱状图。 |
+| `/分析、/analyse、/analyze` | `回复回放文件 [谱面ID] [-reason]` | 计算回放的按压、频谱和偏差特征。 |
+| `/切换lazer` | `[开/关]` | 切换 osu! 成绩查询使用的 lazer 模式。 |
+| `/单曲、/acc` | `[谱面或成绩参数]` | 运行 Malody Toolkit 的 acc 工具。 |
+| `/反键` | `<回复谱面文件>` | 对 osu!mania 谱面执行反键处理。 |
+| `/图片提示` | `无（游戏进行时）` | 为正在进行的图片猜歌游戏提供提示。 |
+| `/希腊字母生成、/osugreek` | `<希腊字母> 并附图片` | 在图片中央添加指定希腊字母效果。 |
+| `/开始osu!mania图片猜歌游戏` | `无` | 在群内启动 osu!mania 图片猜歌游戏。 |
+| `/开始osu!mania音频猜歌游戏` | `无` | 在群内启动 osu!mania 音频猜歌游戏。 |
+| `/开始osu!谱面猜歌游戏` | `无` | 在群内启动 osu! 谱面猜歌游戏。 |
+| `/成就、/medal` | `[玩家]` | 查看玩家获得的 osu! 勋章。 |
+| `/投皮、/percy` | `回复 PNG [数值] [lazer/lzr]` | 分析 LN 皮肤投皮数值，或按目标数值修改图片。 |
+| `/按压、/pressingtime` | `<回复回放文件>` | 分析回放中各轨道的按压时长。 |
+| `/推荐、/推荐谱面、/推荐铺面、/recommend` | `[玩家] [模式]` | 按玩家信息推荐 osu! 谱面。 |
+| `/散点、/scatter` | `回复回放文件 [谱面ID]` | 绘制回放偏差随时间变化的散点图。 |
+| `/更改背景、/更新背景` | `<回复或发送图片>` | 设置成绩图片使用的背景。 |
+| `/更新信息、/update` | `无` | 清理并更新当前绑定玩家的缓存个人资料。 |
+| `/更新模式` | `[模式]` | 设置 osu! 查分与谱面查询使用的游戏模式。 |
+| `/清空背景、/清除背景、/重置背景` | `无` | 清除当前账号设置的成绩图片背景。 |
+| `/群内排名` | `[模式]` | 展示当前群成员的 osu! 排名。 |
+| `/血条、/life、/lifebar` | `回复 .osr 文件` | 绘制回放中的血条变化曲线。 |
+| `/谱面提示` | `无（游戏进行时）` | 为正在进行的 osu! 谱面猜歌提供提示。 |
+| `/转换、/cvtscore` | `<目标规则集> 并提交回放及谱面` | 按目标规则集重新计算回放成绩。 |
+| `/键型、/pattern` | `<回复谱面文件或谱面ID>` | 分析谱面中的键型结构。 |
+| `/预览、/完整预览、/preview` | `<谱面ID或谱面链接>` | 生成或播放谱面预览。 |
+| `/频谱、/spectrum` | `<回复 .osr/.mr 文件>` | 分析回放打击事件频谱。 |
+| `发送“下载”加 osu! 谱包链接（链接需包含谱包ID、模式和谱面ID）` | `下载https://osu.ppy.sh/beatmapsets/<谱包ID>#<模式>/<谱面ID>` | 识别 osu.ppy.sh 谱包链接并下载指定谱面。 |
+| `群内谱面猜歌游戏进行中发送答案` | `<歌曲名>` | 比较发送内容与当前谱面歌曲名；匹配成功后结束游戏并公布答案。 |
+
+## 创作与娱乐
+
+| 触发名或触发语义 | 参数 | 功能说明 |
+| --- | --- | --- |
+| `/arc帮助、/arcaea帮助` | `无` | 查看 Arcaea 贴纸的参数和用法。 |
+| `/gif倒放` | `<GIF 图片>` | 将回复中的 GIF 动画反向播放。 |
+| `/gif分解` | `<GIF 图片>` | 将 GIF 拆分成逐帧图片并发送。 |
+| `/gif变速` | `<速度参数> <GIF 图片>` | 调整动画速度或帧率。倍率、百分比、秒数和 FPS 格式见帮助详情。 |
+| `/gif合成` | `[帧间隔秒数] <多张图片>` | 将多张图片按顺序合成为 GIF，可设置帧间隔。 |
+| `/全局启用表情` | `<表情关键词>` | 切换全局表情管控模式后，未被禁用的表情均可使用。 |
+| `/全局禁用表情` | `<表情关键词>` | 切换全局表情管控模式后，仅已启用的表情可使用。 |
+| `/反相` | `<图片>` | 对回复的图片进行颜色反相处理。 |
+| `/启用表情` | `<表情关键词>` | 为当前用户解除指定表情模板的禁用状态。 |
+| `/图片操作` | `无` | 显示支持的 GIF 和图片操作指令。 |
+| `/旋转` | `[角度] <图片>` | 按角度旋转回复的图片。 |
+| `/横向拼接` | `<多张图片>` | 按发送顺序将多张图片横向拼接。 |
+| `/水平翻转` | `<图片>` | 将回复的图片左右翻转。 |
+| `/灰度图` | `<图片>` | 将回复的图片转换为灰度图。 |
+| `/生图、/画图、/生成图片` | `<提示词> [--width <宽度>] [--height <高度>] [--model <模型>] [--seed <种子>] [--negative <文本>] [--nologo] [--enhance] [--private]` | 按文本提示生成图片，可设置尺寸、模型、随机种子和负面提示词。 |
+| `/生图帮助、/绘图帮助` | `无` | 查看提示词、尺寸、模型、随机种子和负面提示词等用法。 |
+| `/禁用表情` | `<表情关键词>` | 为当前用户禁用指定表情模板。 |
+| `/竖直翻转` | `<图片>` | 将回复的图片上下翻转。 |
+| `/纵向拼接` | `<多张图片>` | 按发送顺序将多张图片纵向拼接。 |
+| `/缩放` | `<尺寸或比例> <图片>` | 按像素尺寸或百分比缩放回复的图片，例如 100x100、100x 或 50%。 |
+| `/表情包制作` | `无` | 查看表情模板列表，模板名称还可展开查看对应的触发词。 |
+| `/表情搜索` | `<关键词>` | 按关键词查找表情模板。 |
+| `/表情详情` | `<表情名称>` | 查看表情模板的触发词、素材数量、参数和预览。 |
+| `/表情调用统计` | `[我的] [全局] [时间范围] [表情名称]` | 生成指定时间范围、用户或全局范围内的表情调用统计图。 |
+| `/裁剪` | `<裁剪参数> <图片>` | 按指定的坐标范围、像素尺寸或宽高比裁剪回复的图片。 |
+| `/随机表情` | `[文字、图片或@用户]` | 从当前可用模板中选择一个符合素材数量的表情制作。 |
+| `arc` | `<文字、图片或@用户> [--id <表情 ID，不提供时则随机选择>] [--name <角色名称，例如 luna，与 -i 参数二选一>] [-x <文字的中心 x 坐标>] [-y <文字的中心 y 坐标>] [--rotate <文字旋转的角度>] [--size <文字的大小>] [--color <文字颜色，使用 16 进制格式>] [--stroke-width <文本描边宽度>] [--stroke-color <文本描边颜色，使用 16 进制格式>]` | 使用文字、图片或@用户生成 Arcaea 风格贴纸，可设置角色、文字位置、旋转、颜色和描边。 |
+| `capoo` | `无` | 在群聊中随机发送一张 Capoo 图片。 |
+| `群聊消息以 / 开头` | `无` | 检查消息上是否已有蛋表情反应；已有时阻止当前 Bot 继续触发命令，否则先添加蛋反应再继续处理。各 Bot 都需启用此插件。 |
+| 表情包关键词与文字格式（展开下方列表） | 见展开列表 | 表情包模板，共 424 个触发项。 |
 
 <details><summary>展开 424 个表情包触发项</summary>
 
@@ -668,3 +641,52 @@
 | `/🤺` | `<图片或@用户>` | 制作“击剑”表情包，并按参数提供文字、图片或@用户素材。 |
 
 </details>
+
+## 管理
+
+| 触发名或触发语义 | 参数 | 功能说明 |
+| --- | --- | --- |
+| `//响应` | `无` | 从群聊黑名单中移除当前群。 |
+| `//静默` | `无` | 将当前群加入群聊黑名单。 |
+| `/同意全部申请` | `无` | 批量通过当前已收集的好友申请与群邀请。 |
+| `/同意申请` | `<QQ号或群号>` | 通过指定 QQ 号的好友申请或群号对应的群邀请。 |
+| `/屏蔽所有好友、/拉黑所有好友` | `无（仅限超级用户）` | 将 Bot 当前好友加入用户黑名单。 |
+| `/屏蔽所有群、/拉黑所有群` | `无（仅限超级用户）` | 将 Bot 当前已加入的所有群加入黑名单。 |
+| `/屏蔽用户、/拉黑用户` | `<QQ号...>（仅限超级用户）` | 屏蔽指定 QQ 用户。 |
+| `/屏蔽私聊、/拉黑私聊` | `<QQ号...>（仅限超级用户）` | 屏蔽指定 QQ 用户的私聊。 |
+| `/屏蔽群、/拉黑群` | `<群号...>（仅限超级用户）` | 屏蔽指定群聊。 |
+| `/拒绝全部申请` | `无` | 批量拒绝当前已收集的好友申请与群邀请。 |
+| `/拒绝申请` | `<QQ号或群号>` | 拒绝指定好友申请或群邀请。 |
+| `/查看用户黑名单` | `[Bot QQ号]（仅限超级用户）` | 查看当前 Bot 屏蔽的用户。 |
+| `/查看申请` | `无` | 列出已收集的好友申请与群邀请。 |
+| `/查看私聊黑名单` | `[Bot QQ号]（仅限超级用户）` | 查看当前 Bot 屏蔽的私聊用户。 |
+| `/查看群聊黑名单` | `[Bot QQ号]（仅限超级用户）` | 查看当前 Bot 屏蔽的群聊和响应状态。 |
+| `/清空所有黑名单、/重置所有黑名单` | `无，按提示确认（仅限超级用户）` | 确认后清除全部 Bot 的黑名单设置。 |
+| `/清空申请列表` | `无` | 清空本地保存的好友申请和群邀请记录。 |
+| `/解封所有好友、/解禁所有好友` | `无（仅限超级用户）` | 清除 Bot 的用户黑名单。 |
+| `/解封所有群、/解禁所有群` | `无（仅限超级用户）` | 清除 Bot 的群黑名单。 |
+| `/解封用户、/解禁用户` | `<QQ号...>（仅限超级用户）` | 解除指定 QQ 用户屏蔽。 |
+| `/解封私聊、/解禁私聊` | `<QQ号...>（仅限超级用户）` | 解除指定 QQ 用户的私聊屏蔽。 |
+| `/解封群、/解禁群` | `<群号...>（仅限超级用户）` | 解除指定群聊屏蔽。 |
+| `Bot 在群内被禁言` | `事件触发` | 根据配置可自动将该群加入黑名单。 |
+| `Bot 在群内被禁言` | `[Bot QQ号]（仅限超级用户）` | 关闭当前 Bot 的私聊响应。 |
+| `Bot 在群内被禁言` | `[Bot QQ号]（仅限超级用户）` | 开启当前 Bot 的私聊响应。 |
+| `Bot 在群内被禁言` | `[Bot QQ号] 后按提示确认（仅限超级用户）` | 确认后清空指定 Bot 的黑名单设置。 |
+| `Bot 在群内被禁言` | `[Bot QQ号]（仅限超级用户）` | 开启当前 Bot 的群聊响应。 |
+| `Bot 在群内被禁言` | `[开/关]（仅限超级用户）` | 开关 Bot 被群禁言后自动屏蔽该群的行为。 |
+| `Bot 在群内被禁言` | `[Bot QQ号]（仅限超级用户）` | 关闭当前 Bot 的所有群聊响应。 |
+| `Bot 收到加入群聊的邀请事件` | `事件触发` | 记录群邀请资料并通知超级用户审批。 |
+| `QQ 好友申请事件` | `事件触发` | 记录申请资料并通知超级用户审批。 |
+
+## 通用
+
+| 触发名或触发语义 | 参数 | 功能说明 |
+| --- | --- | --- |
+| `/help、/baka帮助、/bakahelp` | `无` | 仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。 |
+| `/rework` | `[谱面ID、谱包ID或 CID] [速度、mods、OD]` | 回复 .osu、.osz、.mc、.mcz 或 .zip 文件，或提供谱面/谱包 ID，生成键型分类、重叠键标注和难度分析图。 |
+| `/测试、/ping` | `无` | 查看 Bot 是否正常响应。 |
+| `/解析、/parse` | `[视频链接]` | 解析哔哩哔哩视频链接并发送视频文件。链接可写在命令参数中，也可回复包含视频链接的消息。 |
+| `Bot 收到已配置的群聊邀请` | `事件触发` | Bot 连接时检查总群并自动接受尚未处理的群聊邀请；收到新的总群邀请时也会自动接受。 |
+| `help、baka帮助、bakahelp` | `无` | 仅对以 / 开头的消息自动提示帮助。发送 TD 关闭整个群的自动提示，主动发送 help 仍可查看。 |
+| `发送 TD 或 /TD` | `无` | 关闭所在群的自动帮助提示；私聊仅关闭当前用户的提示。 |
+| `群或私聊消息以 / 开头` | `消息内容` | 在尚未关闭提示的会话中自动发送帮助页入口。 |
