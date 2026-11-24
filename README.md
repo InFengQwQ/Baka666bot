@@ -64,19 +64,6 @@ if (-not (Test-Path config\malody.env)) { Copy-Item config\malody.env.example co
 .\venv\Scripts\python.exe bot.py
 ```
 
-## 更新模式
-
-默认不设置额外变量时，启动过程会检查公开仓库 `MCPsDE/Baka666bot` 的 `main`。发现新版本后会同步主仓库、插件子模块和 Git LFS 资源，再重启机器人。更新会用远端版本替换受 Git 管理的本地文件，并清理未忽略的多余文件；`.env`、`config/*.env`、`data/` 等被忽略的本地配置和运行数据会保留。
-
-本地开发或测试期间，在 `.env` 中设置以下值可关闭自动拉取：
-
-```dotenv
-BAKA666BOT_UPDATE_MODE=dev
-```
-
-发布并希望本地实例恢复自动更新时，删除这一行即可。该变量不在 `.env.example` 中提供。
-
-Playwright 所需 Chromium headless shell、Malody Toolkit 使用的 Java 与 FFmpeg 均保存在项目目录中。机器人数据、账户数据库和缓存写入 `data/`。
 
 ## 第三方许可
 
