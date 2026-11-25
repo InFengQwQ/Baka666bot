@@ -9,6 +9,8 @@ import nonebot
 from sqlalchemy.util import greenlet_spawn
 
 nonebot.init()
+nonebot.load_plugin("nonebot_plugin_waiter")
+nonebot.load_plugin("nonebot_plugin_alconna")
 nonebot.load_from_toml("pyproject.toml")
 
 import nonebot_plugin_orm
