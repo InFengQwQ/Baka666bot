@@ -26,15 +26,16 @@ from nonebot.rule import Rule
 
 __plugin_meta__ = PluginMetadata(
     name="Baka666Bot 自动更新",
-    description="启动时更新 Baka666Bot、同步 QQ 账号资料并检查总群状态。",
-    usage="Bot 启动时自动检查更新并同步主账号头像和昵称。",
+    description="启动时按配置的仓库更新 Baka666Bot、同步 QQ 账号资料并检查总群状态。",
+    usage="Bot 启动时从 BAKA666BOT_UPDATE_REPO 指定的仓库检查更新并同步主账号资料。",
 )
 
-REPOSITORY = "MCPsDE/Baka666bot"
-BRANCH = "main"
+DEFAULT_REPOSITORY = "MCPsDE/Baka666bot"
+DEFAULT_BRANCH = "main"
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 UPDATE_MODE_ENV = "BAKA666BOT_UPDATE_MODE"
-GITHUB_COMMIT_API = f"https://api.github.com/repos/{REPOSITORY}/commits/{BRANCH}"
+UPDATE_REPO_ENV = "BAKA666BOT_UPDATE_REPO"
+UPDATE_BRANCH_ENV = "BAKA666BOT_UPDATE_BRANCH"
 MAIN_ACCOUNT_QQ = 1469429
 MAIN_GROUP_ID = 451586654
 QQ_AVATAR_URL = "https://q1.qlogo.cn/g?b=qq&nk={qq}&s=640"
@@ -58,10 +59,49 @@ def _local_env_value(name: str) -> str:
     return ""
 
 
-def _is_development_mode() -> bool:
+def _config_value(name: str, default: str) -> str:
+    return _local_env_value(name) or default
+
+
+def _normalize_repository(value: str) -> str:
+    repository = value.strip().rstrip("/")
+    if repository.lower().endswith(".git"):
+        repository = repository[:-4]
+    for prefix in (
+        "https://github.com/",
+        "http://github.com/",
+        "git@github.com:",
+        "github.com/",
+    ):
+        if repository.lower().startswith(prefix):
+            repository = repository[len(prefix):]
+            break
+    return repository
+
+
+def _repository() -> str:
+    return _normalize_repository(
+        _config_value(UPDATE_REPO_ENV, DEFAULT_REPOSITORY)
+    ) or DEFAULT_REPOSITORY
+
+
+def _branch() -> str:
+    return _config_value(UPDATE_BRANCH_ENV, DEFAULT_BRANCH)
+
+
+def _github_commit_api(repository: str, branch: str) -> str:
+    return f"https://api.github.com/repos/{repository}/commits/{branch}"
+
+
+def _is_update_disabled() -> bool:
     return _local_env_value(UPDATE_MODE_ENV).lower() in {
         "dev",
         "development",
+        "off",
+        "disabled",
+        "false",
+        "0",
+        "no",
     }
 
 
@@ -79,9 +119,9 @@ def _run_git(*arguments: str, timeout: int = 300) -> str:
     return result.stdout.strip()
 
 
-def _latest_remote_commit() -> str:
+def _latest_remote_commit(repository: str, branch: str) -> str:
     request = urllib.request.Request(
-        GITHUB_COMMIT_API,
+        _github_commit_api(repository, branch),
         headers={
             "Accept": "application/vnd.github+json",
             "User-Agent": "Baka666Bot-Updater",
@@ -100,20 +140,34 @@ def _working_tree_has_changes() -> bool:
     return bool(_run_git("status", "--porcelain", "--untracked-files=all"))
 
 
+def _is_ancestor(ancestor: str, descendant: str) -> bool:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if result.returncode not in (0, 1):
+        raise RuntimeError(f"git merge-base failed: {result.stderr.strip()}")
+    return result.returncode == 0
+
+
 def _restore_previous_commit(previous_commit: str) -> None:
     _run_git("reset", "--hard", previous_commit)
     _run_git("submodule", "update", "--init", "--recursive", "--force", timeout=900)
 
 
-def _apply_update(target_commit: str, previous_commit: str) -> None:
+def _apply_update(target_commit: str, previous_commit: str, branch: str) -> None:
     try:
-        # Remove non-ignored files first so an untracked path cannot block a
-        # tracked file introduced by the published version.
+        # The working tree is checked before this point, so this only clears
+        # files that appeared between the check and the update.
         _run_git("clean", "-fd", timeout=300)
         _run_git("reset", "--hard", target_commit)
         _run_git("submodule", "sync", "--recursive", timeout=300)
         _run_git("submodule", "update", "--init", "--recursive", "--force", timeout=900)
-        _run_git("lfs", "pull", "origin", BRANCH, timeout=1800)
+        _run_git("lfs", "pull", "origin", branch, timeout=1800)
     except Exception:
         logger.exception("Baka666Bot update failed during file synchronization; restoring the previous version")
         _restore_previous_commit(previous_commit)
@@ -121,36 +175,79 @@ def _apply_update(target_commit: str, previous_commit: str) -> None:
 
 
 def _check_and_update() -> str | None:
-    if _is_development_mode():
+    if _is_update_disabled():
         logger.info(
-            "Baka666Bot auto-update is disabled by {}=dev",
+            "Baka666Bot auto-update is disabled by {}. Set it to auto to enable it.",
             UPDATE_MODE_ENV,
         )
         return None
 
+    repository = _repository()
+    branch = _branch()
     origin = _run_git("remote", "get-url", "origin")
-    if REPOSITORY.lower() not in origin.lower():
-        logger.warning("Baka666Bot auto-update skipped because origin is not {}", REPOSITORY)
+    if repository.lower() not in origin.lower():
+        logger.warning(
+            "Baka666Bot auto-update skipped because origin {} is not {}",
+            origin,
+            repository,
+        )
+        return None
+
+    current_branch = _run_git("rev-parse", "--abbrev-ref", "HEAD")
+    if current_branch != branch:
+        logger.warning(
+            "Baka666Bot auto-update skipped because the current branch {} is not {}.",
+            current_branch,
+            branch,
+        )
         return None
 
     local_commit = _run_git("rev-parse", "HEAD")
-    remote_commit = _latest_remote_commit()
+    remote_commit = _latest_remote_commit(repository, branch)
     has_local_changes = _working_tree_has_changes()
-    if local_commit == remote_commit and not has_local_changes:
-        logger.info("Baka666Bot is already up to date ({})", local_commit[:7])
+    if local_commit == remote_commit:
+        if has_local_changes:
+            logger.warning(
+                "Baka666Bot has local changes; skipping auto-update. Commit or stash them first."
+            )
+        else:
+            logger.info("Baka666Bot is already up to date ({})", local_commit[:7])
+        return None
+
+    _run_git("fetch", "--prune", "origin", branch, timeout=900)
+    fetched_commit = _run_git("rev-parse", "FETCH_HEAD")
+    if fetched_commit != remote_commit:
+        raise RuntimeError("Fetched commit does not match the configured GitHub branch")
+
+    if has_local_changes:
+        logger.warning(
+            "Baka666Bot has local changes; skipping auto-update to avoid overwriting them."
+        )
+        return None
+
+    if not _is_ancestor(local_commit, remote_commit):
+        if _is_ancestor(remote_commit, local_commit):
+            logger.warning(
+                "Baka666Bot local branch has commits not on {}/{}; push them before auto-update.",
+                repository,
+                branch,
+            )
+        else:
+            logger.warning(
+                "Baka666Bot local branch and {}/{} have diverged; rebase or merge manually.",
+                repository,
+                branch,
+            )
         return None
 
     logger.info(
-        "Baka666Bot update found. Local {}, GitHub {}",
+        "Baka666Bot update found. Local {}, GitHub {}/{} {}",
         local_commit[:7],
+        repository,
+        branch,
         remote_commit[:7],
     )
-    _run_git("fetch", "--prune", "origin", BRANCH, timeout=900)
-    fetched_commit = _run_git("rev-parse", "FETCH_HEAD")
-    if fetched_commit != remote_commit:
-        raise RuntimeError("Fetched commit does not match the GitHub main branch")
-
-    _apply_update(remote_commit, local_commit)
+    _apply_update(remote_commit, local_commit, branch)
     return remote_commit
 
 
