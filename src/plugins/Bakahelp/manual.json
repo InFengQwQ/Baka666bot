@@ -107,6 +107,11 @@
       "category": "创作与娱乐",
       "description": "群内斜杠消息附加指定表情反应。"
     },
+    "sticker_reaction": {
+      "name": "贴表情回应",
+      "category": "创作与娱乐",
+      "description": "将命令或引用消息中的 QQ 表情回应到对应消息上。"
+    },
     "ping": {
       "name": "连通性测试",
       "category": "通用",
@@ -114,6 +119,20 @@
     }
   },
   "triggers": [
+    {
+      "plugin": "sticker_reaction",
+      "match": [
+        "/贴表情"
+      ],
+      "title": "贴 QQ 表情回应",
+      "description": "直接发送命令时，将命令后附带的一个或多个 QQ 表情贴到命令消息上，表情之间可带空格或直接连续发送。引用回复含 QQ 内置表情或商城表情的消息时，将其中可回应的表情贴到被引用消息上。",
+      "usage": "/贴表情 <一个或多个 QQ 表情>，或引用含表情的消息后发送 /贴表情",
+      "examples": [
+        "/贴表情 😀",
+        "/贴表情 表情1表情2表情3",
+        "引用一条含 QQ 表情的消息并发送 /贴表情"
+      ]
+    },
     {
       "plugin": "Bakahelp",
       "match": [

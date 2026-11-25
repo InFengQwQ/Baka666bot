@@ -71,8 +71,15 @@ if (-not (Test-Path config\malody.env)) { Copy-Item config\malody.env.example co
 
 ## 第三方许可
 
-本文档，以及发布前的代码整理使用了@zhyzx35607提供的ChatGPT。
-机器人包含独立维护的第三方插件 fork。各插件上游、分支和许可信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。许可证文本保存在 `licenses/` 和各插件目录中。
+项目使用的第三方插件与工具，其来源、分支和许可信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。许可证文本保存在 `licenses/` 和各插件目录中。
+
+## 赞助者
+
+感谢支持 Baka666Bot 的 GitHub 用户。本文档及发布前的代码整理使用了 @zhyzx35607 提供的 ChatGPT。
+
+<p align="left">
+  <a href="https://github.com/zhyzx35607"><img src="https://github.com/zhyzx35607.png?size=96" width="64" alt="zhyzx35607"></a>
+</p>
 
 ## 参与改进
 
