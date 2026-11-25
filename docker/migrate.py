@@ -1,14 +1,27 @@
 import asyncio
+import sys
+from argparse import Namespace
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import nonebot
+from sqlalchemy.util import greenlet_spawn
 
 nonebot.init()
-nonebot.load_plugin("nonebot_plugin_orm")
+nonebot.load_from_toml("pyproject.toml")
 
 import nonebot_plugin_orm
+from nonebot_plugin_orm import migrate
 
-asyncio.run(nonebot_plugin_orm.init_orm())
+nonebot_plugin_orm._init_orm()
 
-from nonebot_plugin_orm.__main__ import orm
 
-orm(["upgrade"], standalone_mode=False)
+async def upgrade() -> None:
+    with migrate.AlembicConfig(
+        cmd_opts=Namespace(cmd=(migrate.upgrade, [], []))
+    ) as config:
+        await greenlet_spawn(migrate.upgrade, config)
+
+
+asyncio.run(upgrade())
