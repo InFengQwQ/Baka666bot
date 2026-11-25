@@ -1,16 +1,9 @@
 # Local credentials and private client settings
 .env
-config.txt
-config/*.env
-!config/*.env.example
 **/.env
-!**/.env.example
+config/*.env
+config.txt
 config/malody_token.txt
-NapCat.Shell/config/*.json
-NapCat.Shell/*.db-*
-NapCat.Shell/*.log*
-NapCat.Shell/temp/
-NapCat.Shell/loadNapCat.js
 
 # Per-user state and downloaded caches
 data/MalodyVClientPlugin/
@@ -35,8 +28,7 @@ data/osu/
 # Local databases, logs, and Python environments
 **/*.db
 **/*.sqlite3*
-NapCat.Shell/*.db
-**/debug.log
+**/*.log
 logs/
 cache/
 venv/
@@ -45,10 +37,15 @@ venv/
 **/__pycache__/
 **/*.py[cod]
 **/.pytest_cache/
-**/debug.log
+**/.mypy_cache/
+**/.ruff_cache/
+*.egg-info/
 
-# Local plugin checkouts
-src/plugins/nonebot_plugin_osubot/
-src/plugins/nonebot_plugin_osugreek/
-src/plugins/nonebot_plugin_osumania_toolkit/
-src/plugins/nonebot-plugin-for-osumania4k/
+# Local NapCat runtime (embeds its own QQ build, ~350 MB)
+NapCat.Shell/
+
+# OS and editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
