@@ -28,9 +28,10 @@ ws://127.0.0.1:9090/onebot/v11/ws
 ## Run
 
 ```powershell
-.\NapCat.Shell\napcat.bat
-uv run bot.py
+.\start.bat
 ```
+
+`start.bat` 先启动 NapCat，再在前台运行 bot。`NAPCAT_QQ` 留空时用二维码登录。
 
 ## Commands
 
