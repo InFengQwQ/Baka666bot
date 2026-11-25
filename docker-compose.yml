@@ -8,5 +8,8 @@ services:
       LOCALSTORE_CONFIG_DIR: /app/data/localstore/config
       LOCALSTORE_CACHE_DIR: /app/data/localstore/cache
     volumes:
-      - ./data:/app/data
+      - data:/app/data
     restart: unless-stopped
+
+volumes:
+  data:

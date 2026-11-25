@@ -27,6 +27,11 @@ RUN uv run playwright install --with-deps chromium
 COPY . .
 
 RUN ln -sf /usr/bin/ffmpeg src/plugins/Malody_toolkit/tools/ffmpeg.exe \
-    && ln -sf /usr/bin/ffprobe src/plugins/Malody_toolkit/tools/ffprobe.exe
+    && ln -sf /usr/bin/ffprobe src/plugins/Malody_toolkit/tools/ffprobe.exe \
+    && useradd --create-home --uid 1000 app \
+    && mkdir -p /app/data \
+    && chown -R app:app /app
+
+USER app
 
 CMD ["sh", "-c", "uv run python docker/migrate.py && exec uv run bot.py"]
