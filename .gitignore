@@ -52,3 +52,9 @@ src/plugins/nonebot_plugin_osubot/
 src/plugins/nonebot_plugin_osugreek/
 src/plugins/nonebot_plugin_osumania_toolkit/
 src/plugins/nonebot-plugin-for-osumania4k/
+
+# Bundled NapCat runtime (embeds its own QQ build, ~350 MB, not version controlled)
+NapCat.Shell/
+
+# Editable-install build metadata
+src/baka666bot.egg-info/
