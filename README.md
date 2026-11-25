@@ -16,8 +16,11 @@ git lfs install
 git clone --recurse-submodules https://github.com/InFengQwQ/Baka666bot.git
 cd Baka666bot
 uv sync
+uv run playwright install chromium
 Copy-Item .env.example .env
 ```
+
+Chromium 由 Playwright 安装，不再随仓库分发。
 
 编辑 `.env`，设置 `SUPERUSERS` 和 `PORT`。NapCat 反向 WebSocket 指向：
 

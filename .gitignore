@@ -41,6 +41,9 @@ venv/
 **/.ruff_cache/
 *.egg-info/
 
+# Playwright browsers installed locally
+data/tools/playwright-browsers/
+
 # Local NapCat runtime (embeds its own QQ build, ~350 MB)
 NapCat.Shell/
 
