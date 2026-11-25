@@ -75,7 +75,7 @@ if (-not (Test-Path config\malody.env)) { Copy-Item config\malody.env.example co
 
 ## 赞助者
 
-感谢支持 Baka666Bot 的 GitHub 用户。本文档及发布前的代码整理使用了 @zhyzx35607 提供的 ChatGPT。
+感谢支持 Baka666Bot 的 GitHub 用户。本文档编写、发布前的代码整理，以及发布后部分插件的开发过程中，使用了 @zhyzx35607 提供的 ChatGPT。
 
 <p align="left">
   <a href="https://github.com/zhyzx35607"><img src="https://github.com/zhyzx35607.png?size=96" width="64" alt="zhyzx35607"></a>
