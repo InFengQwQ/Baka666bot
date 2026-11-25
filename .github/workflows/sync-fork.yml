@@ -1,0 +1,61 @@
+name: Sync fork
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO || 'MCPsDE/Baka666bot' }}
+      UPSTREAM_BRANCH: ${{ vars.UPSTREAM_BRANCH || 'main' }}
+      SYNC_BRANCH: ${{ vars.SYNC_BRANCH || 'chore/sync-fork' }}
+      DROP_PATHS: ${{ vars.DROP_PATHS || 'NapCat.Shell' }}
+      OURS_PATHS: ${{ vars.OURS_PATHS || 'src/plugins/nonebot-plugin-for-osumania4k src/plugins/nonebot_plugin_osubot src/plugins/nonebot_plugin_osugreek src/plugins/nonebot_plugin_osumania_toolkit' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge upstream
+        id: merge
+        run: bash .github/scripts/sync-fork.sh
+
+      - name: Open pull request
+        if: steps.merge.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          {
+            cat "$RUNNER_TEMP/sync-notes.md"
+            printf 'Dropped: `%s`. Kept on the fork: `%s`.\n' "$DROP_PATHS" "$OURS_PATHS"
+          } > "$RUNNER_TEMP/pr-body.md"
+          number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --body-file "$RUNNER_TEMP/pr-body.md"
+          else
+            gh pr create --base main --head "$SYNC_BRANCH" \
+              --title "chore: sync fork" \
+              --body-file "$RUNNER_TEMP/pr-body.md"
+          fi
+
+      - name: Close stale pull request
+        if: steps.merge.outputs.changed != 'true'
+        run: |
+          set -euo pipefail
+          number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh pr close "$number" --delete-branch
+          else
+            git push origin --delete "$SYNC_BRANCH" 2>/dev/null || true
+          fi
