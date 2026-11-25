@@ -107,11 +107,11 @@ loguru_logger.add(
 )
 
 # 添加全局事件拦截：除了主人外，只允许在群聊中触发
-""" @event_preprocessor
+@event_preprocessor
 async def block_non_superuser_private(event: PrivateMessageEvent):
     superusers = nonebot.get_driver().config.superusers
     if str(event.user_id) not in superusers:
-        raise IgnoredException("非超级用户禁止私聊使用机器人") """
+        raise IgnoredException("非超级用户禁止私聊使用机器人")
 
 # 暂时仅启用 QQ；Discord / Telegram 的账号配置保留，恢复服务时再注册适配器。
 driver = nonebot.get_driver()

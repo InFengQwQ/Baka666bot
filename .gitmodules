@@ -1,7 +1,7 @@
 [submodule "src/plugins/nonebot-plugin-for-osumania4k"]
 	path = src/plugins/nonebot-plugin-for-osumania4k
-	url = https://github.com/MCPsDE/nonebot-plugin-for-osumania4k.git
-	branch = main
+	url = https://github.com/InFengQwQ/nonebot-plugin-for-osumania4k.git
+	branch = fix/rework-offline-render
 [submodule "src/plugins/nonebot_plugin_osubot"]
 	path = src/plugins/nonebot_plugin_osubot
 	url = https://github.com/MCPsDE/nonebot-plugin-osubot.git
