@@ -6,18 +6,31 @@ NoneBot2 QQ bot，通过 NapCat 接入 OneBot V11。
 
 - Windows 10/11 x64
 - [uv](https://docs.astral.sh/uv/)
-- Git + Git LFS
+- Git
+- Java 11+（JRE，用于 `/replayrd` 回放渲染）
+- FFmpeg（`/mcz_speed`、`/timeinverse` 等音频处理）
 - NapCat（解压到 `NapCat.Shell\`）
 
 ## Setup
 
 ```powershell
-git lfs install
 git clone --recurse-submodules https://github.com/InFengQwQ/Baka666bot.git
 cd Baka666bot
 uv sync
+uv run playwright install chromium
 Copy-Item .env.example .env
 ```
+
+Chromium 由 Playwright 安装，不再随仓库分发。
+
+Java 和 FFmpeg 也不再随仓库分发：
+
+```powershell
+winget install EclipseAdoptium.Temurin.17.JRE
+winget install Gyan.FFmpeg
+```
+
+程序按 `JAVA_HOME`、`PATH` 的顺序查找 `java`，`ffmpeg` 和 `ffprobe` 从 `PATH` 查找。
 
 编辑 `.env`，设置 `SUPERUSERS` 和 `PORT`。NapCat 反向 WebSocket 指向：
 

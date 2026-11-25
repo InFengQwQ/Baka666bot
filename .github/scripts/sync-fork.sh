@@ -48,7 +48,7 @@ for path in $OURS_PATHS; do
 done
 
 for path in $DROP_PATHS; do
-  git rm -r --cached --ignore-unmatch "$path" >/dev/null 2>&1 || true
+  git rm -r --cached --ignore-unmatch -- "$path" >/dev/null 2>&1 || true
   rm -rf -- "$path"
 done
 
@@ -74,6 +74,20 @@ if [ -n "$conflicts" ]; then
 fi
 
 git add -A
+
+lfs_pointers="$(git grep --cached -lE '^version https://git-lfs\.github\.com/spec/v1' || true)"
+if [ -n "$lfs_pointers" ]; then
+  {
+    printf '### LFS pointers are not allowed\n\n'
+    while IFS= read -r file; do
+      printf -- '- `%s`\n' "$file"
+    done <<< "$lfs_pointers"
+    printf '\nFetch the LFS content or add these paths to the drop list.\n'
+  } >> "$notes"
+  echo "LFS pointers left after the merge:" >&2
+  echo "$lfs_pointers" >&2
+  exit 1
+fi
 
 if git diff --cached --quiet; then
   git merge --abort >/dev/null 2>&1 || true

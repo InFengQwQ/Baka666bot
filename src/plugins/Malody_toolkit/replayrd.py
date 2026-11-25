@@ -4,6 +4,7 @@
 """
 
 import asyncio
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -21,12 +22,35 @@ from nonebot.log import logger
 from nonebot.rule import Rule
 
 from .mrv2mr import convert_mrv_to_mr
-from src.plugin_runtime import tool_path
+from src.plugin_runtime import MissingToolError, require_executable
 
 # ==================== 配置 ====================
 # ManiaReplayMaster Java 工具根目录
 MRM_DIR = Path(__file__).parent / "ManiaReplayMaster.zip"
-JAVA_EXE = tool_path("java") / "bin" / "java.exe"
+
+
+def java_executable() -> str:
+    """按 JAVA_HOME、PATH 的顺序定位 java。"""
+    configured = os.environ.get("JAVA_HOME", "").strip()
+    if configured:
+        candidate = Path(configured)
+        if candidate.is_dir():
+            candidate = candidate / "bin" / ("java.exe" if os.name == "nt" else "java")
+        if candidate.is_file():
+            return str(candidate)
+
+    return require_executable("java", "请安装 JRE 11+ 并加入 PATH")
+
+
+def decode_output(data: bytes) -> str:
+    """按 UTF-8、GBK 的顺序解码渲染器输出。"""
+    for encoding in ("utf-8", "gbk"):
+        try:
+            return data.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return data.decode("utf-8", errors="replace")
+
 
 # 等待用户发送文件的超时时间（秒）
 WAIT_FILE_TIMEOUT = 30
@@ -212,7 +236,11 @@ async def run_mrm_render(
     classpath = str(MRM_DIR.resolve())
 
     cmd = [
-        str(JAVA_EXE),
+        java_executable(),
+        "-Dfile.encoding=UTF-8",
+        "-Dsun.stdin.encoding=UTF-8",
+        "-Dsun.stdout.encoding=UTF-8",
+        "-Dsun.stderr.encoding=UTF-8",
         "-cp", classpath,
         "me.replaymaster.Main",
     ]
@@ -235,8 +263,8 @@ async def run_mrm_render(
             timeout=timeout,
         )
 
-        stdout_str = stdout.decode("gbk", errors="replace")
-        stderr_str = stderr.decode("gbk", errors="replace")
+        stdout_str = decode_output(stdout)
+        stderr_str = decode_output(stderr)
         logger.debug(f"[replayrd] stdout:\n{stdout_str}")
         if stderr_str.strip():
             logger.debug(f"[replayrd] stderr:\n{stderr_str}")
@@ -323,8 +351,8 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
 
-        # 3. 下载 replay 文件
-        replay_dest = temp_path / file_name
+        # 3. 下载 replay 文件，使用 ASCII 文件名，避免 JVM 在 POSIX locale 下读坏中文路径
+        replay_dest = temp_path / f"replay{Path(file_name).suffix.lower()}"
         logger.info(f"[replayrd] 下载回放文件: {file_name}")
         if not await download_file(bot, file_info, replay_dest):
             await replayrd.finish(" 下载回放文件失败，请重试。")
@@ -332,7 +360,7 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
         # 4. 如果是 .mrv，先转换为 .mr
         if replay_type == "mrv":
             await bot.send(event, " 检测到 .mrv 文件，正在转换为 .mr ...")
-            mr_name = Path(file_name).stem + ".mr"
+            mr_name = "replay.mr"
             mr_path = temp_path / mr_name
             try:
                 ok = await asyncio.to_thread(
@@ -364,7 +392,7 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
 
         # 6. 下载谱面文件
         bm_name: str = beatmap_info["name"]
-        beatmap_dest = temp_path / bm_name
+        beatmap_dest = temp_path / f"beatmap{Path(bm_name).suffix.lower()}"
         logger.info(f"[replayrd] 下载谱面文件: {bm_name}")
         if not await download_file(bot, beatmap_info, beatmap_dest):
             await replayrd.finish(" 下载谱面文件失败，请重试。")
@@ -396,11 +424,14 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
         # 8. 调用 ManiaReplayMaster 渲染
         await bot.send(event, "正在渲染回放视频，请稍候")
 
-        video_path = await run_mrm_render(
-            replay_path=str(replay_dest),
-            beatmap_path=str(beatmap_dest),
-            output_dir=temp_dir,
-        )
+        try:
+            video_path = await run_mrm_render(
+                replay_path=str(replay_dest),
+                beatmap_path=str(beatmap_dest),
+                output_dir=temp_dir,
+            )
+        except MissingToolError as exc:
+            await replayrd.finish(f" 渲染失败：{exc}")
 
         if not video_path:
             await replayrd.finish(

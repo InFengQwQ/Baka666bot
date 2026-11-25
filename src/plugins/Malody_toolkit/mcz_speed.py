@@ -24,7 +24,7 @@ from nonebot.log import logger
 from nonebot.params import CommandArg
 from nonebot.rule import Rule
 
-from src.plugin_runtime import tool_path
+from src.plugin_runtime import require_executable
 
 
 COMMAND_PREFIX = "倍速"
@@ -517,14 +517,12 @@ async def _run_ffmpeg_speed_pitch(
 async def _run_ffmpeg_filter(
     input_audio: Path, output_audio: Path, filter_chain: str
 ) -> None:
-    ffmpeg_exe = tool_path("ffmpeg.exe")
-    if not ffmpeg_exe.is_file():
-        raise RuntimeError("项目内未找到 Malody Toolkit 的 ffmpeg.exe")
+    ffmpeg_exe = require_executable("ffmpeg", "请安装 FFmpeg 并加入 PATH")
 
     output_audio.parent.mkdir(parents=True, exist_ok=True)
 
     proc = await asyncio.create_subprocess_exec(
-        str(ffmpeg_exe),
+        ffmpeg_exe,
         "-hide_banner",
         "-loglevel",
         "error",
@@ -1079,6 +1077,9 @@ async def _handle_speed_request(
             )
         except zipfile.BadZipFile:
             await matcher.finish("文件不是有效的谱面压缩包。")
+        except RuntimeError as e:
+            logger.error(f"[mcz_speed] 处理失败: {e}")
+            await matcher.finish(f"谱面处理失败：{e}")
         except Exception as e:
             logger.error(f"[mcz_speed] 处理失败: {e}")
             await matcher.finish("谱面处理失败：请反馈bot主人")

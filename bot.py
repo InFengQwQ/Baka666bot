@@ -8,7 +8,8 @@ browser_path = project_root / "data" / "tools" / "playwright-browsers"
 plugin_tool_root = project_root / "src" / "plugins" / "Malody_toolkit" / "tools"
 os.environ["BAKA_DATA_DIR"] = str(project_root / "data")
 os.environ["BAKA_TOOLS_DIR"] = str(plugin_tool_root)
-os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(browser_path)
+if browser_path.is_dir():
+    os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(browser_path))
 
 for stream in (sys.stdout, sys.stderr):
     if hasattr(stream, "reconfigure"):

@@ -1,9 +1,21 @@
 import os
+import shutil
 from pathlib import Path
 
 
 class MissingBusinessAccount(ValueError):
     pass
+
+
+class MissingToolError(RuntimeError):
+    """系统依赖缺失。"""
+
+
+def require_executable(name: str, hint: str) -> str:
+    path = shutil.which(name)
+    if not path:
+        raise MissingToolError(f"未找到 {name}，{hint}")
+    return path
 
 
 def current_qq_user():
