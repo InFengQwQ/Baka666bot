@@ -25,6 +25,12 @@ Copy-Item .env.example .env
 ws://127.0.0.1:9090/onebot/v11/ws
 ```
 
+## NapCat
+
+- 版本 4.18.42，解压到 `NapCat.Shell\`，入口 `NapCat.Shell\napcat.bat`
+- 下载：<https://github.com/InFengQwQ/Baka666bot/releases/download/napcat-4.18.42/NapCat.Shell-4.18.42-win64.zip>
+- sha256：`74cf1b90ca718b23230eff978f9359ddc522e9db428bb3a6a30c9722ad77d896`
+
 ## Run
 
 ```powershell
