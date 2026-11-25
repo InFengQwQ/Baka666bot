@@ -1,0 +1,12 @@
+services:
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      LOCALSTORE_DATA_DIR: /app/data/localstore
+      LOCALSTORE_CONFIG_DIR: /app/data/localstore/config
+      LOCALSTORE_CACHE_DIR: /app/data/localstore/cache
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

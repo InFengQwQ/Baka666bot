@@ -1,0 +1,13 @@
+.git
+.gitmodules
+.venv
+__pycache__
+*.pyc
+.env
+config/*.env
+data
+NapCat.Shell
+logs
+cache
+*.db
+*.log
