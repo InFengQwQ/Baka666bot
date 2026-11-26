@@ -2,58 +2,37 @@
 
 NoneBot2 QQ bot，通过 NapCat 接入 OneBot V11。
 
-## Requirements
+## Windows
 
-- Windows 10/11 x64
-- [uv](https://docs.astral.sh/uv/)
-- Git
-- Java 11+（JRE，用于 `/replayrd` 回放渲染）
-- FFmpeg（`/mcz_speed`、`/timeinverse` 等音频处理）
-- NapCat（解压到 `NapCat.Shell\`）
-
-## Setup
-
-```powershell
-git clone --recurse-submodules https://github.com/InFengQwQ/Baka666bot.git
-cd Baka666bot
-uv sync
-uv run playwright install chromium
-Copy-Item .env.example .env
-```
-
-Chromium 由 Playwright 安装，不再随仓库分发。
-
-Java 和 FFmpeg 也不再随仓库分发：
+需要 Windows 10/11 x64、[uv](https://docs.astral.sh/uv/)、Git、Java 11+ 和 FFmpeg：
 
 ```powershell
 winget install EclipseAdoptium.Temurin.17.JRE
 winget install Gyan.FFmpeg
+git clone --recurse-submodules https://github.com/InFengQwQ/Baka666bot.git
+cd Baka666bot
+uv sync
+uv run playwright install chromium
+uv run python scripts/fetch-assets.py
+Copy-Item .env.example .env
 ```
 
-程序按 `JAVA_HOME`、`PATH` 的顺序查找 `java`，`ffmpeg` 和 `ffprobe` 从 `PATH` 查找。
+`java` 按 `JAVA_HOME`、`PATH` 的顺序查找，`ffmpeg`、`ffprobe` 从 `PATH` 查找。渲染器和转换工具由 `scripts/fetch-assets.py` 下载，`start.bat` 发现缺失时会自动补。
 
-编辑 `.env`，设置 `SUPERUSERS` 和 `PORT`。NapCat 反向 WebSocket 指向：
+NapCat 4.18.42 解压到 `NapCat.Shell\`：<https://github.com/InFengQwQ/Baka666bot/releases/download/napcat-4.18.42/NapCat.Shell-4.18.42-win64.zip>，sha256 `74cf1b90ca718b23230eff978f9359ddc522e9db428bb3a6a30c9722ad77d896`。
 
-```text
-ws://127.0.0.1:9090/onebot/v11/ws
+在 `.env` 里设置 `SUPERUSERS` 和 `PORT`，把 NapCat 的反向 WebSocket 指向 `ws://127.0.0.1:9090/onebot/v11/ws`，然后运行 `.\start.bat`。`NAPCAT_QQ` 留空时改用二维码登录。
+
+## Docker
+
+```bash
+git clone https://github.com/InFengQwQ/Baka666bot.git
+cd Baka666bot
+cp .env.example .env
+docker compose pull
+docker compose up -d
 ```
 
-## NapCat
+镜像已含 Java、FFmpeg、Chromium 和渲染器，宿主机不需要安装。NapCat WebUI 在 <http://127.0.0.1:6099>，反向 WebSocket 设为 `ws://bot:9090/onebot/v11/ws`。
 
-- 版本 4.18.42，解压到 `NapCat.Shell\`，入口 `NapCat.Shell\napcat.bat`
-- 下载：<https://github.com/InFengQwQ/Baka666bot/releases/download/napcat-4.18.42/NapCat.Shell-4.18.42-win64.zip>
-- sha256：`74cf1b90ca718b23230eff978f9359ddc522e9db428bb3a6a30c9722ad77d896`
-
-## Run
-
-```powershell
-.\start.bat
-```
-
-`start.bat` 先启动 NapCat，再在前台运行 bot。`NAPCAT_QQ` 留空时用二维码登录。
-
-## Commands
-
-[COMMANDS.md](COMMANDS.md)
-
-上游：<https://github.com/MCPsDE/Baka666bot>。第三方插件与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+命令见 [COMMANDS.md](COMMANDS.md)。上游：<https://github.com/MCPsDE/Baka666bot>。第三方插件与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

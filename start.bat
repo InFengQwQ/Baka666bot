@@ -14,6 +14,16 @@ if not exist "NapCat.Shell\napcat.bat" (
     exit /b 1
 )
 
+set "assets_ok=1"
+for %%F in (ManiaReplayMaster.jar ma2om.exe mp32ogg.exe ncm2mp3.exe ncm2ogg.exe DragUnzip.exe prontom.exe) do (
+    if not exist "src\plugins\Malody_toolkit\tools\%%F" set "assets_ok="
+)
+if not defined assets_ok (
+    echo [setup] Downloading runtime assets...
+    uv run python scripts\fetch-assets.py
+    if errorlevel 1 echo [setup] Asset download failed; /replayrd and conversion commands may be unavailable.
+)
+
 set "NAPCAT_QQ="
 for /f "usebackq tokens=1,* delims==" %%A in (".env") do (
     if /i "%%A"=="NAPCAT_QQ" set "NAPCAT_QQ=%%B"

@@ -11,12 +11,12 @@ The following plugin sources are included as independent repositories or local f
 
 Additional bundled components:
 
-- `ManiaReplayMaster.zip` includes the Apache License 2.0 and notice under `META-INF/`.
+- `ManiaReplayMaster.jar` is downloaded from the `replay-renderer-2.4.0` release by `scripts/fetch-assets.py`; the jar includes the Apache License 2.0 and notice under `META-INF/`.
 - `nlohmann/json` 3.11.3 is included under MIT; its SPDX notice is retained in `src/plugins/Malody_toolkit/json.hpp`.
 - The ECharts bundle in `nonebot_plugin_osubot` retains its Apache-2.0 and MIT notices in the JavaScript file header.
 - FFmpeg is no longer bundled. `ffmpeg` and `ffprobe` are resolved from `PATH` and stay under the license of the installed build.
-- The legacy `ma2om`, `mp32ogg`, `ncm2mp3`, `ncm2ogg`, and `DragUnzip` executables were supplied in the local Malody tools folder. No license notices or metadata were present there, so this project does not assign a license to them.
-- The bundled Eclipse Temurin JRE was removed; `ManiaReplayMaster.zip` now runs on a system Java 11+ runtime that is not distributed with this repository.
+- The legacy `ma2om`, `mp32ogg`, `ncm2mp3`, `ncm2ogg`, `DragUnzip` and `prontom` executables are downloaded from the `assets-2026.11.26` release. No license notices or metadata were present in the supplied files, so this project does not assign a license to them.
+- The bundled Eclipse Temurin JRE was removed; `ManiaReplayMaster.jar` now runs on a system Java 11+ runtime that is not distributed with this repository.
 - Chromium is installed by Playwright and is not distributed with this repository.
 - `NapCat.Shell/` is deployed locally from [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ) and is not tracked by this repository. No license file or repository license metadata was present in the supplied runtime/source; this project does not assign a license to it.
 - The local Malody conversion tools include `ma2om.exe`, `mp32ogg.exe`, `ncm2mp3.exe`, `ncm2ogg.exe`, `DragUnzip.exe` and `inverse.py`. The source folder supplied no license metadata for these files; no license is assigned by this project.

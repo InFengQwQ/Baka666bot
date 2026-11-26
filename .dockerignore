@@ -1,0 +1,20 @@
+.git
+.gitmodules
+.github
+.venv
+__pycache__
+*.pyc
+.env
+config/*.env
+data
+NapCat.Shell
+logs
+cache
+*.db
+*.log
+# Runtime tools installed by scripts/fetch-assets.py
+src/plugins/Malody_toolkit/tools/*.exe
+src/plugins/Malody_toolkit/tools/*.jar
+src/plugins/Malody_toolkit/tools/*.zip
+# Local Windows tool trees are never used inside the image.
+src/plugins/Malody_toolkit/tools/java

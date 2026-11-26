@@ -1,0 +1,57 @@
+{
+  "sources": {
+    "renderer": "https://github.com/InFengQwQ/Baka666bot/releases/download/replay-renderer-2.4.0",
+    "tools": "https://github.com/InFengQwQ/Baka666bot/releases/download/assets-2026.11.26"
+  },
+  "files": {
+    "ManiaReplayMaster.jar": {
+      "source": "renderer",
+      "size": 7659184,
+      "sha256": "605b546d1b385431b278386ebb5c22fdd429f34ca10ede6ef530a17801ae3e1d"
+    },
+    "ma2om.exe": {
+      "source": "tools",
+      "size": 258048,
+      "sha256": "1344e29424ff890ecfed9d087358bff852d38b594645ffaf6b0d9cf6155e367d"
+    },
+    "mp32ogg.exe": {
+      "source": "tools",
+      "size": 799232,
+      "sha256": "7c6d2262534a4b6cc48ed337cefd0d354115e7aab58d72ea8d5c39fa5122d7d6"
+    },
+    "ncm2mp3.exe": {
+      "source": "tools",
+      "size": 197120,
+      "sha256": "f21ae71f8b257899a78bc9f79eea779cc353926c5892ce0d310d486fa09aa044"
+    },
+    "ncm2ogg.exe": {
+      "source": "tools",
+      "size": 279552,
+      "sha256": "357af177125b16c3e07074b93c4034325cb7a84531e629383fa02b96a0e6e1ec"
+    },
+    "DragUnzip.exe": {
+      "source": "tools",
+      "size": 476672,
+      "sha256": "8fafa66accce1ec3f493d2febbaa56293531783a837f2b630c89391473bc9598"
+    },
+    "prontom.exe": {
+      "source": "tools",
+      "size": 1370112,
+      "sha256": "7b3bd1f2392beefa297c5aabb7516735c37e1c4ce923869563578460299ed92e"
+    }
+  },
+  "platforms": {
+    "windows": [
+      "ManiaReplayMaster.jar",
+      "ma2om.exe",
+      "mp32ogg.exe",
+      "ncm2mp3.exe",
+      "ncm2ogg.exe",
+      "DragUnzip.exe",
+      "prontom.exe"
+    ],
+    "linux": [
+      "ManiaReplayMaster.jar"
+    ]
+  }
+}

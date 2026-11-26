@@ -4,12 +4,9 @@ from pathlib import Path
 
 project_root = Path(__file__).resolve().parent
 os.chdir(project_root)
-browser_path = project_root / "data" / "tools" / "playwright-browsers"
 plugin_tool_root = project_root / "src" / "plugins" / "Malody_toolkit" / "tools"
 os.environ["BAKA_DATA_DIR"] = str(project_root / "data")
 os.environ["BAKA_TOOLS_DIR"] = str(plugin_tool_root)
-if browser_path.is_dir():
-    os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", str(browser_path))
 
 for stream in (sys.stdout, sys.stderr):
     if hasattr(stream, "reconfigure"):

@@ -22,11 +22,11 @@ from nonebot.log import logger
 from nonebot.rule import Rule
 
 from .mrv2mr import convert_mrv_to_mr
-from src.plugin_runtime import MissingToolError, require_executable
+from src.plugin_runtime import MissingToolError, require_executable, tool_path
 
 # ==================== 配置 ====================
-# ManiaReplayMaster Java 工具根目录
-MRM_DIR = Path(__file__).parent / "ManiaReplayMaster.zip"
+# ManiaReplayMaster Java 工具，由 scripts/fetch-assets.py 安装到 tools 目录
+MRM_DIR = tool_path("ManiaReplayMaster.jar")
 
 
 def java_executable() -> str:

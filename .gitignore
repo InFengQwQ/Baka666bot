@@ -41,8 +41,10 @@ venv/
 **/.ruff_cache/
 *.egg-info/
 
-# Playwright browsers installed locally
-data/tools/playwright-browsers/
+# Runtime tools installed by scripts/fetch-assets.py
+src/plugins/Malody_toolkit/tools/*.exe
+src/plugins/Malody_toolkit/tools/*.jar
+src/plugins/Malody_toolkit/tools/*.zip
 
 # Local NapCat runtime (embeds its own QQ build, ~350 MB)
 NapCat.Shell/
