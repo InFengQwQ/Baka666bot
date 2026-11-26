@@ -173,34 +173,6 @@ class Database:
         if row and row[0]:
             return json.loads(row[0])
         return {}
-    # 新增到 Database 类中
-    async def bind_qq(self, uid: str, qq: str):
-        """将 uid 与 qq 绑定，自动处理冲突"""
-        # 1. 如果该 QQ 已绑定其他 uid，先解除旧绑定
-        old_uid = await self.get_uid_by_qq(qq)
-        if old_uid and old_uid != uid:
-            await self.conn.execute("UPDATE user_bind SET qq = NULL WHERE uid = ?", (old_uid,))
-        # 2. 如果该 uid 已绑定其他 QQ，覆盖
-        await self.conn.execute("UPDATE user_bind SET qq = ? WHERE uid = ?", (qq, uid))
-        await self.conn.commit()
-
-    async def unbind_qq(self, uid: str):
-        await self.conn.execute("UPDATE user_bind SET qq = NULL WHERE uid = ?", (uid,))
-        await self.conn.commit()
-
-    async def get_uid_by_qq(self, qq: str) -> str | None:
-        cursor = await self.conn.execute("SELECT uid FROM user_bind WHERE qq = ?", (qq,))
-        row = await cursor.fetchone()
-        await cursor.close()
-        return row[0] if row else None
-
-    async def get_qq_by_uid(self, uid: str) -> str | None:
-        cursor = await self.conn.execute("SELECT qq FROM user_bind WHERE uid = ?", (uid,))
-        row = await cursor.fetchone()
-        await cursor.close()
-        return row[0] if row else None
-    # 在 API/database.py 的 Database 类中添加
-
     async def bind_qq(self, uid: str, qq: str):
         """将 UID 与 QQ 号唯一绑定，自动处理冲突"""
         # 解除该 QQ 旧绑定
@@ -213,6 +185,10 @@ class Database:
             await self.conn.execute("UPDATE user_bind SET qq = NULL WHERE uid = ?", (uid,))
         # 建立新绑定
         await self.conn.execute("UPDATE user_bind SET qq = ? WHERE uid = ?", (qq, uid))
+        await self.conn.commit()
+
+    async def unbind_qq(self, uid: str):
+        await self.conn.execute("UPDATE user_bind SET qq = NULL WHERE uid = ?", (uid,))
         await self.conn.commit()
 
     async def get_uid_by_qq(self, qq: str) -> str | None:

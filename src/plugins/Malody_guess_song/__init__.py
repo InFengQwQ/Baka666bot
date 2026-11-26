@@ -42,8 +42,6 @@ HINT_CONFIG = {
 
 # ==================== 全局游戏状态 ====================
 games: Dict[int, "Game"] = {}
-import json
-import os
 
 # 保存每个群上次成功搜索参数的持久化文件路径
 LAST_PARAMS_FILE = plugin_data("Malody_guess_song") / "last_guess_params.json"
