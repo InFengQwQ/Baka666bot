@@ -29,59 +29,33 @@ jobs:
           fetch-depth: 0
 
       - name: Merge upstream
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git remote add upstream "https://github.com/${UPSTREAM_REPO}.git"
-          git fetch --no-tags upstream "$UPSTREAM_BRANCH"
-          git switch -c "$SYNC_BRANCH"
-
-          if ! git merge --no-commit --no-ff "upstream/${UPSTREAM_BRANCH}"; then
-            echo "Merge reported conflicts; applying fork rules."
-          fi
-
-          for path in $OURS_PATHS; do
-            git checkout origin/main -- "$path"
-          done
-
-          for path in $DROP_PATHS; do
-            git rm -r --cached --ignore-unmatch "$path" >/dev/null 2>&1 || true
-            rm -rf "$path"
-          done
-
-          unresolved="$(git diff --name-only --diff-filter=U)"
-          if [ -n "$unresolved" ]; then
-            echo "Unresolved conflicts:"
-            echo "$unresolved"
-            exit 1
-          fi
-
-          git add -A
-
-          if git diff --cached --quiet; then
-            echo "Already up to date."
-            exit 0
-          fi
-
-          git commit -m "chore: sync fork $(date -u +%Y-%m-%d)"
-          git push --force origin "$SYNC_BRANCH"
+        id: merge
+        run: bash .github/scripts/sync-fork.sh
 
       - name: Open pull request
+        if: steps.merge.outputs.changed == 'true'
         run: |
           set -euo pipefail
-          if [ "$(git rev-list --count origin/main..HEAD)" -eq 0 ]; then
-            number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
-            if [ -n "$number" ]; then
-              gh pr close "$number" --delete-branch
-            else
-              git push origin --delete "$SYNC_BRANCH" 2>/dev/null || true
-            fi
-            exit 0
-          fi
-          if [ -z "$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')" ]; then
+          {
+            cat "$RUNNER_TEMP/sync-notes.md"
+            printf 'Dropped: `%s`. Kept on the fork: `%s`.\n' "$DROP_PATHS" "$OURS_PATHS"
+          } > "$RUNNER_TEMP/pr-body.md"
+          number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --body-file "$RUNNER_TEMP/pr-body.md"
+          else
             gh pr create --base main --head "$SYNC_BRANCH" \
               --title "chore: sync fork" \
-              --body "Automated merge of ${UPSTREAM_REPO}@${UPSTREAM_BRANCH}. ${DROP_PATHS} stays removed and submodule pointers stay on the fork."
+              --body-file "$RUNNER_TEMP/pr-body.md"
+          fi
+
+      - name: Close stale pull request
+        if: steps.merge.outputs.changed != 'true'
+        run: |
+          set -euo pipefail
+          number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh pr close "$number" --delete-branch
+          else
+            git push origin --delete "$SYNC_BRANCH" 2>/dev/null || true
           fi
