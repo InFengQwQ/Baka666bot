@@ -1,0 +1,37 @@
+services:
+  bot:
+    image: ghcr.io/infengqwq/baka666bot:latest
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      LOCALSTORE_DATA_DIR: /app/data/localstore
+      LOCALSTORE_CONFIG_DIR: /app/data/localstore/config
+      LOCALSTORE_CACHE_DIR: /app/data/localstore/cache
+      BAKA666BOT_UPDATE_MODE: "off"
+    volumes:
+      - data:/app/data
+    # The host resolver hands back blocked Cloudflare addresses for osu.direct,
+    # which the container cannot reach; use public resolvers instead.
+    dns:
+      - 223.5.5.5
+      - 119.29.29.29
+    restart: unless-stopped
+
+  napcat:
+    image: ghcr.io/infengqwq/baka666bot-napcat:4.18.42
+    environment:
+      TZ: Asia/Shanghai
+      ACCOUNT: ${NAPCAT_QQ:-}
+    ports:
+      - "6099:6099"
+    volumes:
+      - napcat-config:/app/napcat/config
+      - napcat-qq:/app/.config/QQ
+    depends_on:
+      - bot
+    restart: unless-stopped
+
+volumes:
+  data:
+  napcat-config:
+  napcat-qq:
