@@ -1,6 +1,4 @@
 import requests
-from typing import List, Dict
-import requests
 from typing import List, Dict, Optional
 
 def fetch_songs(
