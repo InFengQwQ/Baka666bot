@@ -323,8 +323,8 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
 
-        # 3. 下载 replay 文件
-        replay_dest = temp_path / file_name
+        # 3. 下载 replay 文件，使用 ASCII 文件名，避免 JVM 在 POSIX locale 下读坏中文路径
+        replay_dest = temp_path / f"replay{Path(file_name).suffix.lower()}"
         logger.info(f"[replayrd] 下载回放文件: {file_name}")
         if not await download_file(bot, file_info, replay_dest):
             await replayrd.finish(" 下载回放文件失败，请重试。")
@@ -332,7 +332,7 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
         # 4. 如果是 .mrv，先转换为 .mr
         if replay_type == "mrv":
             await bot.send(event, " 检测到 .mrv 文件，正在转换为 .mr ...")
-            mr_name = Path(file_name).stem + ".mr"
+            mr_name = "replay.mr"
             mr_path = temp_path / mr_name
             try:
                 ok = await asyncio.to_thread(
@@ -364,7 +364,7 @@ async def handle_replayrd(bot: Bot, event: MessageEvent):
 
         # 6. 下载谱面文件
         bm_name: str = beatmap_info["name"]
-        beatmap_dest = temp_path / bm_name
+        beatmap_dest = temp_path / f"beatmap{Path(bm_name).suffix.lower()}"
         logger.info(f"[replayrd] 下载谱面文件: {bm_name}")
         if not await download_file(bot, beatmap_info, beatmap_dest):
             await replayrd.finish(" 下载谱面文件失败，请重试。")
