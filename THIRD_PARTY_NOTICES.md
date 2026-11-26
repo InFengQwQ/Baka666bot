@@ -11,15 +11,17 @@ The following plugin sources are included as independent repositories or local f
 
 Additional bundled components:
 
-- `ManiaReplayMaster.zip` includes the Apache License 2.0 and notice under `META-INF/`.
+- `ManiaReplayMaster.jar` is downloaded from the `replay-renderer-2.4.0` release by `scripts/fetch-assets.py`; the jar includes the Apache License 2.0 and notice under `META-INF/`.
 - `nlohmann/json` 3.11.3 is included under MIT; its SPDX notice is retained in `src/plugins/Malody_toolkit/json.hpp`.
 - The ECharts bundle in `nonebot_plugin_osubot` retains its Apache-2.0 and MIT notices in the JavaScript file header.
-- The bundled FFmpeg 8.0.1 full build enables GPL components. Its license and build README are in `src/plugins/Malody_toolkit/tools/third_party/ffmpeg/`. The corresponding FFmpeg source is [commit 894da5ca7d](https://github.com/FFmpeg/FFmpeg/commit/894da5ca7d), with build details from the [Gyan build project](https://www.gyan.dev/ffmpeg/builds/).
-- The legacy `ma2om`, `mp32ogg`, `ncm2mp3`, `ncm2ogg`, and `DragUnzip` executables were supplied in the local Malody tools folder. No license notices or metadata were present there, so this project does not assign a license to them.
-- The bundled Eclipse Temurin JRE includes its `NOTICE` and legal texts under `src/plugins/Malody_toolkit/tools/java/`.
-- The bundled Playwright Chromium payload retains Chromium's notices alongside the browser files in `data/tools/playwright-browsers/`.
-- `NapCat.Shell/` contains a local NapCat runtime from [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ). No license file or repository license metadata was present in the supplied runtime/source; this project does not assign a license to it.
-- The local Malody conversion tools include `ma2om.exe`, `mp32ogg.exe`, `ncm2mp3.exe`, `ncm2ogg.exe`, `DragUnzip.exe` and `inverse.py`. The source folder supplied no license metadata for these files; no license is assigned by this project.
+- FFmpeg is no longer bundled. `ffmpeg` and `ffprobe` are resolved from `PATH` and stay under the license of the installed build.
+- Wine is installed from the Debian package archive when the Docker image is built and is not distributed with this repository; it stays under LGPL-2.1-or-later.
+- The legacy `ma2om`, `ncm2mp3` and `prontom` executables are downloaded from the `assets-2026.11.26` release. No license notices or metadata were present in the supplied files, so this project does not assign a license to them.
+- On Linux `ma2om.exe`, `ncm2mp3.exe` and `prontom.exe` are downloaded and run through wine; the old `mp32ogg`, `ncm2ogg` and `DragUnzip` wrappers are no longer used or downloaded.
+- The bundled Eclipse Temurin JRE was removed; `ManiaReplayMaster.jar` now runs on a system Java 11+ runtime that is not distributed with this repository.
+- Chromium is installed by Playwright and is not distributed with this repository.
+- `NapCat.Shell/` is deployed locally from [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ) and is not tracked by this repository. No license file or repository license metadata was present in the supplied runtime/source; this project does not assign a license to it.
+- The local Malody conversion tools include `ma2om.exe`, `ncm2mp3.exe` and `prontom.exe`; `inverse.py`, `tojack.py` and `prontom.cpp` are tracked source. The source folder supplied no license metadata for these files; no license is assigned by this project.
 - `MalodyVClientPlugin` documents protocol references to [Mugzone/Emiria](https://github.com/Mugzone/Emiria). The upstream repository does not declare a license, and this project does not claim a license for it.
 
 Python dependencies installed from `pyproject.toml` remain subject to the licenses shipped with their respective package distributions.
