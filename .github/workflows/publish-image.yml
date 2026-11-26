@@ -1,6 +1,9 @@
 name: Publish image
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       bot:
@@ -21,7 +24,7 @@ env:
 
 jobs:
   bot:
-    if: inputs.bot
+    if: github.event_name == 'push' || inputs.bot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +37,10 @@ jobs:
           owner="$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
           repo="$(echo "${GITHUB_REPOSITORY#*/}" | tr '[:upper:]' '[:lower:]')"
           echo "image=ghcr.io/${owner}/${repo}" >> "$GITHUB_OUTPUT"
+
+      - name: Version
+        id: version
+        run: echo "value=$(date -u +%Y.%m.%d)-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -48,8 +55,12 @@ jobs:
           context: .
           push: true
           tags: |
+            ${{ steps.name.outputs.image }}:${{ steps.version.outputs.value }}
             ${{ steps.name.outputs.image }}:latest
-            ${{ steps.name.outputs.image }}:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.version=${{ steps.version.outputs.value }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
   napcat:
     if: inputs.napcat

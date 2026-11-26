@@ -32,7 +32,7 @@
 ## 同步与发布
 
 - 每周日 0 点同步一次，只开 PR（`chore/sync-fork`），不自动合 `main`；上游 NapCat 不得覆盖本地冻结的 4.18.42；`DROP_PATHS` 跟着维护，`KEEP_PATHS` 只留子模块指针；出现未登记的二进制直接失败；冲突先用三行说明再等决定。
-- 镜像推 GHCR，`latest` 加提交 sha；线上手动 `pull`，不自动更新。
+- 镜像在 push `main` 时自动构建，tag 为构建日期加运行序号，另附 `latest`，compose 用 `latest`；线上手动 `pull`，不自动更新。
 
 ## 验证与交流
 
