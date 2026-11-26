@@ -22,7 +22,9 @@ jobs:
       SYNC_BRANCH: ${{ vars.SYNC_BRANCH || 'chore/sync-fork' }}
       # Hardcoded on purpose: a stale variable would let the binaries return.
       DROP_PATHS: '.gitattributes NapCat.Shell data/tools/playwright-browsers src/plugins/Malody_toolkit/ManiaReplayMaster.zip src/plugins/Malody_toolkit/tools/java src/plugins/Malody_toolkit/tools/ffmpeg.exe src/plugins/Malody_toolkit/tools/ffprobe.exe src/plugins/Malody_toolkit/tools/ma2om.exe src/plugins/Malody_toolkit/tools/mp32ogg.exe src/plugins/Malody_toolkit/tools/ncm2mp3.exe src/plugins/Malody_toolkit/tools/ncm2ogg.exe src/plugins/Malody_toolkit/tools/DragUnzip.exe src/plugins/Malody_toolkit/tools/prontom.exe src/plugins/Malody_toolkit/tools/third_party/ffmpeg'
-      OURS_PATHS: ${{ vars.OURS_PATHS || 'src/plugins/nonebot-plugin-for-osumania4k src/plugins/nonebot_plugin_osubot src/plugins/nonebot_plugin_osugreek src/plugins/nonebot_plugin_osumania_toolkit src/plugins/Malody_toolkit/ma2om.py src/plugins/Malody_toolkit/om2ma.py src/plugins/multiplatform/file_commands.py' }}
+      # Submodules only: a file conflict is settled by the conflict step below,
+      # which keeps the fork side and lists it in the pull request.
+      KEEP_PATHS: ${{ vars.KEEP_PATHS || 'src/plugins/nonebot-plugin-for-osumania4k src/plugins/nonebot_plugin_osubot src/plugins/nonebot_plugin_osugreek src/plugins/nonebot_plugin_osumania_toolkit' }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +41,7 @@ jobs:
           set -euo pipefail
           {
             cat "$RUNNER_TEMP/sync-notes.md"
-            printf 'Dropped: `%s`. Kept on the fork: `%s`.\n' "$DROP_PATHS" "$OURS_PATHS"
+            printf 'Dropped: `%s`. Kept on the fork: `%s`.\n' "$DROP_PATHS" "$KEEP_PATHS"
           } > "$RUNNER_TEMP/pr-body.md"
           number="$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')"
           if [ -n "$number" ]; then

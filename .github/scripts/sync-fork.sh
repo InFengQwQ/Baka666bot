@@ -6,7 +6,7 @@ set -euo pipefail
 : "${SYNC_BRANCH:?SYNC_BRANCH is required}"
 : "${UPSTREAM_BRANCH:?UPSTREAM_BRANCH is required}"
 DROP_PATHS="${DROP_PATHS:-}"
-OURS_PATHS="${OURS_PATHS:-}"
+KEEP_PATHS="${KEEP_PATHS:-}"
 
 notes="${RUNNER_TEMP:-/tmp}/sync-notes.md"
 : > "$notes"
@@ -41,7 +41,7 @@ if [ "$count" -gt 0 ] && ! git rev-parse -q --verify MERGE_HEAD >/dev/null; then
   exit 1
 fi
 
-for path in $OURS_PATHS; do
+for path in $KEEP_PATHS; do
   if git cat-file -e "origin/main:$path" 2>/dev/null; then
     git checkout origin/main -- "$path"
   fi
@@ -74,6 +74,24 @@ if [ -n "$conflicts" ]; then
 fi
 
 git add -A
+
+# Upstream ships Windows binaries; the fork does not. Anything matching these
+# extensions and still staged after the drop step is a path the list misses.
+binaries="$(git diff --cached --name-only --diff-filter=AM |
+  grep -Ei '\.(exe|dll|jar|zip|pak|node)$' || true)"
+if [ -n "$binaries" ]; then
+  {
+    printf '### Binaries outside the drop list\n\n'
+    printf 'Add these paths to DROP_PATHS or delete them on the fork side.\n\n'
+    while IFS= read -r file; do
+      printf -- '- `%s`\n' "$file"
+    done <<< "$binaries"
+    printf '\n'
+  } >> "$notes"
+  echo "Binaries left after the merge:" >&2
+  echo "$binaries" >&2
+  exit 1
+fi
 
 lfs_pointers="$(git grep --cached -lE '^version https://git-lfs\.github\.com/spec/v1' || true)"
 if [ -n "$lfs_pointers" ]; then
