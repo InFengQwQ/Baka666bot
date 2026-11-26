@@ -14,7 +14,7 @@ Additional bundled components:
 - `ManiaReplayMaster.zip` includes the Apache License 2.0 and notice under `META-INF/`.
 - `nlohmann/json` 3.11.3 is included under MIT; its SPDX notice is retained in `src/plugins/Malody_toolkit/json.hpp`.
 - The ECharts bundle in `nonebot_plugin_osubot` retains its Apache-2.0 and MIT notices in the JavaScript file header.
-- The bundled FFmpeg 8.0.1 full build enables GPL components. Its license and build README are in `src/plugins/Malody_toolkit/tools/third_party/ffmpeg/`. The corresponding FFmpeg source is [commit 894da5ca7d](https://github.com/FFmpeg/FFmpeg/commit/894da5ca7d), with build details from the [Gyan build project](https://www.gyan.dev/ffmpeg/builds/).
+- FFmpeg is no longer bundled. `ffmpeg` and `ffprobe` are resolved from `PATH` and stay under the license of the installed build.
 - The legacy `ma2om`, `mp32ogg`, `ncm2mp3`, `ncm2ogg`, and `DragUnzip` executables were supplied in the local Malody tools folder. No license notices or metadata were present there, so this project does not assign a license to them.
 - The bundled Eclipse Temurin JRE includes its `NOTICE` and legal texts under `src/plugins/Malody_toolkit/tools/java/`.
 - The bundled Playwright Chromium payload retains Chromium's notices alongside the browser files in `data/tools/playwright-browsers/`.

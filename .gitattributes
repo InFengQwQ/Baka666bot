@@ -1,4 +1,2 @@
 data/tools/playwright-browsers/chromium_headless_shell-1223/chrome-headless-shell-win64/chrome-headless-shell.exe filter=lfs diff=lfs merge=lfs -text
-src/plugins/Malody_toolkit/tools/ffmpeg.exe filter=lfs diff=lfs merge=lfs -text
-src/plugins/Malody_toolkit/tools/ffprobe.exe filter=lfs diff=lfs merge=lfs -text
 src/plugins/Malody_toolkit/tools/java/lib/modules filter=lfs diff=lfs merge=lfs -text

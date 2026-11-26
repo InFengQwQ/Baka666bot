@@ -20,7 +20,6 @@ from nonebot.params import CommandArg
 
 from .ma2om import _extract_archive_safely, _repack_archive
 from .mcz_speed import _download_file, _extract_file_info, _send_result_file
-from src.plugin_runtime import tool_path
 
 
 timeinverse = on_command("timeinverse", priority=5, block=True)
@@ -503,11 +502,11 @@ def _suffixed_path(source: Path, reserved: set[Path]) -> Path:
 
 
 async def _probe_duration_ms(audio_path: Path) -> float:
-    ffprobe = tool_path("ffprobe.exe")
-    if not ffprobe.is_file():
-        raise RuntimeError("项目内未找到 Malody Toolkit 的 ffprobe.exe")
+    ffprobe = shutil.which("ffprobe")
+    if not ffprobe:
+        raise RuntimeError("未找到 ffprobe，请安装 FFmpeg 并加入 PATH")
     process = await asyncio.create_subprocess_exec(
-        str(ffprobe), "-v", "error", "-show_entries", "format=duration:stream=duration",
+        ffprobe, "-v", "error", "-show_entries", "format=duration:stream=duration",
         "-of", "json", str(audio_path),
         stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
     )
@@ -528,13 +527,13 @@ async def _probe_duration_ms(audio_path: Path) -> float:
 
 
 async def _reverse_audio(source: Path, destination: Path) -> None:
-    ffmpeg = tool_path("ffmpeg.exe")
-    if not ffmpeg.is_file():
-        raise RuntimeError("项目内未找到 Malody Toolkit 的 ffmpeg.exe")
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise RuntimeError("未找到 ffmpeg，请安装并加入 PATH")
     temporary = destination.with_name(f".{destination.stem}.reversing{destination.suffix}")
     temporary.unlink(missing_ok=True)
     command = [
-        str(ffmpeg), "-hide_banner", "-loglevel", "error", "-y", "-i", str(source),
+        ffmpeg, "-hide_banner", "-loglevel", "error", "-y", "-i", str(source),
         "-map", "0:a:0", "-vn", "-af", "areverse", "-map_metadata", "0",
     ]
     if source.suffix.lower() == ".ogg":

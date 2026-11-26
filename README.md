@@ -31,7 +31,7 @@ Bot 连接时会检查总群并自动接受尚未处理的总群邀请。QQ 需�
 
 ## 运行
 
-需要 Windows、Git、Git LFS、Python 3.10+、已安装的 QQ 客户端和 NapCat。克隆时要初始化插件子模块并下载运行资源：
+需要 Windows、Git、Git LFS、Python 3.10+、FFmpeg（`/mcz_speed`、`/timeinverse` 等音频处理）、已安装的 QQ 客户端和 NapCat。克隆时要初始化插件子模块并下载运行资源：
 
 ```powershell
 git lfs install
@@ -45,6 +45,8 @@ Set-Location Baka666bot
 py -3 -m venv venv
 .\venv\Scripts\python.exe -m pip install -e .
 ```
+
+音频处理命令需要 `ffmpeg` 和 `ffprobe`，可用 `winget install Gyan.FFmpeg` 安装并确保在 `PATH` 中。
 
 只在对应配置文件不存在时创建本地配置：
 

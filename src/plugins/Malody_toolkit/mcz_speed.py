@@ -24,8 +24,6 @@ from nonebot.log import logger
 from nonebot.params import CommandArg
 from nonebot.rule import Rule
 
-from src.plugin_runtime import tool_path
-
 
 COMMAND_PREFIX = "倍速"
 PITCH_SPEED_COMMAND_PREFIX = "倍速变调"
@@ -517,14 +515,14 @@ async def _run_ffmpeg_speed_pitch(
 async def _run_ffmpeg_filter(
     input_audio: Path, output_audio: Path, filter_chain: str
 ) -> None:
-    ffmpeg_exe = tool_path("ffmpeg.exe")
-    if not ffmpeg_exe.is_file():
-        raise RuntimeError("项目内未找到 Malody Toolkit 的 ffmpeg.exe")
+    ffmpeg_exe = shutil.which("ffmpeg")
+    if not ffmpeg_exe:
+        raise RuntimeError("未找到 ffmpeg，请安装并加入 PATH")
 
     output_audio.parent.mkdir(parents=True, exist_ok=True)
 
     proc = await asyncio.create_subprocess_exec(
-        str(ffmpeg_exe),
+        ffmpeg_exe,
         "-hide_banner",
         "-loglevel",
         "error",
