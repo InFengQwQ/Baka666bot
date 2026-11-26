@@ -1,22 +1,8 @@
 """帮助图片 — 同步 ma.py HELP_TEXT，删除缓存后重新生成"""
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
-from pathlib import Path
+from PIL import Image, ImageDraw
 
-import nonebot
-from importlib.util import find_spec
-_spec = find_spec("nonebot_plugin_osubot")
-plugin_dir = (Path(_spec.origin).parent / "nonebot_plugin_osubot" if _spec.origin.endswith(".pyd") else Path(_spec.origin).parent) if _spec and _spec.origin else Path(__file__).parent
-font_dir = plugin_dir / "osufile" / "fonts"
-
-def _font(size: int):
-    if font_dir.exists():
-        try: return ImageFont.truetype(str(font_dir / "Torus Regular.otf"), size)
-        except: pass
-    for name in ("msyh.ttc", "simhei.ttf"):
-        try: return ImageFont.truetype(name, size)
-        except: pass
-    return ImageFont.load_default()
+from src.plugin_runtime import osubot_font
 
 async def generate_help_image() -> bytes:
     sections = [
@@ -37,14 +23,14 @@ async def generate_help_image() -> bytes:
     draw = ImageDraw.Draw(im)
 
     y = 8
-    draw.text((16, y), "MalodyV Bot — 全部命令", font=_font(18), fill=(238,171,0))
+    draw.text((16, y), "MalodyV Bot — 全部命令", font=osubot_font(18), fill=(238,171,0))
     y += 28
 
     for section, cmds in sections:
-        draw.text((10, y), f"  {section}", font=_font(14), fill=(238,171,0))
+        draw.text((10, y), f"  {section}", font=osubot_font(14), fill=(238,171,0))
         y += line_h + 2
         for cmd in cmds:
-            draw.text((24, y), cmd, font=_font(12), fill=(102,204,255))
+            draw.text((24, y), cmd, font=osubot_font(12), fill=(102,204,255))
             y += line_h
 
     bio = BytesIO(); im.convert("RGB").save(bio, "PNG"); return bio.getvalue()

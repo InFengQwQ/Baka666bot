@@ -1,34 +1,18 @@
 import asyncio
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 import httpx
-from pathlib import Path
+
+from src.plugin_runtime import osubot_font
 
 # ---------- 字体配置 ----------
-import nonebot
-from importlib.util import find_spec
-_spec = find_spec("nonebot_plugin_osubot")
-plugin_dir = (Path(_spec.origin).parent / "nonebot_plugin_osubot" if _spec.origin.endswith(".pyd") else Path(_spec.origin).parent) if _spec and _spec.origin else Path(__file__).parent
-font_dir = plugin_dir / "osufile" / "fonts"
-
 # 字体大小整体大幅放大
-if font_dir.exists():
-    f_title = ImageFont.truetype(str(font_dir / "Torus SemiBold.otf"), 72)
-    f_info  = ImageFont.truetype(str(font_dir / "Torus Regular.otf"), 46)
-    f_head  = ImageFont.truetype(str(font_dir / "Torus SemiBold.otf"), 38)
-    f_row   = ImageFont.truetype(str(font_dir / "Torus Regular.otf"), 36)
-    f_acc   = ImageFont.truetype(str(font_dir / "Torus SemiBold.otf"), 34)
-    f_sml   = ImageFont.truetype(str(font_dir / "Torus Regular.otf"), 30)
-else:
-    try:
-        f_title = ImageFont.truetype("msyh.ttc", 72)
-        f_info  = ImageFont.truetype("msyh.ttc", 46)
-        f_head  = ImageFont.truetype("msyh.ttc", 38)
-        f_row   = ImageFont.truetype("msyh.ttc", 36)
-        f_acc   = ImageFont.truetype("msyh.ttc", 34)
-        f_sml   = ImageFont.truetype("msyh.ttc", 30)
-    except:
-        f_title = f_info = f_head = f_row = f_acc = f_sml = ImageFont.load_default()
+f_title = osubot_font(72)
+f_info  = osubot_font(46)
+f_head  = osubot_font(38)
+f_row   = osubot_font(36)
+f_acc   = osubot_font(34)
+f_sml   = osubot_font(30)
 
 # ---------- 颜色配置 ----------
 ACC_COLORS = {

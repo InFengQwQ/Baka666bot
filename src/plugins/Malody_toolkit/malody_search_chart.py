@@ -1,21 +1,16 @@
-from src.plugin_runtime import required_malody_account, malody_web_cookies
+from src.plugin_runtime import malody_web_cookies, osubot_font
 import re
 from io import BytesIO
 from typing import Optional
 import html as html_module   # 避免与变量名冲突，实际可 import html
 
 import httpx
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 from nonebot import on_command
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg
 
 # ---------- 配置 ----------
-from pathlib import Path
-
-FONT_PATH = str(
-    Path(__file__).parent / "fonts" / "Torus SemiBold.otf"
-)
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -143,12 +138,6 @@ async def get_song_detail(sid: int) -> dict:
     }
 
 # ---------- 图片渲染 ----------
-def load_font(size: int):
-    try:
-        return ImageFont.truetype(FONT_PATH, size)
-    except Exception:
-        return ImageFont.truetype("msyh.ttc", size)
-
 def hex_to_rgba(hex_color, alpha=255):
     hex_color = hex_color.lstrip('#')
     r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
@@ -197,13 +186,13 @@ async def render_song_image(data: dict) -> bytes:
     CHART_CARD_GAP = 16
     CHART_Y_START = COVER_TOP + COVER_SIZE + 40
 
-    font_title = load_font(60)
-    font_artist = load_font(36)
-    font_meta_label = load_font(22)
-    font_meta_value = load_font(32)
-    font_chart_title = load_font(30)
-    font_chart_body = load_font(24)
-    font_section_title = load_font(48)
+    font_title = osubot_font(60)
+    font_artist = osubot_font(36)
+    font_meta_label = osubot_font(22)
+    font_meta_value = osubot_font(32)
+    font_chart_title = osubot_font(30)
+    font_chart_body = osubot_font(24)
+    font_section_title = osubot_font(48)
 
     # 处理背景
     cover_img = None
@@ -251,7 +240,7 @@ async def render_song_image(data: dict) -> bytes:
     title = data["title"]
     title_font = font_title
     while draw.textlength(title, font=title_font) > TEXT_AREA_WIDTH - 40:
-        title_font = load_font(title_font.size - 2)
+        title_font = osubot_font(title_font.size - 2)
         if title_font.size < 30:
             break
     draw.text((TEXT_X, COVER_TOP + 10), title, font=title_font, fill="#FFFFFF")

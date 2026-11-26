@@ -4,11 +4,9 @@ from pathlib import Path
 
 project_root = Path(__file__).resolve().parent
 os.chdir(project_root)
-browser_path = project_root / "data" / "tools" / "playwright-browsers"
 plugin_tool_root = project_root / "src" / "plugins" / "Malody_toolkit" / "tools"
 os.environ["BAKA_DATA_DIR"] = str(project_root / "data")
 os.environ["BAKA_TOOLS_DIR"] = str(plugin_tool_root)
-os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(browser_path)
 
 for stream in (sys.stdout, sys.stderr):
     if hasattr(stream, "reconfigure"):
@@ -23,8 +21,8 @@ from loguru import logger as loguru_logger
 
 
 #-------------------------------------------------------------------------#
-from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
+from PIL import Image, ImageDraw
+from src.plugin_runtime import osubot_font
 # ---------- 水印配置 ----------
 WATERMARK_TEXT = "Baka666Bot @猫猫虫小窝"
 WATERMARK_OPACITY = 180          # 透明度 0-255
@@ -40,11 +38,7 @@ def add_watermark_to_image(image: Image.Image) -> Image.Image:
     
     draw = ImageDraw.Draw(img, 'RGBA')
     
-    # 尝试加载中文字体（根据你的系统调整路径）
-    try:
-        font = ImageFont.truetype("msyh.ttc", max(20, img.width // 40))
-    except:
-        font = ImageFont.load_default()
+    font = osubot_font(max(20, img.width // 40))
     
     # 获取文字尺寸
     bbox = draw.textbbox((0, 0), WATERMARK_TEXT, font=font)
@@ -107,11 +101,11 @@ loguru_logger.add(
 )
 
 # 添加全局事件拦截：除了主人外，只允许在群聊中触发
-""" @event_preprocessor
+@event_preprocessor
 async def block_non_superuser_private(event: PrivateMessageEvent):
     superusers = nonebot.get_driver().config.superusers
     if str(event.user_id) not in superusers:
-        raise IgnoredException("非超级用户禁止私聊使用机器人") """
+        raise IgnoredException("非超级用户禁止私聊使用机器人")
 
 # 暂时仅启用 QQ；Discord / Telegram 的账号配置保留，恢复服务时再注册适配器。
 driver = nonebot.get_driver()

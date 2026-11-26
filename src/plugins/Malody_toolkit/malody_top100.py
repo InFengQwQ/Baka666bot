@@ -1,11 +1,11 @@
-from src.plugin_runtime import required_malody_account, malody_web_cookies
+from src.plugin_runtime import required_malody_account, malody_web_cookies, osubot_font
 from nonebot import on_command
 from nonebot.adapters.onebot.v11 import Bot, Event, MessageSegment
 from nonebot.log import logger
 import httpx
 import asyncio
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw
 import traceback
 import re
 from bs4 import BeautifulSoup
@@ -55,23 +55,12 @@ def get_acc_color(acc: float):
     else:           return (240, 102, 102)
 
 # ---------- 字体加载 ----------
-try:
-    f_title = ImageFont.truetype("Torus SemiBold.otf", 72)
-    f_info  = ImageFont.truetype("Torus Regular.otf", 46)
-    f_head  = ImageFont.truetype("Torus SemiBold.otf", 38)
-    f_row   = ImageFont.truetype("Torus Regular.otf", 36)
-    f_acc   = ImageFont.truetype("Torus SemiBold.otf", 34)
-    f_sml   = ImageFont.truetype("Torus Regular.otf", 30)
-except:
-    try:
-        f_title = ImageFont.truetype("msyh.ttc", 72)
-        f_info  = ImageFont.truetype("msyh.ttc", 46)
-        f_head  = ImageFont.truetype("msyh.ttc", 38)
-        f_row   = ImageFont.truetype("msyh.ttc", 36)
-        f_acc   = ImageFont.truetype("msyh.ttc", 36)
-        f_sml   = ImageFont.truetype("msyh.ttc", 34)
-    except:
-        f_title = f_info = f_head = f_row = f_acc = f_sml = ImageFont.load_default()
+f_title = osubot_font(72)
+f_info  = osubot_font(46)
+f_head  = osubot_font(38)
+f_row   = osubot_font(36)
+f_acc   = osubot_font(34)
+f_sml   = osubot_font(30)
 
 # ---------- Exp排行榜数据抓取 ----------
 async def fetch_web_top50() -> list:

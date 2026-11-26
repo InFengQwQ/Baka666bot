@@ -1,25 +1,11 @@
-"""渲染组件 — 参照 mmbest.py 视觉标准 (Torus 字体/圆角封面/模糊背景/暗色主题)"""
+"""渲染组件 — 参照 mmbest.py 视觉标准 (子模块字体/圆角封面/模糊背景/暗色主题)"""
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter, ImageOps
-import httpx, os
-from pathlib import Path
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
+import httpx
 
-from src.plugin_runtime import plugin_resource_dir
-plugin_dir = plugin_resource_dir("nonebot_plugin_osubot")
-font_dir = plugin_dir / "osufile" / "fonts"
+from src.plugin_runtime import osubot_font
 
-def _font(size: int):
-    if font_dir.exists():
-        try: return ImageFont.truetype(str(font_dir / "Torus Regular.otf"), size)
-        except: pass
-        try: return ImageFont.truetype(str(font_dir / "Torus SemiBold.otf"), size)
-        except: pass
-    for name in ("msyh.ttc", "simhei.ttf"):
-        try: return ImageFont.truetype(name, size)
-        except: pass
-    return ImageFont.load_default()
-
-F = {s: _font(s) for s in (10,11,12,13,14,15,16,18,20,22,24,28)}
+F = {s: osubot_font(s) for s in (10,11,12,13,14,15,16,18,20,22,24,28)}
 BG = (31, 41, 46)
 ACCENT = (238, 171, 0)
 TEXT = (220, 220, 220)

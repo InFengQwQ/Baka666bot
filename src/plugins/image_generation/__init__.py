@@ -5,12 +5,11 @@ from urllib.parse import quote
 import httpx
 from PIL import Image, ImageDraw, ImageFont
 
-import nonebot
 from nonebot import on_command, get_driver
 from nonebot.adapters.onebot.v11 import MessageEvent, Message, MessageSegment
 from nonebot.params import CommandArg
 from nonebot.log import logger
-from src.plugin_runtime import credential, plugin_resource_dir
+from src.plugin_runtime import credential, osubot_font
 from src.storage import plugin_data
 
 # ---------- 路径 & 配置 ----------
@@ -26,43 +25,13 @@ COOLDOWN_SECONDS = 300
 cooldown_map = {}
 
 # ---------- 字体加载 ----------
-FONT_TITLE = None   # 标题字体 (Torus Regular)
+FONT_TITLE = osubot_font(36)
 FONT_BODY = None    # 正文字体 (中文字体)
 
 def load_fonts():
-    global FONT_TITLE, FONT_BODY
+    global FONT_BODY
 
-    # 1. 尝试通过 nonebot 获取 osubot 插件路径
-    osubot_dir = None
-    try:
-        osubot_plugin = nonebot.get_plugin("nonebot_plugin_osubot")
-        if osubot_plugin and hasattr(osubot_plugin, 'module'):
-            osubot_dir = Path(osubot_plugin.module.__file__).parent
-            font_candidate = osubot_dir / "osufile" / "fonts" / "Torus Regular.otf"
-            if font_candidate.exists():
-                FONT_TITLE = ImageFont.truetype(str(font_candidate), 36)
-                logger.info("已加载 Torus 标题字体（来自已加载插件）")
-    except Exception:
-        pass
-
-    # 2. 如果没有，尝试硬编码备用路径（根据您之前提供的位置）
-    if FONT_TITLE is None:
-        fallback_paths = [
-            plugin_resource_dir("nonebot_plugin_osubot") / "osufile" / "fonts" / "Torus Regular.otf",
-            plugin_resource_dir("nonebot_plugin_osubot") / "osufile" / "fonts" / "Torus SemiBold.otf",  # 尝试另外的
-        ]
-        for fp in fallback_paths:
-            if fp.exists():
-                try:
-                    FONT_TITLE = ImageFont.truetype(str(fp), 36)
-                    logger.info(f"已加载 Torus 标题字体（备用路径）: {fp}")
-                    break
-                except Exception:
-                    continue
-        if FONT_TITLE is None:
-            logger.warning("未找到 Torus 字体，标题将使用中文字体")
-
-    # 3. 加载中文字体（正文）
+    # 1. 加载中文字体（正文）
     cjk_candidates = [
         r"C:\Windows\Fonts\msyh.ttc",      # 微软雅黑
         r"C:\Windows\Fonts\simsun.ttc",    # 宋体

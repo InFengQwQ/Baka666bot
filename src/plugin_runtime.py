@@ -1,6 +1,9 @@
 import os
 import shutil
+from functools import lru_cache
 from pathlib import Path
+
+from PIL import ImageFont
 
 
 class MissingBusinessAccount(ValueError):
@@ -39,19 +42,18 @@ def credential(env: str, config_name: str | None = None) -> str:
         return ""
 
 
-def plugin_resource_dir(module_name: str) -> Path:
-    from importlib.util import find_spec
-
-    try:
-        spec = find_spec(module_name)
-    except (ModuleNotFoundError, ValueError):
-        spec = None
-    if spec and spec.origin:
-        path = Path(spec.origin)
-        return path.parent / module_name.split(".")[-1] if path.suffix.lower() == ".pyd" else path.parent
-    configured = os.environ.get("BAKA_TOOLS_DIR")
-    root = Path(configured) if configured else Path(__file__).resolve().parents[1] / "data" / "tools"
-    return root / "fonts"
+@lru_cache(maxsize=None)
+def osubot_font(size: int) -> ImageFont.FreeTypeFont:
+    """渲染统一使用 osubot 子模块自带的中文字体。"""
+    font = (
+        Path(__file__).resolve().parent
+        / "plugins"
+        / "nonebot_plugin_osubot"
+        / "osufile"
+        / "fonts"
+        / "SourceHanSansSC-Bold.otf"
+    )
+    return ImageFont.truetype(str(font), size)
 
 
 def import_plugin_module(plugin_id: str, submodule: str = ""):
