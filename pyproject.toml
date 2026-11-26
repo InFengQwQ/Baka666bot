@@ -47,3 +47,23 @@ adapters = [
 plugins = ["nonebot_plugin_arcaea_sticker", "nonebot_plugin_memes", "nonebot_plugin_capoo", "nonebot_plugin_add_friends", "nonebot_plugin_blacklist"]
 plugin_dirs = ["src/plugins", "src/plugins/nonebot-plugin-for-osumania4k"]
 builtin_plugins = ["echo"]
+
+[dependency-groups]
+dev = ["ruff==0.17.6"]
+
+[tool.ruff]
+target-version = "py312"
+extend-exclude = [
+    "src/plugins/nonebot-plugin-for-osumania4k",
+    "src/plugins/nonebot_plugin_osubot",
+    "src/plugins/nonebot_plugin_osugreek",
+    "src/plugins/nonebot_plugin_osumania_toolkit",
+]
+
+[tool.ruff.lint]
+select = ["F"]
+ignore = [
+    "F401",  # 未使用的 import
+    "F541",  # 无占位符的 f-string
+    "F841",  # 未使用的局部变量
+]

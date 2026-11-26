@@ -31,6 +31,13 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Lint
+        run: |
+          uv sync --frozen --only-group dev
+          uv run --no-sync ruff check
+
       - name: Image name
         id: name
         run: |
