@@ -4,6 +4,7 @@ import json
 import math
 import shutil
 import tempfile
+import zipfile
 from pathlib import Path
 from pathlib import PurePosixPath
 from typing import Optional
