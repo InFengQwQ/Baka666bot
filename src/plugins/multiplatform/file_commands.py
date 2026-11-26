@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from src.plugin_runtime import tool_path
-
 import asyncio
-import json
 import shutil
 import tempfile
 import zipfile
@@ -34,79 +31,43 @@ async def _send_outputs(bot: Bot, event: Event, directory: Path):
         await send_path(bot, event, path)
 
 
-def _conversion_config():
-    try:
-        from src.plugin_runtime import import_plugin_module
-        _native_peer = import_plugin_module('Malody_toolkit', 'ma2om')
-        CONFIGS = _native_peer.CONFIGS
+def _conversion_exts(tool_key: str) -> tuple[str, ...]:
+    from src.plugin_runtime import import_plugin_module
 
-        return CONFIGS
-    except Exception:
-        return {
-            "ma2om": {
-                "exe": str(tool_path("ma2om.exe")),
-                "exts": (".mc", ".mcz", ".osz", ".zip"),
-            },
-            "mp32ogg": {
-                "exe": str(tool_path("mp32ogg.exe")),
-                "exts": (".mp3",),
-            },
-            "ncm2mp3": {
-                "exe": str(tool_path("ncm2mp3.exe")),
-                "exts": (".ncm",),
-            },
-            "ncm2ogg": {
-                "exe": str(tool_path("ncm2ogg.exe")),
-                "exts": (".ncm",),
-            },
-        }
+    runner = import_plugin_module("Malody_toolkit", "tool_runner")
+    return runner.CONVERSION_EXTS[tool_key]
 
 
 async def _run_conversion(bot: Bot, event: Event, tool_key: str):
-    config = _conversion_config()[tool_key]
+    exts = _conversion_exts(tool_key)
     with tempfile.TemporaryDirectory() as temporary:
         work = Path(temporary)
-        media = select_media(event, suffixes=tuple(config["exts"]))
+        media = select_media(event, suffixes=tuple(exts))
         if not media:
-            await bot.send(event, f"请发送或回复 {config['exts']} 文件。")
+            await bot.send(event, f"请发送或回复 {exts} 文件。")
             return
         input_path = work / Path(media.name).name
         if not await download_media(bot, media, input_path):
             await bot.send(event, "文件下载失败。")
             return
-        if tool_key == "ma2om":
-            from src.plugin_runtime import import_plugin_module
+        from src.plugin_runtime import import_plugin_module
 
+        if tool_key == "ma2om":
             converter = import_plugin_module("Malody_toolkit", "ma2om")
             try:
                 output = await converter.convert_malody_to_osu(input_path)
-            except Exception as exc:
+            except Exception:
                 logger.exception("Malody to osu!mania conversion failed")
                 await bot.send(event, "转换失败：请检查谱面文件后重试。")
                 return
             await send_path(bot, event, output)
             return
-        executable = Path(config["exe"])
-        if not executable.exists():
-            await bot.send(event, f"找不到转换工具：{executable}")
-            return
-        before = set(work.iterdir())
-        process = await asyncio.create_subprocess_exec(
-            str(executable),
-            str(input_path),
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            cwd=str(work),
-        )
-        stdout, stderr = await process.communicate()
-        outputs = [
-            item
-            for item in work.iterdir()
-            if item not in before and item.is_file()
-        ]
-        if process.returncode != 0 or not outputs:
-            detail = (stderr or stdout).decode("utf-8", errors="replace").strip()
-            await bot.send(event, f"转换失败：{detail or '工具未生成输出文件'}")
+        runner = import_plugin_module("Malody_toolkit", "tool_runner")
+        try:
+            outputs = await runner.run_conversion(tool_key, input_path)
+        except Exception:
+            logger.exception(f"{tool_key} conversion failed")
+            await bot.send(event, "转换失败：请检查文件后重试。")
             return
         for output in outputs:
             await send_path(bot, event, output)
