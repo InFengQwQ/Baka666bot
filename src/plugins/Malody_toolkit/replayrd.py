@@ -4,6 +4,7 @@
 """
 
 import asyncio
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -26,7 +27,30 @@ from src.plugin_runtime import tool_path
 # ==================== 配置 ====================
 # ManiaReplayMaster Java 工具根目录
 MRM_DIR = Path(__file__).parent / "ManiaReplayMaster.zip"
-JAVA_EXE = tool_path("java") / "bin" / "java.exe"
+
+
+def java_executable() -> str:
+    """按 JAVA_HOME、PATH 的顺序定位 java。"""
+    configured = os.environ.get("JAVA_HOME", "").strip()
+    if configured:
+        candidate = Path(configured)
+        if candidate.is_dir():
+            candidate = candidate / "bin" / ("java.exe" if os.name == "nt" else "java")
+        if candidate.is_file():
+            return str(candidate)
+
+    return shutil.which("java") or "java"
+
+
+def decode_output(data: bytes) -> str:
+    """按 UTF-8、GBK 的顺序解码渲染器输出。"""
+    for encoding in ("utf-8", "gbk"):
+        try:
+            return data.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return data.decode("utf-8", errors="replace")
+
 
 # 等待用户发送文件的超时时间（秒）
 WAIT_FILE_TIMEOUT = 30
@@ -212,7 +236,7 @@ async def run_mrm_render(
     classpath = str(MRM_DIR.resolve())
 
     cmd = [
-        str(JAVA_EXE),
+        java_executable(),
         "-cp", classpath,
         "me.replaymaster.Main",
     ]
@@ -235,8 +259,8 @@ async def run_mrm_render(
             timeout=timeout,
         )
 
-        stdout_str = stdout.decode("gbk", errors="replace")
-        stderr_str = stderr.decode("gbk", errors="replace")
+        stdout_str = decode_output(stdout)
+        stderr_str = decode_output(stderr)
         logger.debug(f"[replayrd] stdout:\n{stdout_str}")
         if stderr_str.strip():
             logger.debug(f"[replayrd] stderr:\n{stderr_str}")

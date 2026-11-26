@@ -16,7 +16,7 @@ Additional bundled components:
 - The ECharts bundle in `nonebot_plugin_osubot` retains its Apache-2.0 and MIT notices in the JavaScript file header.
 - The bundled FFmpeg 8.0.1 full build enables GPL components. Its license and build README are in `src/plugins/Malody_toolkit/tools/third_party/ffmpeg/`. The corresponding FFmpeg source is [commit 894da5ca7d](https://github.com/FFmpeg/FFmpeg/commit/894da5ca7d), with build details from the [Gyan build project](https://www.gyan.dev/ffmpeg/builds/).
 - The legacy `ma2om`, `mp32ogg`, `ncm2mp3`, `ncm2ogg`, and `DragUnzip` executables were supplied in the local Malody tools folder. No license notices or metadata were present there, so this project does not assign a license to them.
-- The bundled Eclipse Temurin JRE includes its `NOTICE` and legal texts under `src/plugins/Malody_toolkit/tools/java/`.
+- The bundled Eclipse Temurin JRE was removed; `ManiaReplayMaster.zip` now runs on a system Java 11+ runtime that is not distributed with this repository.
 - The bundled Playwright Chromium payload retains Chromium's notices alongside the browser files in `data/tools/playwright-browsers/`.
 - `NapCat.Shell/` contains a local NapCat runtime from [NapNeko/NapCatQQ](https://github.com/NapNeko/NapCatQQ). No license file or repository license metadata was present in the supplied runtime/source; this project does not assign a license to it.
 - The local Malody conversion tools include `ma2om.exe`, `mp32ogg.exe`, `ncm2mp3.exe`, `ncm2ogg.exe`, `DragUnzip.exe` and `inverse.py`. The source folder supplied no license metadata for these files; no license is assigned by this project.

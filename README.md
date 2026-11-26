@@ -31,7 +31,7 @@ Bot 连接时会检查总群并自动接受尚未处理的总群邀请。QQ 需�
 
 ## 运行
 
-需要 Windows、Git、Git LFS、Python 3.10+、已安装的 QQ 客户端和 NapCat。克隆时要初始化插件子模块并下载运行资源：
+需要 Windows、Git、Git LFS、Python 3.10+、Java 11+（JRE，用于 `/replayrd` 回放渲染）、已安装的 QQ 客户端和 NapCat。克隆时要初始化插件子模块并下载运行资源：
 
 ```powershell
 git lfs install
@@ -45,6 +45,8 @@ Set-Location Baka666bot
 py -3 -m venv venv
 .\venv\Scripts\python.exe -m pip install -e .
 ```
+
+`/replayrd` 需要 Java 11+，执行 `winget install EclipseAdoptium.Temurin.17.JRE` 安装；程序按 `JAVA_HOME`、`PATH` 的顺序查找 `java`。
 
 只在对应配置文件不存在时创建本地配置：
 
