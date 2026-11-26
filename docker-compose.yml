@@ -1,0 +1,32 @@
+services:
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      LOCALSTORE_DATA_DIR: /app/data/localstore
+      LOCALSTORE_CONFIG_DIR: /app/data/localstore/config
+      LOCALSTORE_CACHE_DIR: /app/data/localstore/cache
+      BAKA666BOT_UPDATE_MODE: "off"
+    volumes:
+      - data:/app/data
+    restart: unless-stopped
+
+  napcat:
+    image: mlikiowa/napcat-docker:v4.18.42
+    pull_policy: never
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "6099:6099"
+    volumes:
+      - napcat-config:/app/napcat/config
+      - napcat-qq:/app/.config/QQ
+    depends_on:
+      - bot
+    restart: unless-stopped
+
+volumes:
+  data:
+  napcat-config:
+  napcat-qq:

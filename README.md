@@ -42,6 +42,17 @@ ws://127.0.0.1:9090/onebot/v11/ws
 
 `start.bat` 先启动 NapCat，再在前台运行 bot。`NAPCAT_QQ` 留空时用二维码登录。
 
+## Docker
+
+```bash
+docker load -i napcat-docker-v4.18.42-amd64.tar
+docker compose up -d --build
+```
+
+- 镜像 tar：<https://github.com/InFengQwQ/Baka666bot/releases/download/napcat-4.18.42/napcat-docker-v4.18.42-amd64.tar>
+- sha256：`85e3fd02b58fd836a0177734b6ff77a896000bcfcf209b3b200d7e8b8452df7c`
+- NapCat WebUI：<http://127.0.0.1:6099>，登录后把反向 WebSocket 设为 `ws://bot:9090/onebot/v11/ws`
+
 ## Commands
 
 [COMMANDS.md](COMMANDS.md)

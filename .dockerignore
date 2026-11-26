@@ -1,0 +1,15 @@
+.git
+.gitmodules
+.github
+.venv
+__pycache__
+*.pyc
+.env
+config/*.env
+data
+NapCat.Shell
+logs
+cache
+*.db
+*.log
+src/plugins/Malody_toolkit/tools/java
