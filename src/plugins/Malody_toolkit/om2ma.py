@@ -20,10 +20,9 @@ from nonebot.exception import FinishedException
 from .ma2om import (
     _extract_archive_safely,
     _repack_archive,
-    _run_native_tool,
     _send_result_file,
 )
-from src.plugin_runtime import tool_path
+from .tool_runner import mp3_to_ogg
 
 # ---------- 命令注册 ----------
 om2ma = on_command(
@@ -398,9 +397,7 @@ async def _convert_archive_mp3(
         stage = Path(temporary) / source.name
         stage.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, stage)
-        converted = await _run_native_tool(
-            tool_path("mp32ogg.exe"), stage, output_suffix=".ogg"
-        )
+        converted = await mp3_to_ogg(stage)
         output = _unique_audio_output(source)
         shutil.move(str(converted), output)
 

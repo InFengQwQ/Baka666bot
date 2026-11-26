@@ -43,30 +43,17 @@ to_nk = on_regex(
 
 
 
-# 集中配置不同指令对应的工具路径与支持的文件后缀
+# 集中配置不同指令支持的文件后缀
 from src.plugin_runtime import tool_path
-CONFIGS = {
-    "ma2om": {
-        "exe": str(tool_path("ma2om.exe")),
-        "exts": (".mc", ".mcz", ".osz", ".zip")
-    },
-    "mp32ogg": {
-        "exe": str(tool_path("mp32ogg.exe")),
-        "exts": (".mp3",)
-    },
-    "ncm2mp3": {
-        "exe": str(tool_path("ncm2mp3.exe")),
-        "exts": (".ncm",)
-    },
-    "ncm2ogg": {
-        "exe": str(tool_path("ncm2ogg.exe")),
-        "exts": (".ncm",)
-    },
-    "unzip": {
-        "exe": str(tool_path("DragUnzip.exe")),
-        "exts": (".zip", ".osz", ".mcz")
-    }
-}
+from .tool_runner import (
+    CONVERSION_EXTS,
+    decode_output,
+    is_binary_tool,
+    run_conversion,
+    run_native_tool,
+)
+
+CONFIGS = {key: {"exts": exts} for key, exts in CONVERSION_EXTS.items()}
 
 TOINVERSE_SCRIPT = tool_path("inverse.py")
 PRONTOM_EXE = tool_path("prontom.exe")
@@ -201,17 +188,6 @@ def _repack_archive(source_dir: Path, archive_path: Path) -> None:
             archive.write(file_path, file_path.relative_to(source_dir).as_posix())
 
 
-def _decode_process_output(value: bytes) -> str:
-    for encoding in ("utf-8", "gbk"):
-        try:
-            decoded = value.decode(encoding).strip()
-        except UnicodeDecodeError:
-            continue
-        if decoded:
-            return decoded
-    return value.decode("utf-8", "replace").strip()
-
-
 async def _run_python_tool(
     script_path: Path,
     input_path: Path,
@@ -237,7 +213,7 @@ async def _run_python_tool(
         if path.is_file() and path not in before and path.suffix.lower() == ".mc"
     )
     if process.returncode != 0 or not generated:
-        detail = _decode_process_output(stderr) or _decode_process_output(stdout)
+        detail = decode_output(stderr) or decode_output(stdout)
         raise RuntimeError(detail or f"{script_path.name} 未生成输出文件")
     return generated[0]
 
@@ -248,47 +224,7 @@ async def _run_native_tool(
     extra_args: tuple[str, ...] = (),
     output_suffix: str = ".mc",
 ) -> Path:
-    if not executable_path.is_file():
-        raise FileNotFoundError(f"找不到工具程序：{executable_path}")
-
-    command = (str(executable_path), str(input_path), *extra_args)
-    logger.info(
-        "[chart-tool] executing: "
-        + " ".join(f'"{value}"' if " " in value else value for value in command)
-    )
-    before = {path for path in input_path.parent.iterdir() if path.is_file()}
-    process = await asyncio.create_subprocess_exec(
-        *command,
-        cwd=str(input_path.parent),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout, stderr = await process.communicate()
-    logger.info(
-        f"[chart-tool] exit={process.returncode} "
-        f"input={input_path.name} args={list(extra_args)}"
-    )
-    generated = sorted(
-        path
-        for path in input_path.parent.iterdir()
-        if path.is_file()
-        and path not in before
-        and path.suffix.lower() == output_suffix.lower()
-    )
-    if process.returncode != 0 or not generated:
-        detail = _decode_process_output(stderr) or _decode_process_output(stdout)
-        if detail:
-            raise RuntimeError(detail)
-        if process.returncode != 0:
-            raise RuntimeError(
-                f"{executable_path.name} 退出码 {process.returncode}，未生成输出文件"
-            )
-        raise RuntimeError(f"{executable_path.name} 未生成输出文件")
-    logger.info(
-        f"[chart-tool] generated={[path.name for path in generated]} "
-        f"stdout={_decode_process_output(stdout)}"
-    )
-    return generated[0]
+    return await run_native_tool(executable_path, input_path, extra_args, output_suffix)
 
 
 async def _run_chart_tool_process(
@@ -296,7 +232,7 @@ async def _run_chart_tool_process(
     input_path: Path,
     extra_args: tuple[str, ...] = (),
 ) -> Path:
-    if tool_path.suffix.lower() == ".exe":
+    if is_binary_tool(tool_path):
         return await _run_native_tool(tool_path, input_path, extra_args)
     return await _run_python_tool(tool_path, input_path, extra_args)
 
@@ -647,8 +583,7 @@ async def handle_conversion(matcher, bot: Bot, event: MessageEvent, tool_key: st
     if not config:
         logger.error(f"找不到工具配置: {tool_key}")
         await matcher.finish()
-        
-    exe_path = config["exe"]
+
     valid_exts = config["exts"]
 
     # 1. 检查是否回复了消息
@@ -711,34 +646,9 @@ async def handle_conversion(matcher, bot: Bot, event: MessageEvent, tool_key: st
                 logger.error("无法识别连接格式")
                 await matcher.finish()
             
-            if not Path(exe_path).exists():
-                logger.error(f"找不到转换工具: {exe_path}")
-                await matcher.finish()
+            new_files = await run_conversion(tool_key, input_path)
 
-            # --- 关键步骤：记录目前文件夹里的文件集合（这时候里面只有这1个原始文件）---
-            files_before = set(temp_dir_path.iterdir())
-
-            # 5. 运行命令行指令
-            proc = await asyncio.create_subprocess_exec(
-                exe_path,
-                str(input_path),
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
-            )
-            stdout, stderr = await proc.communicate()
-            
-            # --- 关键步骤：再次扫描文件夹获取执行工具后的文件集合 ---
-            files_after = set(temp_dir_path.iterdir())
-            
-            # 两个集合相减，得出所有新生成的文件
-            new_files = files_after - files_before
-            
-            if not new_files:
-                error_msg = stderr.decode('gbk', 'ignore') or stdout.decode('gbk', 'ignore')
-                logger.error(f"[{tool_key}] 转换失败，未监控到任何新文件生成: {error_msg}")
-                await matcher.finish()
-            
-            # 6. 把新生成的文件挨个全部发出去
+            # 5. 把新生成的文件挨个全部发出去
             for new_file in new_files:
                 logger.info(f"[{tool_key}] 成功生成了 {new_file.name}，正在发送...")
                 if isinstance(event, GroupMessageEvent):
@@ -757,8 +667,9 @@ async def handle_conversion(matcher, bot: Bot, event: MessageEvent, tool_key: st
     except Exception as e:
         logger.error(f"[{tool_key}] 转换出错: {e}")
         await matcher.finish()
+
+
 async def handle_unzip(matcher, bot: Bot, event: MessageEvent):
-    # 不必再依赖 CONFIGS["unzip"] 的 exe 路径，只保留后缀用于提示（可选）
     valid_exts = (".zip", ".osz", ".mcz")
 
     # 1. 必须回复一条文件消息
