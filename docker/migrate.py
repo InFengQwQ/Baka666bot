@@ -5,8 +5,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-# Existing volumes predate the log directory, so create it before the sink opens.
-(Path(__file__).resolve().parent.parent / "data" / "logs").mkdir(parents=True, exist_ok=True)
+# Existing volumes predate these directories.
+data_dir = Path(__file__).resolve().parent.parent / "data"
+(data_dir / "logs").mkdir(parents=True, exist_ok=True)
+(data_dir / "tmp").mkdir(parents=True, exist_ok=True)
 
 import nonebot
 from sqlalchemy.util import greenlet_spawn
