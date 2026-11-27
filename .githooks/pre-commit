@@ -1,0 +1,6 @@
+#!/bin/sh
+# Lint the Python files staged for this commit.
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.py')
+[ -z "$files" ] && exit 0
+command -v uv >/dev/null 2>&1 || exit 0
+uv run --no-sync ruff check $files

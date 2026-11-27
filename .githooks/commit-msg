@@ -1,0 +1,21 @@
+#!/bin/sh
+# Conventional Commits: type(scope): subject, subject within 72 characters.
+subject=$(head -n 1 "$1")
+case "$subject" in
+"Merge "*) exit 0 ;;
+esac
+case "$subject" in
+feat* | fix* | perf* | refactor* | docs* | chore* | test* | ci* | revert* | style*) ;;
+*)
+	echo "commit-msg: type(scope): subject, type is feat|fix|perf|refactor|docs|chore|test|ci|revert|style" >&2
+	exit 1
+	;;
+esac
+printf '%s' "$subject" | grep -Eq '^(feat|fix|perf|refactor|docs|chore|test|ci|revert|style)(\([a-z0-9._/-]+\))?: .+' || {
+	echo "commit-msg: missing ': ' after the type or empty subject" >&2
+	exit 1
+}
+[ "${#subject}" -le 72 ] || {
+	echo "commit-msg: subject is ${#subject} characters, keep it within 72" >&2
+	exit 1
+}

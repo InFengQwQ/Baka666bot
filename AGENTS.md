@@ -29,7 +29,8 @@
 
 - 一次一个方向：适配、通用修复、清理、配置各自独立；英文 conventional；Linux 专用修复算适配；改动多了重整 commit。
 - `main` 只放 fork 自有、能直接跑的内容；能上游接受的修复从 `upstream/main` 开 `upstream/<主题>`，cherry-pick 回 `main`；子模块修复单独分支；同步用 merge，不改写历史；分支在仓库外 worktree 开。
-- `upstream/<主题>` 长期保留，同类修复追加到原分支，不另开；提 PR 前 rebase 到 `upstream/main`；默认不开 PR，等明确要求。`feat/*` 合进 `main` 后删除。现有：`wine`、`ascii`、`ffmpeg`、`java`、`adapters`、`perf-chart-download`、`dead-code`、`zipfile-import`。
+- `upstream/<主题>` 长期保留，同类修复追加到原分支，不另开；提 PR 前 rebase 到 `upstream/main`；默认不开 PR，等明确要求。`feat/*` 合入 `main` 用 `git merge --squash`，压成一个提交，分支保留。
+- 钩子在 `.githooks`：clone 后 `git config core.hooksPath .githooks`；提交前对暂存的 `.py` 跑 ruff，提交信息按 conventional 校验。现有：`wine`、`ascii`、`ffmpeg`、`java`、`adapters`、`perf-chart-download`、`dead-code`、`zipfile-import`。
 
 ## 依赖与来源
 
@@ -44,5 +45,8 @@
 ## 验证与交流
 
 - 能读代码、配置、网络定论的不实测；不反复测同一项；必须实测用真实样本；一次报告全量缺口；测完清现场。
+- 用适配器或上游 API 的字段前，先读安装包里那个类的定义，字段名不靠记忆。
+- 写完先从头读一遍；逻辑和字段的错读代码就能看出来，不等测试兜。
+- 功能合入前开子代理，把每条入口路径走一遍（同条消息、回复、无图、参数非法），审完再提交。
 - 提交前跑 `uv run ruff check`：只查会导致运行错误的那部分 F 规则，规则集写在 `pyproject.toml`。
 - 先说明再做，没让做的不做；不确定先问；范围一次说全；结论用事实和数字。
