@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Install the runtime tools pinned in assets-manifest.json.
 
-Windows needs the renderer and the conversion tools; Linux only the renderer.
+Both platforms take the renderer and the conversion tools; the avatar card's
+model weights are platform independent.
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = Path(__file__).with_name("assets-manifest.json")
 DEST = ROOT / "src" / "plugins" / "Malody_toolkit" / "tools"
+DEFAULT_DEST = "src/plugins/Malody_toolkit/tools"
 
 
 def default_platform() -> str:
@@ -51,19 +53,19 @@ def download(url: str, target: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--platform", choices=("windows", "linux"), default=default_platform())
-    parser.add_argument("--dest", type=Path, default=DEST)
+    parser.add_argument("--dest", type=Path, default=None)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    names = manifest["platforms"][args.platform]
+    names = manifest["platforms"][args.platform] + manifest.get("always", [])
     sources = manifest["sources"]
-    args.dest.mkdir(parents=True, exist_ok=True)
 
     failed = False
     for name in names:
         entry = manifest["files"][name]
-        target = args.dest / name
+        target = args.dest / name if args.dest else ROOT / entry.get("dest", DEFAULT_DEST) / name
+        target.parent.mkdir(parents=True, exist_ok=True)
         if not args.force and is_current(target, entry):
             print(f"[assets] {name}: ok")
             continue

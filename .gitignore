@@ -54,3 +54,5 @@ NapCat.Shell/
 Thumbs.db
 .idea/
 .vscode/
+# Runtime assets for the avatar card: model weights
+src/plugins/avatar_card/assets/

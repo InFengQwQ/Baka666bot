@@ -1,7 +1,7 @@
 {
   "sources": {
     "renderer": "https://github.com/InFengQwQ/Baka666bot/releases/download/replay-renderer-2.4.0",
-    "tools": "https://github.com/InFengQwQ/Baka666bot/releases/download/assets-2026.11.26"
+    "assets": "https://github.com/InFengQwQ/Baka666bot/releases/download/assets-2026.11.26"
   },
   "files": {
     "ManiaReplayMaster.jar": {
@@ -10,19 +10,25 @@
       "sha256": "605b546d1b385431b278386ebb5c22fdd429f34ca10ede6ef530a17801ae3e1d"
     },
     "ma2om.exe": {
-      "source": "tools",
+      "source": "assets",
       "size": 258048,
       "sha256": "1344e29424ff890ecfed9d087358bff852d38b594645ffaf6b0d9cf6155e367d"
     },
     "ncm2mp3.exe": {
-      "source": "tools",
+      "source": "assets",
       "size": 197120,
       "sha256": "f21ae71f8b257899a78bc9f79eea779cc353926c5892ce0d310d486fa09aa044"
     },
     "prontom.exe": {
-      "source": "tools",
+      "source": "assets",
       "size": 1370112,
       "sha256": "7b3bd1f2392beefa297c5aabb7516735c37e1c4ce923869563578460299ed92e"
+    },
+    "isnet-anime.onnx": {
+      "source": "assets",
+      "dest": "src/plugins/avatar_card/assets",
+      "size": 176069933,
+      "sha256": "f15622d853e8260172812b657053460e20806f04b9e05147d49af7bed31a6e99"
     }
   },
   "platforms": {
@@ -38,5 +44,8 @@
       "ncm2mp3.exe",
       "prontom.exe"
     ]
-  }
+  },
+  "always": [
+    "isnet-anime.onnx"
+  ]
 }

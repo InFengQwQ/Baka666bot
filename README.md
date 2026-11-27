@@ -17,7 +17,7 @@ uv run python scripts/fetch-assets.py
 Copy-Item .env.example .env
 ```
 
-`java` 按 `JAVA_HOME`、`PATH` 的顺序查找，`ffmpeg`、`ffprobe` 从 `PATH` 查找。渲染器和转换工具由 `scripts/fetch-assets.py` 下载，`start.bat` 发现缺失时会自动补。
+`java` 按 `JAVA_HOME`、`PATH` 的顺序查找，`ffmpeg`、`ffprobe` 从 `PATH` 查找。渲染器、转换工具和抠图模型由 `scripts/fetch-assets.py` 下载，`start.bat` 发现缺失时会自动补。
 
 NapCat 4.18.42 解压到 `NapCat.Shell\`：<https://github.com/InFengQwQ/Baka666bot/releases/download/napcat-4.18.42/NapCat.Shell-4.18.42-win64.zip>，sha256 `74cf1b90ca718b23230eff978f9359ddc522e9db428bb3a6a30c9722ad77d896`。
 

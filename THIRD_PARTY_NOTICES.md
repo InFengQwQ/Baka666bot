@@ -12,6 +12,7 @@ The following plugin sources are included as independent repositories or local f
 Additional bundled components:
 
 - `ManiaReplayMaster.jar` is downloaded from the `replay-renderer-2.4.0` release by `scripts/fetch-assets.py`; the jar includes the Apache License 2.0 and notice under `META-INF/`.
+- `isnet-anime.onnx` is downloaded from the `assets-2026.11.26` release by `scripts/fetch-assets.py`. The weights are the anime character segmentation model from [SkyTNT/anime-segmentation](https://github.com/SkyTNT/anime-segmentation), licensed Apache-2.0.
 - `nlohmann/json` 3.11.3 is included under MIT; its SPDX notice is retained in `src/plugins/Malody_toolkit/json.hpp`.
 - The ECharts bundle in `nonebot_plugin_osubot` retains its Apache-2.0 and MIT notices in the JavaScript file header.
 - FFmpeg is no longer bundled. `ffmpeg` and `ffprobe` are resolved from `PATH` and stay under the license of the installed build.

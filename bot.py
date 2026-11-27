@@ -55,9 +55,10 @@ def add_watermark_to_image(image: Image.Image) -> Image.Image:
     return img
 
 def patched_save(self, fp, format=None, **params):
-    """在保存前自动添加水印，并按需消除透明度"""
+    """在保存前自动添加水印，并按需消除透明度；传 watermark=False 可跳过水印"""
     # 仅对 PNG/JPEG/WEBP 等常见格式添加水印
-    if format in ('PNG', 'JPEG', 'WEBP'):
+    watermark = params.pop("watermark", True)
+    if watermark and format in ('PNG', 'JPEG', 'WEBP'):
         watermarked = add_watermark_to_image(self)
 
         # 原有：JPEG 合成到白色背景
