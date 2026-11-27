@@ -1,11 +1,11 @@
 [submodule "src/plugins/nonebot-plugin-for-osumania4k"]
 	path = src/plugins/nonebot-plugin-for-osumania4k
-	url = https://github.com/MCPsDE/nonebot-plugin-for-osumania4k.git
-	branch = main
+	url = https://github.com/InFengQwQ/nonebot-plugin-for-osumania4k.git
+	branch = fix/rework-offline-render
 [submodule "src/plugins/nonebot_plugin_osubot"]
 	path = src/plugins/nonebot_plugin_osubot
-	url = https://github.com/MCPsDE/nonebot-plugin-osubot.git
-	branch = baka666bot
+	url = https://github.com/InFengQwQ/nonebot-plugin-osubot.git
+	branch = fix/font-real-name
 [submodule "src/plugins/nonebot_plugin_osugreek"]
 	path = src/plugins/nonebot_plugin_osugreek
 	url = https://github.com/MCPsDE/nonebot-plugin-osugreek.git
