@@ -29,6 +29,19 @@
 - 一次一个方向：适配、通用修复、清理、配置各自独立；英文 conventional；Linux 专用修复算适配；改动多了重整 commit。
 - `main` 只放 fork 自有、能直接跑的内容；可上游修复从 `upstream/main` 开 `upstream/<主题>` 单提交，cherry-pick 回 `main`；子模块修复单独分支；同步用 merge，不改写历史；分支在仓库外 worktree 开。
 
+## 依赖与来源
+
+- 先看文件属于哪个仓库：`src/plugins/` 下四个子模块目录属于各自仓库，其余（`Malody_toolkit`、`avatar_card` 等）属于 `MCPsDE/Baka666bot`。
+- 子模块里的问题先到根仓库找同一段代码，按根 → 中间 → 我们的顺序确认是谁引入的，PR 提给根；没有自己 fork 的提到 MCPsDE。
+- 子模块指针上移前，确认那个提交已推到对应远端，否则 CI 的 checkout 会失败。
+
+| 子模块 | 根 | 中间 | 我们的 fork |
+|---|---|---|---|
+| `nonebot-plugin-for-osumania4k` | `Nick2357111/…` | `MCPsDE/…` | `InFengQwQ/…` |
+| `nonebot_plugin_osubot` | `yaowan233/…` | `MCPsDE/…` | `InFengQwQ/…` |
+| `nonebot_plugin_osugreek` | `YakumoZn/…` | `MCPsDE/…` | 无 |
+| `nonebot_plugin_osumania_toolkit` | `LeoBlackMT/…` | `MCPsDE/…` | 无 |
+
 ## 同步与发布
 
 - 每周日 0 点同步一次，只开 PR（`chore/sync-fork`），不自动合 `main`；上游 NapCat 不得覆盖本地冻结的 4.18.42；`DROP_PATHS` 跟着维护，`KEEP_PATHS` 只留子模块指针；出现未登记的二进制直接失败；冲突先用三行说明再等决定。
