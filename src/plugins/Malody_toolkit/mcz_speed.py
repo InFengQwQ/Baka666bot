@@ -35,6 +35,9 @@ PITCH_SPEED_SAMPLE_RATE = 48000
 CHART_FILE_SUFFIXES = (".osu", ".mc")
 CHART_ARCHIVE_SUFFIXES = (".osz", ".mcz")
 CHART_INPUT_SUFFIXES = CHART_FILE_SUFFIXES + CHART_ARCHIVE_SUFFIXES
+_PARALLEL_CHUNKS = 4
+_PARALLEL_MIN_BYTES = 1 << 20
+_RANGE_ATTEMPTS = 3
 
 
 @dataclass
@@ -887,11 +890,8 @@ async def _download_file(bot: Bot, file_info: dict, dest: Path) -> bool:
 
     try:
         if file_url.startswith(("http://", "https://")):
-            async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
-                resp = await client.get(file_url)
-                resp.raise_for_status()
-                dest.write_bytes(resp.content)
-                return True
+            await _download_url(file_url, dest)
+            return True
 
         if file_id:
             try:
@@ -900,11 +900,8 @@ async def _download_file(bot: Bot, file_info: dict, dest: Path) -> bool:
                 local_path = str(file_data.get("file", "") or "")
 
                 if url.startswith(("http://", "https://")):
-                    async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
-                        resp = await client.get(url)
-                        resp.raise_for_status()
-                        dest.write_bytes(resp.content)
-                        return True
+                    await _download_url(url, dest)
+                    return True
 
                 if local_path and Path(local_path).is_file():
                     shutil.copy(local_path, dest)
@@ -924,9 +921,54 @@ async def _download_file(bot: Bot, file_info: dict, dest: Path) -> bool:
 
 async def _download_url(url: str, destination: Path) -> None:
     async with httpx.AsyncClient(timeout=120, follow_redirects=True) as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        destination.write_bytes(response.content)
+        probe = await client.get(url, headers={"Range": "bytes=0-0"})
+        if probe.status_code == 200:
+            destination.write_bytes(probe.content)
+            return
+        probe.raise_for_status()
+        total = _content_range_total(probe.headers.get("content-range", ""))
+        if total <= _PARALLEL_MIN_BYTES:
+            response = await client.get(url)
+            response.raise_for_status()
+            destination.write_bytes(response.content)
+            return
+        # One stream collapses on a lossy long-RTT path; split the file instead.
+        step = -(-total // _PARALLEL_CHUNKS)
+        parts = await asyncio.gather(
+            *(
+                _download_range(client, url, start, min(start + step, total) - 1)
+                for start in range(0, total, step)
+            )
+        )
+        destination.write_bytes(b"".join(parts))
+
+
+async def _download_range(
+    client: httpx.AsyncClient, url: str, start: int, end: int
+) -> bytes:
+    data = bytearray()
+    for _ in range(_RANGE_ATTEMPTS):
+        offset = start + len(data)
+        if offset > end:
+            break
+        try:
+            async with client.stream(
+                "GET", url, headers={"Range": f"bytes={offset}-{end}"}
+            ) as response:
+                if response.status_code != 206:
+                    raise ValueError(f"分段 {start}-{end} 返回 {response.status_code}")
+                async for chunk in response.aiter_bytes():
+                    data += chunk
+        except httpx.TransportError:
+            continue
+    if len(data) != end - start + 1:
+        raise ValueError(f"分段 {start}-{end} 只取到 {len(data)} 字节")
+    return bytes(data)
+
+
+def _content_range_total(value: str) -> int:
+    _, _, size = value.rpartition("/")
+    return int(size) if size.isdigit() else 0
 
 
 async def _download_chart_reference(
