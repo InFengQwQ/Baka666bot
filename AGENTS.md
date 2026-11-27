@@ -27,7 +27,19 @@
 ## 提交与分支
 
 - 一次一个方向：适配、通用修复、清理、配置各自独立；英文 conventional；Linux 专用修复算适配；改动多了重整 commit。
-- `main` 只放 fork 自有、能直接跑的内容；可上游修复从 `upstream/main` 开 `upstream/<主题>` 单提交，cherry-pick 回 `main`；子模块修复单独分支；同步用 merge，不改写历史；分支在仓库外 worktree 开。
+- `main` 只放 fork 自有、能直接跑的内容；能上游接受的修复从 `upstream/main` 开 `upstream/<主题>`，cherry-pick 回 `main`；子模块修复单独分支；同步用 merge，不改写历史；分支在仓库外 worktree 开。
+- `upstream/<主题>` 长期保留，同类修复追加到原分支，不另开；准备提 PR 前 rebase 到 `upstream/main` 最新提交；默认不开 PR，等明确要求。`feat/*` 只放新功能，合进 `main` 后删除。
+
+| 分支 | 内容 | 文件 |
+|---|---|---|
+| `upstream/wine` | Malody 工具在 Linux 跑：wine、FFmpeg、zipfile | `Malody_toolkit/tool_runner.py`、`ma2om.py`、`om2ma.py`、`multiplatform/file_commands.py` |
+| `upstream/ascii` | 渲染器输入用 ASCII 文件名 | `Malody_toolkit/replayrd.py` |
+| `upstream/ffmpeg` | 用系统 ffmpeg/ffprobe，删自带二进制 | `mcz_speed.py`、`timeinverse.py` |
+| `upstream/java` | 用系统 JRE，删自带 JRE | `replayrd.py` |
+| `upstream/adapters` | 适配器模板补 WebSocket 驱动 | `config/adapters.env.example` |
+| `upstream/perf-chart-download` | 谱面分段并行下载 | `Malody_toolkit/mcz_speed.py` |
+| `upstream/dead-code` | 删 pyflakes 重复定义与无用 import | `MalodyAPI/database.py`、`Malody_guess_song/` |
+| `upstream/zipfile-import` | 补 `import zipfile` | `Malody_toolkit/om2ma.py` |
 
 ## 依赖与来源
 
