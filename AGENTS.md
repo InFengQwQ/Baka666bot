@@ -28,31 +28,12 @@
 
 - 一次一个方向：适配、通用修复、清理、配置各自独立；英文 conventional；Linux 专用修复算适配；改动多了重整 commit。
 - `main` 只放 fork 自有、能直接跑的内容；能上游接受的修复从 `upstream/main` 开 `upstream/<主题>`，cherry-pick 回 `main`；子模块修复单独分支；同步用 merge，不改写历史；分支在仓库外 worktree 开。
-- `upstream/<主题>` 长期保留，同类修复追加到原分支，不另开；准备提 PR 前 rebase 到 `upstream/main` 最新提交；默认不开 PR，等明确要求。`feat/*` 只放新功能，合进 `main` 后删除。
-
-| 分支 | 内容 | 文件 |
-|---|---|---|
-| `upstream/wine` | Malody 工具在 Linux 跑：wine、FFmpeg、zipfile | `Malody_toolkit/tool_runner.py`、`ma2om.py`、`om2ma.py`、`multiplatform/file_commands.py` |
-| `upstream/ascii` | 渲染器输入用 ASCII 文件名 | `Malody_toolkit/replayrd.py` |
-| `upstream/ffmpeg` | 用系统 ffmpeg/ffprobe，删自带二进制 | `mcz_speed.py`、`timeinverse.py` |
-| `upstream/java` | 用系统 JRE，删自带 JRE | `replayrd.py` |
-| `upstream/adapters` | 适配器模板补 WebSocket 驱动 | `config/adapters.env.example` |
-| `upstream/perf-chart-download` | 谱面分段并行下载 | `Malody_toolkit/mcz_speed.py` |
-| `upstream/dead-code` | 删 pyflakes 重复定义与无用 import | `MalodyAPI/database.py`、`Malody_guess_song/` |
-| `upstream/zipfile-import` | 补 `import zipfile` | `Malody_toolkit/om2ma.py` |
+- `upstream/<主题>` 长期保留，同类修复追加到原分支，不另开；提 PR 前 rebase 到 `upstream/main`；默认不开 PR，等明确要求。`feat/*` 合进 `main` 后删除。现有：`wine`、`ascii`、`ffmpeg`、`java`、`adapters`、`perf-chart-download`、`dead-code`、`zipfile-import`。
 
 ## 依赖与来源
 
-- 先看文件属于哪个仓库：`src/plugins/` 下四个子模块目录属于各自仓库，其余（`Malody_toolkit`、`avatar_card` 等）属于 `MCPsDE/Baka666bot`。
-- 子模块里的问题先到根仓库找同一段代码，按根 → 中间 → 我们的顺序确认是谁引入的，PR 提给根；没有自己 fork 的提到 MCPsDE。
-- 子模块指针上移前，确认那个提交已推到对应远端，否则 CI 的 checkout 会失败。
-
-| 子模块 | 根 | 中间 | 我们的 fork |
-|---|---|---|---|
-| `nonebot-plugin-for-osumania4k` | `Nick2357111/…` | `MCPsDE/…` | `InFengQwQ/…` |
-| `nonebot_plugin_osubot` | `yaowan233/…` | `MCPsDE/…` | `InFengQwQ/…` |
-| `nonebot_plugin_osugreek` | `YakumoZn/…` | `MCPsDE/…` | 无 |
-| `nonebot_plugin_osumania_toolkit` | `LeoBlackMT/…` | `MCPsDE/…` | 无 |
+- `src/plugins/` 下四个子模块属于各自仓库，链是 根 → `MCPsDE` → `InFengQwQ`（`osugreek`、`osumania_toolkit` 没有我们的 fork）。子模块的问题到根仓库看同一段代码，PR 提给根；其余代码属于 `MCPsDE/Baka666bot`。
+- 子模块指针上移前，那个提交先推到对应远端，否则 CI 的 checkout 会失败。
 
 ## 同步与发布
 
