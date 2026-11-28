@@ -2,13 +2,12 @@
 
 import colorsys
 import hashlib
-from functools import lru_cache
+from functools import cache, lru_cache
 from io import BytesIO
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont
-from scipy import ndimage
 
 from .matting import cutout
 
@@ -17,7 +16,8 @@ MARGIN = 24
 TICK_X = MARGIN + 42
 TICK_HALF = 5
 TEXT_X = TICK_X + 22
-MASK_PAD = 48  # room for shadow and trail
+GAP = 16  # vertical space between two type blocks
+TYPE_BASE = 40  # last baseline distance above the margin
 
 LABEL_SIZE = 22
 LABEL_TRACKING = 14
@@ -33,13 +33,12 @@ TITLE_TRAIL = 16
 BRAND = "NYANMUSHI"
 BRAND_SIZE = 26
 BRAND_TRACKING = 14
+MASK_PAD = 48  # room for shadow and trail
 
-FILL = 1.0  # the cut-out spans the canvas
-OUTLINE = 4
-ALPHA_CUT = 63  # a quarter of the range; below it the matte is noise
-ALPHA_FLOOR = 128  # kept alphas start on the upper half of the range
-FAINT_TOP = 31  # ceiling for the band under the cut
-MIN_INK = 1000  # kept pixels below this mean the matte found nobody
+OUTLINE = 4  # rim width on the full canvas
+RIM_SCALE = 4  # the rim is drawn this much larger, then boxed down
+EDGE = 128  # half coverage; the cut both the art and the rim agree on
+INK = 1000  # opaque pixels below this mean the matte found nobody
 
 PLUGINS = Path(__file__).resolve().parents[1]
 DISPLAY_FONT = (
@@ -59,7 +58,7 @@ class Card:
         self.title = title.strip().upper()
         self.size = size
         self.subject = cutout(_cover_crop(source.convert("RGB"), CANVAS))
-        if _kept_pixels(self.subject) < MIN_INK:
+        if _opaque_pixels(self.subject.getchannel("A")) < INK:
             raise NoSubject
         self.accent = _accent(self.subject)
         self.seed = int(hashlib.sha1(f"{name}|{title}".encode()).hexdigest()[:8], 16)
@@ -71,73 +70,113 @@ class Card:
         self._paint_type(card)
         if self.size != CANVAS:
             card = card.resize((max(1, self.size), max(1, self.size)), Image.LANCZOS)
-        _paint_frame(card, self.size)  # painted after the resize, or the rule greys out
+        card.alpha_composite(_frame(self.size))  # after the resize, or the rule greys out
         return _encode(card)
 
     def _paint_subject(self, card: Image.Image) -> None:
         art = self.subject.crop(self.subject.getchannel("A").getbbox())
-        scale = CANVAS * FILL / max(art.width, art.height)
-        target = (max(1, round(art.width * scale)), max(1, round(art.height * scale)))
-        if target != art.size:
-            art = art.resize(target, Image.LANCZOS)
-        art.putalpha(_matte(art.getchannel("A")))
-        art = ImageEnhance.Color(art).enhance(1.28)
-        art = ImageEnhance.Contrast(art).enhance(1.10)
+        if max(art.size) != CANVAS:
+            scale = CANVAS / max(art.size)
+            art = art.resize((max(1, round(art.width * scale)), max(1, round(art.height * scale))), Image.LANCZOS)
+        alpha = _matte(art.getchannel("A"))
+        art.putalpha(alpha)
+        art = ImageEnhance.Contrast(ImageEnhance.Color(art).enhance(1.28)).enhance(1.10)
 
         left = (CANVAS - art.width) // 2
         top = (CANVAS - art.height) // 2
-        alpha = art.getchannel("A")
-
-        halo = alpha.resize((max(1, art.width // 4), max(1, art.height // 4)), Image.BILINEAR)
-        halo = halo.filter(ImageFilter.GaussianBlur(14)).resize(art.size, Image.BILINEAR)
-        glow = _solid(art.size, _saturate(self.accent, 0.35), halo.point(lambda value: int(value * 0.55)))
-        card.alpha_composite(glow, (left, top))
-
-        keep = _white_mask(alpha)
-        card.alpha_composite(_solid(art.size, (255, 255, 255), keep), (left, top))
+        card.alpha_composite(_glow(alpha, self.accent), (left, top))
+        card.alpha_composite(_solid(art.size, (255, 255, 255), _plate(alpha)), (left, top))
         card.alpha_composite(art, (left, top))
 
     def _paint_type(self, card: Image.Image) -> None:
-        top = CANVAS - MARGIN - 40
+        bottom = CANVAS - MARGIN - TYPE_BASE
         if self.title:
             font = _fit_font(self.title, TITLE_SIZE, TITLE_WIDTH, TITLE_TRACKING)
-            top, _ = _paint_line(card, self.title, font, TEXT_X, top, 232, TITLE_TRACKING, trail=TITLE_TRAIL, shadow=6)
-            top = _paint_label(card, "RANK", top - 16, 200)
+            bottom, _ = _paint_line(
+                card, self.title, TEXT_X, bottom, font, TITLE_TRACKING,
+                alpha=232, trail=TITLE_TRAIL, shadow=6,
+            )
+            bottom = _paint_label(card, "RANK", bottom - GAP, 200)
 
         font = _fit_font(self.name, NAME_SIZE, NAME_WIDTH, NAME_TRACKING)
-        top, _ = _paint_line(
-            card, self.name, font, TEXT_X, top - 16, 255, NAME_TRACKING,
-            trail=NAME_TRAIL, shadow=18, tint=_saturate(self.accent, 0.25),
+        bottom, _ = _paint_line(
+            card, self.name, TEXT_X, bottom - GAP, font, NAME_TRACKING,
+            alpha=255, trail=NAME_TRAIL, shadow=18, tint=_saturate(self.accent, 0.25),
         )
-        _paint_label(card, "PLAYER", top - 16, 210)
+        _paint_label(card, "PLAYER", bottom - GAP, 210)
         _paint_brand(card)
-
-
-def _paint_frame(card: Image.Image, size: int) -> None:
-    ink, glow = _frame_layers(size)
-    card.alpha_composite(glow)
-    card.alpha_composite(ink)
 
 
 def render_card(source: Image.Image, name: str, title: str, size: int) -> bytes:
     return Card(source, name, title, size).render()
 
 
-def _encode(card: Image.Image) -> bytes:
-    buffer = BytesIO()
-    # the frame carries the maker mark, so skip the bot-wide watermark
-    card.convert("RGB").save(buffer, format="PNG", compress_level=4, watermark=False)
-    return buffer.getvalue()
-
-
 def _cover_crop(image: Image.Image, size: int) -> Image.Image:
     """Cover-crop, keeping the upper part of tall artwork where heads live."""
-    width, height = image.size
-    scale = max(size / width, size / height)
-    resized = image.resize((max(size, round(width * scale)), max(size, round(height * scale))), Image.LANCZOS)
+    scale = max(size / image.width, size / image.height)
+    resized = image.resize((round(image.width * scale), round(image.height * scale)), Image.LANCZOS)
     left = (resized.width - size) // 2
     top = round((resized.height - size) * 0.25)
     return resized.crop((left, top, left + size, top + size))
+
+
+def _matte(raw: Image.Image) -> Image.Image:
+    """Blur across the cut, so the model's own jitter reads as one soft edge."""
+    return raw.filter(ImageFilter.GaussianBlur(2))
+
+
+def _opaque_pixels(alpha: Image.Image) -> int:
+    return sum(alpha.histogram()[EDGE:])
+
+
+def _plate(alpha: Image.Image) -> Image.Image:
+    """White under the art: the solid half of the cut plus the drawn rim."""
+    solid = (np.asarray(alpha) >= EDGE).astype(np.uint8) * 255
+    return ImageChops.lighter(Image.fromarray(solid, "L"), _stroke(_contour(alpha), alpha.size))
+
+
+def _contour(alpha: Image.Image) -> np.ndarray:
+    """One point per cell on the half-coverage line, interpolated between pixels."""
+    field = np.asarray(alpha, dtype=np.float32) / 255
+    level = EDGE / 255
+    rows, cols = field.shape[0] - 1, field.shape[1] - 1
+    yy, xx = np.indices((rows, cols), dtype=np.float32)
+    xs = np.zeros((rows, cols), np.float32)
+    ys = np.zeros((rows, cols), np.float32)
+    hits = np.zeros((rows, cols), np.uint8)
+
+    edges = (
+        (field[:-1, :-1], field[:-1, 1:], xx, yy, True),
+        (field[1:, :-1], field[1:, 1:], xx, yy + 1, True),
+        (field[:-1, :-1], field[1:, :-1], xx, yy, False),
+        (field[:-1, 1:], field[1:, 1:], xx + 1, yy, False),
+    )
+    for near, far, x, y, horizontal in edges:
+        crosses = (near < level) != (far < level)
+        t = np.divide(level - near, far - near, out=np.full_like(near, 0.5), where=far != near)
+        xs += np.where(crosses, x + t, 0) if horizontal else np.where(crosses, x, 0)
+        ys += np.where(crosses, y, 0) if horizontal else np.where(crosses, y + t, 0)
+        hits += crosses
+
+    kept = hits == 2  # four crossings are a saddle; the neighbouring discs cover it
+    return np.stack((xs[kept] / 2, ys[kept] / 2), axis=1)
+
+
+def _stroke(points: np.ndarray, size: tuple[int, int]) -> Image.Image:
+    """Round brush along the contour: one width all the way, tips included."""
+    big = Image.new("L", (size[0] * RIM_SCALE, size[1] * RIM_SCALE), 0)
+    brush = ImageDraw.Draw(big)
+    radius = OUTLINE * RIM_SCALE
+    for x, y in points:
+        cx, cy = x * RIM_SCALE, y * RIM_SCALE
+        brush.ellipse((cx - radius, cy - radius, cx + radius, cy + radius), fill=255)
+    return big.resize(size, Image.BOX)
+
+
+def _glow(alpha: Image.Image, accent) -> Image.Image:
+    halo = alpha.resize((max(1, alpha.width // 4), max(1, alpha.height // 4)), Image.BILINEAR)
+    halo = halo.filter(ImageFilter.GaussianBlur(14)).resize(alpha.size, Image.BILINEAR)
+    return _solid(alpha.size, _saturate(accent, 0.35), halo.point(lambda value: value * 55 // 100))
 
 
 def _solid(size: tuple[int, int], color, alpha: Image.Image) -> Image.Image:
@@ -153,14 +192,16 @@ def _saturate(color, factor: float) -> tuple[int, int, int]:
 
 
 def _accent(subject: Image.Image) -> tuple[int, int, int]:
-    small = np.asarray(subject.convert("RGBA").resize((128, 128), Image.BILINEAR))
-    opaque = small[small[:, :, 3] > 160][:, :3].astype(np.int16)
+    """The liveliest colour band of the subject, from a coarse RGB histogram."""
+    small = np.asarray(subject.resize((128, 128), Image.BILINEAR))
+    opaque = small[small[:, :, 3] >= 160][:, :3].astype(np.int16)
     if not len(opaque):  # kept pixels, but none solid enough to name a colour
         raise NoSubject
-    ids = (opaque[:, 0] // 24) * 121 + (opaque[:, 1] // 24) * 11 + opaque[:, 2] // 24
-    bins = 11**3
-    counts = np.bincount(ids, minlength=bins)
-    sums = np.stack([np.bincount(ids, weights=opaque[:, i], minlength=bins) for i in range(3)], axis=1)
+
+    step, bins = 24, 11
+    ids = (opaque[:, 0] // step) * bins**2 + (opaque[:, 1] // step) * bins + opaque[:, 2] // step
+    counts = np.bincount(ids, minlength=bins**3)
+    sums = np.stack([np.bincount(ids, weights=opaque[:, i], minlength=bins**3) for i in range(3)], axis=1)
 
     present = counts > 0
     mean = sums[present] / counts[present, None]
@@ -170,13 +211,34 @@ def _accent(subject: Image.Image) -> tuple[int, int, int]:
     return int(r), int(g), int(b)
 
 
-@lru_cache(maxsize=1)
-def _aura_fields() -> tuple[np.ndarray, np.ndarray]:
+@cache
+def _mesh() -> tuple[np.ndarray, np.ndarray]:
     yy, xx = np.mgrid[0:CANVAS, 0:CANVAS].astype(np.float32)
-    aura = np.sqrt(((xx - CANVAS * 0.5) / (CANVAS * 0.60)) ** 2 + ((yy - CANVAS * 0.22) / (CANVAS * 0.50)) ** 2)
-    aura = (np.clip(1 - aura, 0, 1) ** 2 * 0.60)[..., None]
-    vignette = np.sqrt(((xx - CANVAS / 2) / (CANVAS * 0.85)) ** 2 + ((yy - CANVAS * 0.42) / (CANVAS * 0.85)) ** 2)
-    return aura, (0.25 * np.clip(vignette, 0, 1) ** 2)[..., None]
+    return yy, xx
+
+
+@cache
+def _aura() -> np.ndarray:
+    yy, xx = _mesh()
+    pool = np.sqrt(((xx - CANVAS * 0.5) / (CANVAS * 0.60)) ** 2 + ((yy - CANVAS * 0.22) / (CANVAS * 0.50)) ** 2)
+    return np.clip(1 - pool, 0, 1) ** 2 * 0.60
+
+
+@cache
+def _vignette() -> np.ndarray:
+    yy, xx = _mesh()
+    pool = np.sqrt(((xx - CANVAS / 2) / (CANVAS * 0.85)) ** 2 + ((yy - CANVAS * 0.42) / (CANVAS * 0.85)) ** 2)
+    return 0.25 * np.clip(pool, 0, 1) ** 2
+
+
+@cache
+def _scrim() -> Image.Image:
+    """A soft pool in the type corner so white glyphs hold on pale artwork."""
+    yy, xx = _mesh()
+    pool = np.sqrt(((xx - CANVAS * 0.30) / (CANVAS * 0.62)) ** 2 + ((yy - CANVAS * 0.94) / (CANVAS * 0.54)) ** 2)
+    alpha = np.clip(1 - pool, 0, 1) ** 1.4 * 170
+    alpha += np.clip((yy / CANVAS - 0.72) / 0.28, 0, 1) ** 2 * 45
+    return _solid((CANVAS, CANVAS), (0, 0, 0), Image.fromarray(np.clip(alpha, 0, 190).astype(np.uint8), "L"))
 
 
 def _backdrop(accent, seed: int) -> Image.Image:
@@ -189,7 +251,7 @@ def _backdrop(accent, seed: int) -> Image.Image:
     column = (top * (1 - ramp) + bottom * ramp).astype(np.uint8)[:, None, :]
     field = Image.fromarray(column, "RGB").resize((CANVAS, CANVAS), Image.NEAREST).convert("RGBA")
 
-    # Clouds are soft: paint them small and scale up.
+    # clouds are soft: paint them small and scale up
     small = 384
     clouds = Image.new("RGBA", (small, small), (0, 0, 0, 0))
     for _ in range(20):
@@ -209,59 +271,23 @@ def _backdrop(accent, seed: int) -> Image.Image:
         )
     field.alpha_composite(clouds.resize((CANVAS, CANVAS), Image.BILINEAR))
 
-    aura, vignette = _aura_fields()
     tone = tuple(round(c * 255) for c in colorsys.hsv_to_rgb(h, 0.12, 1.0))
-    glow = _solid((CANVAS, CANVAS), tone, Image.fromarray((aura[:, :, 0] * 255).astype(np.uint8), "L"))
-    field.alpha_composite(glow)
-
-    shade = _solid((CANVAS, CANVAS), (0, 0, 0), Image.fromarray((vignette[:, :, 0] * 255).astype(np.uint8), "L"))
-    field.alpha_composite(shade)
+    field.alpha_composite(_solid((CANVAS, CANVAS), tone, Image.fromarray((_aura() * 255).astype(np.uint8), "L")))
+    field.alpha_composite(_solid((CANVAS, CANVAS), (0, 0, 0), Image.fromarray((_vignette() * 255).astype(np.uint8), "L")))
 
     arr = np.asarray(field.convert("RGB"), dtype=np.int16)
     arr += rng.normal(0.0, 2.6, (CANVAS, CANVAS, 1)).astype(np.int16)
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
 
 
-@lru_cache(maxsize=1)
-def _scrim() -> Image.Image:
-    """A soft pool in the type corner so white glyphs hold on pale artwork."""
-    yy, xx = np.mgrid[0:CANVAS, 0:CANVAS].astype(np.float32)
-    pool = np.sqrt(((xx - CANVAS * 0.30) / (CANVAS * 0.62)) ** 2 + ((yy - CANVAS * 0.94) / (CANVAS * 0.54)) ** 2)
-    alpha = np.clip(1 - pool, 0, 1) ** 1.4 * 170
-    alpha += np.clip((yy / CANVAS - 0.72) / 0.28, 0, 1) ** 2 * 45
-    return _solid((CANVAS, CANVAS), (0, 0, 0), Image.fromarray(np.clip(alpha, 0, 190).astype(np.uint8), "L"))
-
-
-def _kept_pixels(subject: Image.Image) -> int:
-    return sum(subject.getchannel("A").histogram()[ALPHA_CUT + 1:])
-
-
-def _remap_alpha(value: int) -> int:
-    if value <= ALPHA_CUT:
-        return value * FAINT_TOP // ALPHA_CUT
-    return ALPHA_FLOOR + (value - ALPHA_CUT) * (255 - ALPHA_FLOOR) // (255 - ALPHA_CUT)
-
-
-def _matte(alpha: Image.Image) -> Image.Image:
-    """Blur before the cut, so jitter across a narrow band picks one side."""
-    return alpha.filter(ImageFilter.GaussianBlur(2)).point(_remap_alpha)
-
-
-def _white_mask(alpha: Image.Image) -> Image.Image:
-    """Plate and rim in one: feathered white OUTLINE px beyond the cut, drawn under the art."""
-    solid = np.asarray(alpha) > ALPHA_CUT
-    grown = ndimage.distance_transform_edt(~solid) <= OUTLINE
-    return Image.fromarray(grown.astype(np.uint8) * 255, "L").filter(ImageFilter.GaussianBlur(1.0))
-
-
 @lru_cache(maxsize=8)
-def _frame_layers(size: int) -> tuple[Image.Image, Image.Image]:
+def _frame(size: int) -> Image.Image:
+    """Rule and its glow in one layer."""
     scale = size / CANVAS
     margin = max(1, round(MARGIN * scale))
     inner = margin + max(1, round(10 * scale))
     if size < 2 * inner + 1:  # too small for the rule
-        blank = Image.new("RGBA", (size, size), (255, 255, 255, 0))
-        return blank, blank
+        return Image.new("RGBA", (size, size), (255, 255, 255, 0))
     ink = Image.new("RGBA", (size, size), (255, 255, 255, 0))
     draw = ImageDraw.Draw(ink)
     draw.rectangle((margin, margin, size - margin - 1, size - margin - 1), outline=(26, 12, 8, 70), width=1)
@@ -270,7 +296,9 @@ def _frame_layers(size: int) -> tuple[Image.Image, Image.Image]:
         outline=(255, 255, 255, 240), width=max(1, round(2 * scale)),
     )
     draw.rectangle((inner, inner, size - inner - 1, size - inner - 1), outline=(255, 255, 255, 84), width=1)
-    return ink, ink.filter(ImageFilter.GaussianBlur(max(1, round(5 * scale))))
+    layer = ink.filter(ImageFilter.GaussianBlur(max(1, round(5 * scale))))
+    layer.alpha_composite(ink)
+    return layer
 
 
 @lru_cache(maxsize=64)
@@ -283,6 +311,7 @@ def _line_width(text: str, font, tracking: int) -> float:
 
 
 def _line_mask(text: str, font, tracking: int) -> Image.Image:
+    """Glyphs at their own spacing, padded with room for shadow and trail."""
     raw = Image.new("L", (int(_line_width(text, font, tracking)) + 16, int(font.size * 2.4)), 0)
     draw = ImageDraw.Draw(raw)
     x = 8
@@ -303,58 +332,58 @@ def _fit_font(text: str, max_size: int, max_width: int, tracking: int) -> ImageF
     return _font(size)
 
 
-def _paint_line(card: Image.Image, text: str, font, x: int, bottom: int, opacity: int, tracking: int,
-                trail: int = 0, shadow: int = 0, tint=None) -> tuple[int, Image.Image]:
+def _paint_line(card: Image.Image, text: str, x: int, bottom: int, font, tracking: int,
+                alpha: int = 255, trail: int = 0, shadow: int = 0,
+                tint: tuple[int, int, int] | None = None) -> tuple[int, Image.Image]:
     mask = _line_mask(text, font, tracking)
-    height = mask.height - 2 * MASK_PAD
-    top = bottom - height
+    top = bottom - (mask.height - 2 * MASK_PAD)
     x -= MASK_PAD
     y = top - MASK_PAD
 
     if shadow:
-        soft = mask.filter(ImageFilter.GaussianBlur(shadow)).point(lambda v: int(v * 0.55))
+        soft = mask.filter(ImageFilter.GaussianBlur(shadow)).point(lambda value: value * 55 // 100)
         card.alpha_composite(_solid(mask.size, (14, 5, 2), soft), (x, y + 9))
 
     if trail:
         spill = ImageChops.subtract(_motion_trail(mask, trail), mask.filter(ImageFilter.MaxFilter(TRAIL_GAP)))
-        spill = ImageChops.multiply(spill, _stripe_mask(mask.size, max(5, round(font.size / 20))))
-        ink = _solid(mask.size, (255, 255, 255), spill.point(lambda v: int(v * opacity / 255 * 0.70)))
+        spill = ImageChops.multiply(spill, _stripes(mask.size, max(5, round(font.size / 20))))
+        ink = _solid(mask.size, (255, 255, 255), spill.point(lambda value: value * alpha // 255 * 70 // 100))
         card.alpha_composite(ink, (x, y))
 
-    stencil = mask.point(lambda v: v * opacity // 255)
+    stencil = mask.point(lambda value: value * alpha // 255)
     if tint:
         ramp = np.linspace(0.0, 0.10, mask.height, dtype=np.float32)[:, None]
         tone = np.array(tint, dtype=np.float32)[None, :]
         column = (1 - ramp) * 255 + ramp * tone
-        grad = Image.fromarray(np.repeat(column[:, None, :], mask.width, axis=1).astype(np.uint8), "RGB")
-        card.paste(grad, (x, y), stencil)
+        gradient = Image.fromarray(np.repeat(column[:, None, :], mask.width, axis=1).astype(np.uint8), "RGB")
+        card.paste(gradient, (x, y), stencil)
     else:
         card.alpha_composite(_solid(mask.size, (255, 255, 255), stencil), (x, y))
     return top, mask
 
 
-def _paint_label(card: Image.Image, text: str, bottom: int, opacity: int) -> int:
+def _paint_label(card: Image.Image, text: str, bottom: int, alpha: int) -> int:
     """Label and tick; the tick takes its density from the label's own ink."""
-    label_top, mask = _paint_line(card, text, _font(LABEL_SIZE), TEXT_X, bottom, opacity, LABEL_TRACKING)
-    ink = np.asarray(mask.point(lambda v: v * opacity // 255))
+    top, mask = _paint_line(card, text, TEXT_X, bottom, _font(LABEL_SIZE), LABEL_TRACKING, alpha=alpha)
+    ink = np.asarray(mask.point(lambda value: value * alpha // 255))
     tone = int(np.percentile(ink[ink > 0], 75))
     tick = Image.new("L", (2 * TICK_HALF, 2 * TICK_HALF + 1), 0)
     ImageDraw.Draw(tick).polygon(
         [(0, 0), (0, 2 * TICK_HALF), (2 * TICK_HALF - 1, TICK_HALF)], fill=tone,
     )
-    centre = label_top + (mask.height - 2 * MASK_PAD) // 2
+    centre = top + (mask.height - 2 * MASK_PAD) // 2
     card.alpha_composite(_solid(tick.size, (255, 255, 255), tick), (TICK_X, centre - TICK_HALF))
-    return label_top
+    return top
 
 
 def _paint_brand(card: Image.Image) -> None:
     mask = _line_mask(BRAND, _font(BRAND_SIZE), BRAND_TRACKING).rotate(-90, expand=True)
-    body = _solid(mask.size, (255, 255, 255), mask.point(lambda v: v * 0.78))
+    body = _solid(mask.size, (255, 255, 255), mask.point(lambda value: value * 78 // 100))
     right = CANVAS - MARGIN - BRAND_SIZE
     card.alpha_composite(body, (right - body.width + MASK_PAD, MARGIN + 56 - MASK_PAD))
 
 
-def _stripe_mask(size: tuple[int, int], period: int) -> Image.Image:
+def _stripes(size: tuple[int, int], period: int) -> Image.Image:
     stripes = Image.new("L", size, 0)
     draw = ImageDraw.Draw(stripes)
     for y in range(0, size[1], period):
@@ -374,3 +403,10 @@ def _motion_trail(mask: Image.Image, reach: int) -> Image.Image:
         covered += shift
         step *= 2
     return Image.fromarray(trail.astype(np.uint8), "L")
+
+
+def _encode(card: Image.Image) -> bytes:
+    buffer = BytesIO()
+    # the frame carries the maker mark, so skip the bot-wide watermark
+    card.convert("RGB").save(buffer, format="PNG", compress_level=4, watermark=False)
+    return buffer.getvalue()

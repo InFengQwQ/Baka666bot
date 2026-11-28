@@ -13,7 +13,7 @@ _session: ort.InferenceSession | None = None
 _lock = threading.Lock()
 
 
-def _session_lazy() -> ort.InferenceSession:
+def _load() -> ort.InferenceSession:
     global _session
     with _lock:
         if _session is None:
@@ -31,9 +31,9 @@ def _session_lazy() -> ort.InferenceSession:
 
 def cutout(image: Image.Image) -> Image.Image:
     """Return the image with an alpha mask; the model graph is fixed at its own input size."""
-    session = _session_lazy()
+    session = _load()
     model_input = session.get_inputs()[0]
-    width, height = model_input.shape[3], model_input.shape[2]
+    height, width = model_input.shape[2], model_input.shape[3]
 
     rgb = image.convert("RGB").resize((width, height), Image.LANCZOS)
     tensor = np.asarray(rgb, dtype=np.float32) / 255.0 - 0.5
