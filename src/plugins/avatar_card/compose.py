@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+from scipy import ndimage
 
 from .matting import cutout
 
@@ -39,8 +40,6 @@ ALPHA_CUT = 63  # a quarter of the range; below it the matte is noise
 ALPHA_FLOOR = 128  # kept alphas start on the upper half of the range
 FAINT_TOP = 31  # ceiling for the band under the cut
 MIN_INK = 1000  # kept pixels below this mean the matte found nobody
-FADE = 4  # the haze reaches this far inside the cut
-RIM_HAZE = 63  # its ceiling over the artwork, a quarter of white
 
 PLUGINS = Path(__file__).resolve().parents[1]
 DISPLAY_FONT = (
@@ -94,13 +93,9 @@ class Card:
         glow = _solid(art.size, _saturate(self.accent, 0.35), halo.point(lambda value: int(value * 0.55)))
         card.alpha_composite(glow, (left, top))
 
-        keep = _keep_mask(alpha)
-        base = _solid(art.size, (255, 255, 255), keep)
-        card.alpha_composite(base, (left, top))
+        keep = _white_mask(alpha)
+        card.alpha_composite(_solid(art.size, (255, 255, 255), keep), (left, top))
         card.alpha_composite(art, (left, top))
-
-        rim = _solid(art.size, (255, 255, 255), _rim_mask(keep))
-        card.alpha_composite(rim, (left, top))
 
     def _paint_type(self, card: Image.Image) -> None:
         top = CANVAS - MARGIN - 40
@@ -237,17 +232,6 @@ def _scrim() -> Image.Image:
     return _solid((CANVAS, CANVAS), (0, 0, 0), Image.fromarray(np.clip(alpha, 0, 190).astype(np.uint8), "L"))
 
 
-def _dilate(mask: np.ndarray, radius: int) -> np.ndarray:
-    """Max over a disc, so a hard mask grows and a soft one keeps its ramp."""
-    padded = np.pad(mask, radius)
-    grown = padded.copy()
-    for dy in range(-radius, radius + 1):
-        for dx in range(-radius, radius + 1):
-            if dx * dx + dy * dy <= radius * radius:
-                np.maximum(grown, np.roll(padded, (dy, dx), (0, 1)), out=grown)
-    return grown[radius:-radius, radius:-radius]
-
-
 def _kept_pixels(subject: Image.Image) -> int:
     return sum(subject.getchannel("A").histogram()[ALPHA_CUT + 1:])
 
@@ -263,18 +247,11 @@ def _matte(alpha: Image.Image) -> Image.Image:
     return alpha.filter(ImageFilter.GaussianBlur(2)).point(_remap_alpha)
 
 
-def _keep_mask(alpha: Image.Image) -> Image.Image:
-    """Full white on the kept pixels; both white layers share it."""
-    return Image.fromarray((np.asarray(alpha) > ALPHA_CUT).astype(np.uint8) * 255, "L")
-
-
-def _rim_mask(keep: Image.Image) -> Image.Image:
-    """Solid one width outside the cut, a faint haze inside; painted over the artwork."""
-    keep = np.asarray(keep)
-    fade = (255 - _dilate(255 - keep, FADE)).astype(np.uint8)
-    fade = np.asarray(Image.fromarray(fade, "L").filter(ImageFilter.GaussianBlur(FADE / 4)), dtype=np.int32)
-    haze = RIM_HAZE * (255 - fade) // 255
-    return Image.fromarray(np.where(keep > 0, haze, _dilate(keep, OUTLINE)).astype(np.uint8), "L")
+def _white_mask(alpha: Image.Image) -> Image.Image:
+    """Plate and rim in one: feathered white OUTLINE px beyond the cut, drawn under the art."""
+    solid = np.asarray(alpha) > ALPHA_CUT
+    grown = ndimage.distance_transform_edt(~solid) <= OUTLINE
+    return Image.fromarray(grown.astype(np.uint8) * 255, "L").filter(ImageFilter.GaussianBlur(1.0))
 
 
 @lru_cache(maxsize=8)
