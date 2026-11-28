@@ -37,8 +37,10 @@ MASK_PAD = 48  # room for shadow and trail
 
 OUTLINE = 4  # rim width on the full canvas
 RIM_SCALE = 4  # the rim is drawn this much larger, then boxed down
-EDGE = 128  # half coverage; the cut both the art and the rim agree on
-INK = 1000  # opaque pixels below this mean the matte found nobody
+CUT = 63  # alpha below this is matte noise
+FLOOR = 128  # kept alpha starts at half coverage
+FAINT = 31  # ceiling for the band under the cut
+INK = 1000  # kept pixels below this mean the matte found nobody
 
 PLUGINS = Path(__file__).resolve().parents[1]
 DISPLAY_FONT = (
@@ -78,14 +80,15 @@ class Card:
         if max(art.size) != CANVAS:
             scale = CANVAS / max(art.size)
             art = art.resize((max(1, round(art.width * scale)), max(1, round(art.height * scale))), Image.LANCZOS)
-        alpha = _matte(art.getchannel("A"))
+        soft = _matte(art.getchannel("A"))
+        alpha = _lift(soft)
         art.putalpha(alpha)
         art = ImageEnhance.Contrast(ImageEnhance.Color(art).enhance(1.28)).enhance(1.10)
 
         left = (CANVAS - art.width) // 2
         top = (CANVAS - art.height) // 2
         card.alpha_composite(_glow(alpha, self.accent), (left, top))
-        card.alpha_composite(_solid(art.size, (255, 255, 255), _plate(alpha)), (left, top))
+        card.alpha_composite(_solid(art.size, (255, 255, 255), _plate(soft)), (left, top))
         card.alpha_composite(art, (left, top))
 
     def _paint_type(self, card: Image.Image) -> None:
@@ -125,20 +128,27 @@ def _matte(raw: Image.Image) -> Image.Image:
     return raw.filter(ImageFilter.GaussianBlur(2))
 
 
+def _lift(soft: Image.Image) -> Image.Image:
+    """Keep translucent parts visible: anything kept reads at least half solid."""
+    a = np.asarray(soft, np.float32)
+    lifted = np.where(a > CUT, FLOOR + (a - CUT) * (255 - FLOOR) / (255 - CUT), a * FAINT / CUT)
+    return Image.fromarray(lifted.astype(np.uint8), "L")
+
+
 def _opaque_pixels(alpha: Image.Image) -> int:
-    return sum(alpha.histogram()[EDGE:])
+    return sum(alpha.histogram()[CUT + 1:])
 
 
-def _plate(alpha: Image.Image) -> Image.Image:
-    """White under the art: the solid half of the cut plus the drawn rim."""
-    solid = (np.asarray(alpha) >= EDGE).astype(np.uint8) * 255
-    return ImageChops.lighter(Image.fromarray(solid, "L"), _stroke(_contour(alpha), alpha.size))
+def _plate(soft: Image.Image) -> Image.Image:
+    """White under the art: everything kept, plus the rim traced on the same cut."""
+    solid = (np.asarray(soft) > CUT).astype(np.uint8) * 255
+    return ImageChops.lighter(Image.fromarray(solid, "L"), _stroke(_contour(soft), soft.size))
 
 
 def _contour(alpha: Image.Image) -> np.ndarray:
-    """One point per cell on the half-coverage line, interpolated between pixels."""
+    """One point per cell on the cut line, interpolated between pixels."""
     field = np.asarray(alpha, dtype=np.float32) / 255
-    level = EDGE / 255
+    level = CUT / 255
     rows, cols = field.shape[0] - 1, field.shape[1] - 1
     yy, xx = np.indices((rows, cols), dtype=np.float32)
     xs = np.zeros((rows, cols), np.float32)
